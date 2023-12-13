@@ -99,7 +99,6 @@ current_row = []
 for index, model in enumerate(models):
     card = create_model_card(model, index)
     current_row.append(dbc.Col(card, width=3))
-
     if index % 4 == 0:
         card_rows.append(dbc.Row(current_row, className="mb-4"))
         current_row = []
