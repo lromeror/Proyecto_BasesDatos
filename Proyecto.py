@@ -63,8 +63,10 @@ def register_user():
             login()
         elif option == "2":
             print("\nConnecting with Google")
+            option=4
         elif option == "3":
             print("\nConnecting with Facebook")
+            option=4
         else:
             print("\nInvalid option selected.")
 
@@ -222,7 +224,7 @@ def show_car():
         print(l)
     f.close()
 
-    print(f"El total de sus {cont} producto es {sun}")
+    print(f"El total de sus {cont} producto es {round(sun,2)}")
 
 def menu_p():
     print_menu_options()
@@ -242,6 +244,5 @@ def menu_p():
 
 
 menu_p()
-
 
 
