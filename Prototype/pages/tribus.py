@@ -33,7 +33,7 @@ navbar = dbc.Navbar(
                 dbc.Nav(
                     [
                         dbc.NavItem(dbc.NavLink("TRIBES", href="/tribus")),
-                        dbc.NavItem(dbc.NavLink("TIENDA", href="#")),
+                        dbc.NavItem(dbc.NavLink("TIENDA", href="/comprar")),
                     ],
                     className="me-auto",
                     navbar=True
