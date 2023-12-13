@@ -81,7 +81,7 @@ models = [
 
 # Función para crear una tarjeta de modelo
 def create_model_card(model, index):
-    image_src = get_image_path(index)
+    image_src = get_image_path(index+1)
     return dbc.Card(
         [
             dbc.CardImg(src=image_src, top=True),
@@ -99,7 +99,7 @@ def create_model_card(model, index):
 # Crear las tarjetas de modelos en el carrito
 card_rows = []
 current_row = []
-for index, model in enumerate(models):
+for index, model in enumerate(models,start=1):
     card = create_model_card(model, index)
     current_row.append(dbc.Col(card, width=3))
     if index % 4 == 0:
