@@ -1,11 +1,68 @@
 import dash
 from dash import html
 import dash_bootstrap_components as dbc
-from dash import Dash, dcc, html, Input, Output, callback
-from pages import comprar, pay
+from dash import Dash, dcc, html, Input, Output, State, callback
+import pages.comprar as comprar
+
 # Estilos externos
 external_stylesheets = [dbc.themes.BOOTSTRAP]
+dropdown = dbc.DropdownMenu(
+    children=[
+        dbc.DropdownMenuItem("OBJETO 3D", href="#"),
+        dbc.DropdownMenuItem("CUSTOMIZER", href="#"),
+        dbc.DropdownMenuItem("IMAGEN", href="#"),
+        dbc.DropdownMenuItem("ARTÍCULO", href="#"),
+    ],
+    nav=True,
+    in_navbar=True,
+    label="UPLOAD",
+    className="dropdown"
+)
+navbar = dbc.Navbar(
+    dbc.Container(
+        [
+            dbc.NavbarBrand(
+                html.Img(
+                    src='assets/Resources/logo.svg',
+                    height="30px",
+                    className="logo"
+                    ),href="/home"),
+            dbc.NavbarToggler(id="navbar-toggler"),
+            dbc.Collapse(
+                dbc.Nav(
+                    [
+                        dbc.NavItem(dbc.NavLink("TRIBES", href="/tribus")),
+                        dbc.NavItem(dbc.NavLink("TIENDA", href="/comprar")),
+                        dbc.NavItem(dbc.NavLink("CONSULTAS", href="/consultas")),
+                        dbc.NavItem(dbc.NavLink("CARRITO COMPRAS", href="/carrito_compras")),
 
+                    ],
+                    className="me-auto",
+                    navbar=True
+                ),
+                id="navbar-collapse",
+                navbar=True,
+                is_open=False
+            ),
+            dropdown,
+            dbc.Row(
+                [
+                    dbc.Col(dbc.NavLink("JOIN", href="/join", className="me-2"),className="sep_2"),
+                    dbc.Col(dbc.NavLink("LOGIN", href="/login"),className="sep_2"),
+                ],
+                align="center",
+                className="g-0 ms-auto flex-nowrap mt-3 mt-md-0 sep",
+            ),
+        ],
+        fluid=True,  
+        className="Container_header"
+    ),
+    color="light",
+    dark=False,
+    sticky="top",
+    expand="lg",  
+    className="Container_header"
+)
 # Función para obtener la ruta de la imagen
 def get_image_path(index):
     return f"assets/Images_compras/im_{index}.jpg"
@@ -32,6 +89,7 @@ def create_model_card(model, index):
                 [
                     html.H5(model['name'], className="card-title"),
                     html.P(f"Price: ${model['price']}", className="card-text"),
+                    dbc.Button("Eliminar", color="tertiary", className="mt-2")
                 ]
             ),
         ],
@@ -55,13 +113,16 @@ if current_row:
 buttons = dbc.Row(
     [
         dbc.Col(dbc.Button("Pagar", color="primary", className="me-2"), width=2),
-        dbc.Col(dbc.Button("Seguir comprando", color="secondary", id="seguir-comprando-button"), width=2),
+        dbc.Col(dbc.Button("Seguir comprando", color="secondary", className="me-2", id="seguir-comprando-button",n_clicks=0, value='1'), width=2),
+        
+        
         ],
     className="mt-4"
 )
 
 # Crear el layout de la interfaz
 layout = html.Div([
+    navbar,
     dbc.Container(
         [
             dbc.Row(
@@ -80,12 +141,14 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app.layout = layout
 
 @app.callback(
-        Output('page-content', 'children'),
-        Input("seguir-comprando-button", "n_clicks")
-    )
+    Output('page-content', 'children'),
+    Input("seguir-comprando-button", "n_clicks"),
+)
 def redirect_to_comprar(n_clicks):
-    if n_clicks is not None:
+    if n_clicks==1:
+        n_clicks=0
         return comprar.layout
+
             
             
 # Ejecutar la aplicación
