@@ -35,6 +35,9 @@ navbar = dbc.Navbar(
                     [
                         dbc.NavItem(dbc.NavLink("TRIBES", href="/tribus")),
                         dbc.NavItem(dbc.NavLink("TIENDA", href="/comprar")),
+                        dbc.NavItem(dbc.NavLink("CONSULTAS", href="/consultas")),
+                        dbc.NavItem(dbc.NavLink("CARRITO COMPRAS", href="/carrito_compras")),
+
                     ],
                     className="me-auto",
                     navbar=True
