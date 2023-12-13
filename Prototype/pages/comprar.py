@@ -1,7 +1,7 @@
 import dash
 from dash import html
 import dash_bootstrap_components as dbc
-import os
+
 
 # Estilos externos
 external_stylesheets = [dbc.themes.BOOTSTRAP]
