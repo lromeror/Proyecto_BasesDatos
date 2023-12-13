@@ -1,6 +1,7 @@
 import dash
-from dash import html
+
 import dash_bootstrap_components as dbc
+from dash import html, dcc, Input, Output, State, callback,dash
 
 # Estilos externos
 external_stylesheets = [dbc.themes.BOOTSTRAP]
@@ -93,14 +94,14 @@ def create_tribe_card(tribe, index):
     return dbc.Card(
         [
             dbc.CardImg(src=f"assets/Images_tribes/{index}.png", top=True),
-            dbc.Button(
+            dbc.NavLink(
                 dbc.CardBody(
                     [
                         html.H5(f"{tribe['name']} - {tribe['description']}", className="card-title"),
                         html.P(f"Members: {tribe['members']}", className="card-text"),
                     ]
                 ),
-                id=f"{tribe['name']} - {tribe['description']}"
+                href="/pay"
             ),
         ],
         style={"width": "18rem"}
@@ -122,6 +123,8 @@ if current_row:
 
 card_deck = html.Div(card_rows)
 
+        
+    
 layout = html.Div([
     navbar,
     card_deck
