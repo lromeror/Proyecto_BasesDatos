@@ -74,11 +74,12 @@ models = [
     {'name': 'Modelo 6', 'price': 20.00},
     {'name': 'Modelo 7', 'price': 29.00},
     {'name': 'Modelo 8', 'price': 90.00},
+    
 ]
 
 
 def create_model_card(model, index):
-    image_src = get_image_path(index)
+    image_src = get_image_path(index+1)
     return dbc.Card(
         [
             dbc.CardImg(src=image_src, top=True),
@@ -99,10 +100,10 @@ def create_model_card(model, index):
 
 card_rows = []
 current_row = []
-for index, model in enumerate(models):
+for index, model in enumerate(models, start=1):
     card = create_model_card(model, index)
     current_row.append(dbc.Col(card, width=3))
-    if index % 4 == 0:
+    if index % 4 == 0 and index:
         card_rows.append(dbc.Row(current_row, className="mb-4"))
         current_row = []
 
