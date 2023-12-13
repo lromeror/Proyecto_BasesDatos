@@ -72,10 +72,7 @@ models = [
     {'name': 'Modelo 1', 'price': 10.00},
     {'name': 'Modelo 2', 'price': 15.00},
     {'name': 'Modelo 3', 'price': 20.00},
-    {'name': 'Modelo 4', 'price': 25.00},
-    {'name': 'Modelo 5', 'price': 30.00},
     {'name': 'Modelo 6', 'price': 20.00},
-    {'name': 'Modelo 7', 'price': 29.00},
     {'name': 'Modelo 8', 'price': 90.00},
 ]
 

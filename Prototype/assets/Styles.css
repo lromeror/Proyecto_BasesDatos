@@ -58,3 +58,21 @@
     height: 150px;
     object-fit: cover; 
 }
+.Container_center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+.Container_center_c{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.Margin-right{
+    margin-right: 2vw;
+}
+.Margin-left{
+    margin-left: 2vw;
+}
