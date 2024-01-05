@@ -21,7 +21,7 @@ def create_connection(host_name, user_name, user_password, db_name, db_port):
     return connection
 
 # Conectar a la base de datos
-conexion = create_connection("localhost", "root", "Angelo2023", "YOURMINIFACTORY", 3306)
+conexion = create_connection("yourminifactory.mysql.database.azure.com", "Administrador", "a5min#2023", "yourminifactory", 3306)
 
 def execute_read_query(connection, query):
     cursor = connection.cursor()
