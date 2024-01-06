@@ -185,7 +185,7 @@ def insertar_usuario(conexion,name,password,email,birthdate):
         if existeCorreo(result,email):
             print("Ya esxiste el correo")
             return False   
-        query = "INSERT INTO usuario (nombre, fecha_impresion, contrasena, correo, id_tribu) VALUES (%s, %s, %s,%s,%s)"
+        query = "INSERT INTO usuario (nombre, fecha_nacimi, contrasena, correo, id_tribu) VALUES (%s, %s, %s,%s,%s)"
         valores = (name.strip(),birthdate,password.strip(),email.strip(),9)
         cursor.execute(query, valores)
         conexion.commit()

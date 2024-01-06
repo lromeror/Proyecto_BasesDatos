@@ -32,7 +32,7 @@ INSERT INTO campana (descricipcion, pioneros, comentarios, dinerorecaudado) VALU
     ('Campaña 5: Educación E', 600, 'Juntos construimos el futuro', 1800.0);
 
 -- Insertar datos en la tabla usuario
-INSERT INTO usuario (nombre, fecha_impresion, contrasena, correo, id_tribu) VALUES
+INSERT INTO usuario (nombre, fecha_nacimi, contrasena, correo, id_tribu) VALUES
     ('Juan Pérez', '1995-03-15', 'contraseña1', 'juan@example.com', 1),
     ('María López', '1988-07-20', 'contraseña2', 'maria@example.com', 2),
     ('Carlos Rodríguez', '1990-05-10', 'contraseña3', 'carlos@example.com', 3),
@@ -127,7 +127,7 @@ INSERT INTO campana (descricipcion, pioneros, comentarios, dinerorecaudado) VALU
     ('Campaña 10: Comunidad Creativa', 800, 'Inspiración y creatividad', 2400.0);
 
 -- Insertar datos adicionales en la tabla usuario
-INSERT INTO usuario (nombre, fecha_impresion, contrasena, correo, id_tribu) VALUES
+INSERT INTO usuario (nombre, fecha_nacimi, contrasena, correo, id_tribu) VALUES
     ('Laura Martínez', '1994-08-21', 'contraseña6', 'laura@example.com', 6),
     ('Pedro Sánchez', '1987-06-05', 'contraseña7', 'pedro@example.com', 7),
     ('Isabel Pérez', '1992-04-12', 'contraseña8', 'isabel@example.com', 8),
@@ -219,7 +219,7 @@ INSERT INTO campana (descricipcion, pioneros, comentarios, dinerorecaudado) VALU
     ('Campaña 15: Comunidad Creativa', 700, 'Celebrando la diversidad', 2100.0);
 
 -- Insertar datos adicionales en la tabla usuario
-INSERT INTO usuario (nombre, fecha_impresion, contrasena, correo, id_tribu) VALUES
+INSERT INTO usuario (nombre, fecha_nacimi, contrasena, correo, id_tribu) VALUES
     ('Lorenzo Ramírez', '1991-02-18', 'contraseña11', 'lorenzo@example.com', 11),
     ('Sofía González', '1997-09-05', 'contraseña12', 'sofia@example.com', 12),
     ('Diego Herrera', '1998-06-28', 'contraseña13', 'diego@example.com', 13),
@@ -308,7 +308,7 @@ INSERT INTO campana (descricipcion, pioneros, comentarios, dinerorecaudado) VALU
     ('Campaña 20: Comunidad Creativa 2', 900, 'Unidos en la diversidad', 2700.0);
 
 -- Insertar datos adicionales en la tabla usuario
-INSERT INTO usuario (nombre, fecha_impresion, contrasena, correo, id_tribu) VALUES
+INSERT INTO usuario (nombre, fecha_nacimi, contrasena, correo, id_tribu) VALUES
     ('Elena Martínez', '1992-04-12', 'contraseña16', 'elena@example.com', 16),
     ('Pedro García', '1996-08-25', 'contraseña17', 'pedro@example.com', 17),
     ('Laura Rodríguez', '1989-11-30', 'contraseña18', 'laura@example.com', 18),
