@@ -3,6 +3,7 @@ from dash import html
 import dash_bootstrap_components as dbc
 from dash import Dash, dcc, html, Input, Output, State, callback
 import pages.comprar as comprar
+import pages.pay as pay
 
 # Estilos externos
 external_stylesheets = [dbc.themes.BOOTSTRAP]
@@ -109,8 +110,8 @@ if current_row:
 # Botones de pagar y seguir comprando
 buttons = dbc.Row(
     [
-        dbc.Col(dbc.Button("Pagar", color="primary", className="me-2"), width=2),
-        dbc.Col(dbc.Button("Seguir comprando", color="secondary", className="me-2", id="seguir-comprando-button",n_clicks=0, value='1'), width=2),
+        dbc.Col(dbc.NavLink(dbc.Button("Pagar", color="primary", className="me-2",id="carrito_compras"), href="/pay"), width=2),
+        dbc.Col(dbc.NavLink(dbc.Button("Seguir comprando", color="secondary", className="me-2", id="seguir-comprando-button"), href="/comprar"), width=2)
         
         
         ],
@@ -143,9 +144,15 @@ app.layout = layout
 )
 def redirect_to_comprar(n_clicks):
     if n_clicks==1:
-        n_clicks=0
         return comprar.layout
 
+@app.callback(
+    Output('page-content', 'children'),
+    Input("carrito_compras", "n_clicks"),
+)
+def redirect_to_comprar(n_clicks):
+    if n_clicks==1:
+        return pay.layout
             
             
 # Ejecutar la aplicación
