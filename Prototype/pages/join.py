@@ -124,7 +124,11 @@ form_col = dbc.Col(
     md=6,
 )
 @callback(
-    Output('output-container', 'children'),
+    [Output('name-input', 'value'),
+        Output('email-input', 'value'),
+        Output('password-input', 'value'),
+        Output('birthdate-input', 'value'),
+        Output('output-container', 'children')],
     Input('join-button', 'n_clicks'),
     State('name-input', 'value'),
     State('email-input', 'value'),
@@ -133,11 +137,12 @@ form_col = dbc.Col(
 )
 def update_output(n_clicks, name, email, password, birthdate):
     if n_clicks is None or n_clicks == 0:
-        return no_update
+        return no_update, no_update, no_update, no_update, no_update
     else:
         conexion = create_connection("yourminifactory.mysql.database.azure.com", "Administrador", "a5min#2023", "yourminifactory", 3306)
-        insertar_usuario(conexion, name, password, email, birthdate)
-        return no_update
+        if not insertar_usuario(conexion, name, password, email, birthdate):    	
+            return '', '', '', '', 'Este usuario ya existe' 
+        return '', '', '', '', no_update    
 
 output_container = html.Div(id='output-container')
 
@@ -169,12 +174,27 @@ def create_connection(host_name, user_name, user_password, db_name, db_port):
 
 
 def insertar_usuario(conexion,name,password,email,birthdate):
-    try:    
-        cursor = conexion.cursor()
+    cursor = conexion.cursor()
+    query = """
+   select correo  from usuario
+    """
+    result = None
+    try:
+        cursor.execute(query)
+        result = cursor.fetchall()
+        if existeCorreo(result,email):
+            print("Ya esxiste el correo")
+            return False   
         query = "INSERT INTO usuario (nombre, fecha_impresion, contrasena, correo, id_tribu) VALUES (%s, %s, %s,%s,%s)"
-        valores = (name,birthdate,password,email,9)
+        valores = (name.strip(),birthdate,password.strip(),email.strip(),9)
         cursor.execute(query, valores)
         conexion.commit()
-        print("Se anandio de forma exitosa")
+        return True
     except mysql.connector.Error as e:
         print(f"Error al insertar el usuario: {e}")
+
+def existeCorreo(tupCorreo, newCorreo):
+    for correo in tupCorreo:
+        if correo[0]==newCorreo:
+            return True
+
