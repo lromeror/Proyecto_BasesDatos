@@ -4,13 +4,30 @@
  */
 package com.mycompany.yourminifactory;
 
+import Clases.Conexion;
+import java.io.IOException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -28,11 +45,16 @@ public class JoinController implements Initializable {
     @FXML
     private ImageView img4;
     @FXML
-    private Button btnCancel;
-    @FXML
-    private Button btnJoin;
-    @FXML
     private ImageView imgLogo;
+    @FXML
+    private TextField labelName;
+    @FXML
+    private TextField labelEmail;
+    @FXML
+    private PasswordField labelPass;
+    @FXML
+    private DatePicker labelDateBirth;
+    private Conexion co;
 
     /**
      * Initializes the controller class.
@@ -45,6 +67,86 @@ public class JoinController implements Initializable {
         img2.setImage(new Image("Images/images_login/2.png"));
         img3.setImage(new Image("Images/images_login/3.png"));
         img4.setImage(new Image("Images/images_login/4.png"));
-    }    
-    
+        co = new Conexion();
+    }
+
+    @FXML
+    private void btnCancel(MouseEvent event) {
+        labelName.setText("");
+        labelEmail.setText("");
+        labelPass.setText("");
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("Page.fxml"));
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) labelEmail.getScene().getWindow();
+            stage.setScene(scene);
+        } catch (IOException ex) {
+            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @FXML
+    private void btnJoin(MouseEvent event) {
+        String name = labelName.getText();
+        String mail = labelEmail.getText();
+        String pass = labelPass.getText();
+        String date = String.valueOf(labelDateBirth.getValue());
+
+        System.out.println("");
+        if (!(name == null || mail == null || pass == null || date == null)) {
+            List<List<String>> listUsuarios = co.query(co.connect(), "Select * from usuario");
+            if (!validarRegistro(mail, listUsuarios)) {
+                co.insertarDato(co.connect(), name, date, pass, mail);
+                labelName.setText("");
+                labelEmail.setText("");
+                labelPass.setText("");
+                try {
+                    Parent root = FXMLLoader.load(getClass().getResource("Page.fxml"));
+                    Scene scene = new Scene(root);
+                    Stage stage = (Stage) labelEmail.getScene().getWindow();
+                    stage.setScene(scene);
+                } catch (IOException ex) {
+                    Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                Alert alerta = new Alert(Alert.AlertType.INFORMATION);
+                alerta.setTitle("JOIN");
+                alerta.setHeaderText("User already exist");
+                alerta.setContentText("¡Intente Nuevamente!");
+                alerta.show();
+            }
+        } else {
+            Alert alerta = new Alert(Alert.AlertType.INFORMATION);
+            alerta.setTitle("JOIN");
+            alerta.setHeaderText("Field Empty");
+            alerta.setContentText("¡Intente Nuevamente!");
+            alerta.show();
+        }
+    }
+
+    public boolean validarRegistro(String emil, List<List<String>> listUsuarios) {
+        for (List<String> lineUser : listUsuarios) {
+            String mailUser = lineUser.get(4);
+            if (mailUser.equals(emil)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static String convertirFormato(String fechaOriginal) {
+        String fechaFormateada = "";
+        SimpleDateFormat formatoOriginal = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+        SimpleDateFormat formatoDeseado = new SimpleDateFormat("yyyy-MM-dd");
+
+        try {
+            Date fecha = formatoOriginal.parse(fechaOriginal);
+            fechaFormateada = formatoDeseado.format(fecha);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return fechaFormateada;
+    }
+
 }

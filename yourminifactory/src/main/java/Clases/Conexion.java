@@ -86,4 +86,46 @@ public class Conexion {
         return resultados;
     }
 
+    public void insertarDato(Connection conn, String nombre, String fecha, String passw, String correo) {
+    PreparedStatement ps = null;
+    try {
+        String sql = "INSERT INTO usuario (nombre, fecha_nacimi, contrasena, correo) VALUES (?, ?, ?, ?)";
+        ps = conn.prepareStatement(sql);
+        ps.setString(1, nombre);
+        ps.setString(2, fecha);
+        ps.setString(3, passw);
+        ps.setString(4, correo);
+
+        int filasInsertadas = ps.executeUpdate();
+        if (filasInsertadas > 0) {
+            System.out.println("Inserción exitosa");
+        } else {
+            System.out.println("No se pudo insertar el dato");
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (ps != null) {
+                ps.close();
+            }
+            if (conn != null && !conn.isClosed()) {
+                conn.close();
+            }
+        } catch (SQLException se) {
+            se.printStackTrace();
+        }
+    }
+}
+
+
+    public static void main(String[] args) {
+        Conexion co = new Conexion();
+        Connection conn = co.connect();
+
+        // Ejemplo de inserción de datos en la tabla
+        co.insertarDato(conn, "Pitusa2", "2020-12-01", "12345679","correo@pitusa.ec");
+
+    }
+
 }

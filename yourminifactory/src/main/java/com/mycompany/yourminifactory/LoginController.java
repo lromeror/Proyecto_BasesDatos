@@ -4,16 +4,27 @@
  */
 package com.mycompany.yourminifactory;
 
+import Clases.Conexion;
+import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -29,6 +40,11 @@ public class LoginController implements Initializable {
     @FXML
     private PasswordField labelPasswor;
 
+    private Conexion co = new Conexion();
+    private List<List<String>> listUsuarios = co.query(co.connect(), "Select * from usuario");
+    @FXML
+    private Label msgW;
+
     /**
      * Initializes the controller class.
      */
@@ -36,14 +52,63 @@ public class LoginController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
         imageLogo.setImage(new Image("Images/images_login/logo2.png"));
-    }    
+    }
 
     @FXML
     private void btnLogin(MouseEvent event) {
+        String email = labelUsername.getText();
+        String passW = this.labelPasswor.getText();
+        System.out.println(validarRegistro(email, passW));
+        if (validarRegistro(email, passW)) {
+            labelUsername.setText("");
+            labelPasswor.setText("");
+            changeInterfaz(0);
+        } else {
+            Alert alerta = new Alert(AlertType.INFORMATION);
+            alerta.setTitle("LOGIN");
+            alerta.setHeaderText("Usuario o Password Incorrect");
+            alerta.setContentText("¡Intente Nuevamente!");
+            alerta.show();
+        }
+    }
+
+    private void changeInterfaz(int idUser) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Page.fxml"));
+            Parent root = loader.load();
+
+            PageController controller = loader.getController();
+            //controller.setContact(c);
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add("/styles/showContact.css");
+            Stage stage = (Stage) labelUsername.getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @FXML
     private void btnJoin(MouseEvent event) {
+        try {
+           Parent root = FXMLLoader.load(getClass().getResource("join.fxml"));
+        Scene scene = new Scene(root);
+        Stage stage = (Stage) labelUsername.getScene().getWindow();
+        stage.setScene(scene);
+        } catch (IOException ex) {
+            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
-    
+
+    public boolean validarRegistro(String emil, String pass) {
+        for (List<String> lineUser : this.listUsuarios) {
+            String mailUser = lineUser.get(4);
+            String pasUser = lineUser.get(3);
+            if (mailUser.equals(emil) && pass.equals(pasUser)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
