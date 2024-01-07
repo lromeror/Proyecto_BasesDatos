@@ -153,6 +153,12 @@ def redirect_to_comprar(n_clicks):
 def redirect_to_comprar(n_clicks):
     if n_clicks==1:
         return pay.layout
+    
+def getTotalAmount():
+    total_amount = 0
+    for model in models:
+        total_amount += model['price']
+    return total_amount
             
             
 # Ejecutar la aplicación
