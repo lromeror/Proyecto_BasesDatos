@@ -8,7 +8,7 @@ external_stylesheets = [dbc.themes.BOOTSTRAP]
 # Menú desplegable
 dropdown = dbc.DropdownMenu(
     children=[
-        dbc.DropdownMenuItem("OBJETO 3D", href="#"),
+        dbc.DropdownMenuItem("OBJETO 3D", href="/model"),
         dbc.DropdownMenuItem("CUSTOMIZER", href="#"),
         dbc.DropdownMenuItem("IMAGEN", href="#"),
         dbc.DropdownMenuItem("ARTÍCULO", href="#"),
@@ -36,8 +36,8 @@ navbar = dbc.Navbar(
                     [
                         dbc.NavItem(dbc.NavLink("TRIBES", href="/tribus")),
                         dbc.NavItem(dbc.NavLink("TIENDA", href="/comprar")),
-                         dbc.NavItem(dbc.NavLink("CONSULTAS", href="/consultas")),
-                         dbc.NavItem(dbc.NavLink("CARRITO COMPRAS", href="/carrito_compras")),
+                        dbc.NavItem(dbc.NavLink("CONSULTAS", href="/consultas")),
+                        dbc.NavItem(dbc.NavLink("CARRITO COMPRAS", href="/carrito_compras")),
                     ],
                     className="me-auto",
                     navbar=True
