@@ -35,7 +35,7 @@ public class LoginController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-        imageLogo.setImage(new Image("icons/logo.png"));
+        imageLogo.setImage(new Image("Images/images_login/logo2.png"));
     }    
 
     @FXML
