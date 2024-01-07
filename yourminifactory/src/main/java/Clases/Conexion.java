@@ -17,19 +17,18 @@ import java.util.List;
  *
  * @author angelozurita
  */
-
-
 public class Conexion {
+
     Connection conectar = null;
     String usuario = "Administrador";
     String contraseña = "a5min#2023";
-    String bd  = "yourminifactory";
+    String bd = "yourminifactory";
     String ip = "yourminifactory.mysql.database.azure.com";
 //    String ip = "localhost";
-    String puerto ="3306";
-    
-    String cadena = "jdbc:mysql://"+ip+":"+puerto+"/"+bd;
-    
+    String puerto = "3306";
+
+    String cadena = "jdbc:mysql://" + ip + ":" + puerto + "/" + bd;
+
 //    public Connection ConectDB(){
 //        try{
 //            Class.forName("com.mysql.cj.jdb.Driver");
@@ -41,48 +40,52 @@ public class Conexion {
 //        }
 //        return conectar;
 //    }
-    public Connection connect(){
-            Connection conn = null;
-            try{
-                conn = DriverManager.getConnection(cadena, usuario, contraseña);
-                if(conn!=null){
-                    System.out.println("Ingreso Exitoso");
-                }
+    public Connection connect() {
+        Connection conn = null;
+        try {
+            conn = DriverManager.getConnection(cadena, usuario, contraseña);
+            if (conn != null) {
+                System.out.println("Ingreso Exitoso");
             }
-            catch(Exception e){
-                System.out.println(e.toString());
-            }
-            return conn;
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+        return conn;
     }
-    
+
     public List<List<String>> query(Connection conn, String sql) {
-            List<List<String>> resultados = new ArrayList<>();
-            PreparedStatement ps = null;
-            ResultSet rs = null;
-            try {
-                ps = conn.prepareStatement(sql); // Utilizar la conexión pasada como parámetro
-                rs = ps.executeQuery();
-                
-                while (rs.next()) {
-                    List<String> fila = new ArrayList<>();
-                    for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
-                        fila.add(rs.getString(i));
-                    }
-                    resultados.add(fila);
+        List<List<String>> resultados = new ArrayList<>();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = conn.prepareStatement(sql); // Utilizar la conexión pasada como parámetro
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                List<String> fila = new ArrayList<>();
+                for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
+                    fila.add(rs.getString(i));
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    if (rs != null) rs.close();
-                    if (ps != null) ps.close();
-                    // No cerrar conn aquí, porque se puede reutilizar
-                } catch (SQLException se) {
-                    se.printStackTrace();
-                }
+                resultados.add(fila);
             }
-            return resultados;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                // No cerrar conn aquí, porque se puede reutilizar
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
+        }
+        return resultados;
     }
+
     public static void main(String[] args) {
         //        launch();
 //        Conexion conexion = new Conexion();
@@ -104,5 +107,6 @@ public class Conexion {
 //            }
 //        }
 //    }
-    
+
+    }
 }

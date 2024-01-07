@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="501.0" prefWidth="696.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" fx:controller="com.mycompany.yourminifactory.LoginController">
+   <children>
+      <ImageView fx:id="imageLogo" fitHeight="78.0" fitWidth="78.0" layoutX="292.0" layoutY="23.0" pickOnBounds="true" preserveRatio="true" />
+      <Label layoutX="186.0" layoutY="110.0" text="Log in to YourMiniFactory">
+         <font>
+            <Font name="System Bold Italic" size="25.0" />
+         </font>
+      </Label>
+      <Label layoutX="182.0" layoutY="158.0" text="Username or E-mail address" />
+      <TextField fx:id="labelUsername" layoutX="182.0" layoutY="184.0" prefHeight="26.0" prefWidth="317.0" />
+      <Label layoutX="179.0" layoutY="225.0" text="Password" />
+      <Button layoutX="176.0" layoutY="301.0" mnemonicParsing="false" onMouseClicked="#btnLogin" prefHeight="26.0" prefWidth="73.0" text="LOGIN" />
+      <Label layoutX="220.0" layoutY="397.0" text="Don't have an account? " />
+      <Button layoutX="355.0" layoutY="392.0" mnemonicParsing="false" onMouseClicked="#btnJoin" prefHeight="26.0" prefWidth="90.0" text="JOIN NOW" textOverrun="WORD_ELLIPSIS" underline="true" />
+      <PasswordField fx:id="labelPasswor" layoutX="179.0" layoutY="251.0" prefHeight="26.0" prefWidth="318.0" />
+   </children>
+</AnchorPane>
