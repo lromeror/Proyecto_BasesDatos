@@ -23,7 +23,7 @@ create table tier(
 
 create table campana(
 	id_campana int not null auto_increment primary key,
-    descricipcion varchar(100) default null,
+    descripcion varchar(100) default null,
     pioneros int not null,
     dinerorecaudado double not null
 );
