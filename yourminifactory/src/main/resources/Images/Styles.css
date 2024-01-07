@@ -1,0 +1,78 @@
+.Container_header{
+    margin-right: 30 vw;
+    
+}
+.dropdown{
+    margin-right: 2vw;
+}
+.sep{
+    margin-right: 2vw;
+}
+.sep_2{
+    margin-right: 1vw;
+    margin-left: 1vw;
+}
+.line{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 1vw;
+    gap: 2vw; 
+}
+.btn-primary {
+    background-color: #4CAF50 !important; /* Usa !important para sobrescribir los estilos de Bootstrap */
+    border-color: #4CAF50 !important;
+}
+
+.btn-link {
+    color: rgb(163, 175, 163) !important;
+    border-color: rgb(163, 175, 163) !important;
+}
+.center{
+    justify-content: center;
+    align-items: center;
+}
+.text-center {
+    margin-top: 5vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+.margin-top{
+    margin-top: 2vw;
+    margin-right: 2vw;
+}
+
+.card-title {
+    font-size: 1rem; 
+    font-weight: bold; 
+}
+
+.card-text {
+    font-size: 0.9rem; 
+    color: grey;
+}
+
+.card-img-top {
+    height: 150px;
+    object-fit: cover; 
+}
+.Container_center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+.Container_center_c{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.Margin-right{
+    margin-right: 2vw;
+}
+.Margin-left{
+    margin-left: 2vw;
+}

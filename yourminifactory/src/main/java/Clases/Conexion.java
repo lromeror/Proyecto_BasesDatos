@@ -83,26 +83,27 @@ public class Conexion {
             }
             return resultados;
     }
-    public static void main(String[] args) {
-        //        launch();
-//        Conexion conexion = new Conexion();
-//        Connection conn = conexion.connect(); // Asegúrate de manejar las excepciones aquí
-//        try {
-//            List<List<String>> resultados = conexion.query(conn, "SELECT * FROM usuario");
-//
-//            for (List<String> fila : resultados) {
-//                for (String valor : fila) {
-//                    System.out.print(valor + " ");
-//                }
-//                System.out.println();
-//            }
-//        } finally {
-//            try {
-//                if (conn != null) conn.close(); // Cierra la conexión cuando ya no se necesita
-//            } catch (SQLException se) {
-//                se.printStackTrace();
-//            }
-//        }
-//    }
-    
+//    public static void main(String[] args) {
+//        //        launch();
+////        Conexion conexion = new Conexion();
+////        Connection conn = conexion.connect(); // Asegúrate de manejar las excepciones aquí
+////        try {
+////            List<List<String>> resultados = conexion.query(conn, "SELECT * FROM usuario");
+////
+////            for (List<String> fila : resultados) {
+////                for (String valor : fila) {
+////                    System.out.print(valor + " ");
+////                }
+////                System.out.println();
+////            }
+////        } finally {
+////            try {
+////                if (conn != null) conn.close(); // Cierra la conexión cuando ya no se necesita
+////            } catch (SQLException se) {
+////                se.printStackTrace();
+////            }
+////        }
+////    }
+//    
+//}
 }
