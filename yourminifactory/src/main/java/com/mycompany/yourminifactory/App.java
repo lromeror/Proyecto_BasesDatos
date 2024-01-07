@@ -7,6 +7,9 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  * JavaFX App
@@ -33,6 +36,7 @@ public class App extends Application {
 
     public static void main(String[] args) {
         launch();
+
     }
 
 }
