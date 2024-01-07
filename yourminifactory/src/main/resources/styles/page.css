@@ -5,3 +5,14 @@
 .mainFxmlClass {
 
 }
+.card {
+    -fx-padding: 10;
+    -fx-alignment: center;
+    -fx-spacing: 10;
+    -fx-border-color: grey;
+    -fx-border-width: 2;
+    -fx-background-color: white;
+    -fx-background-radius: 10; /* Radio de fondo */
+    -fx-border-radius: 10; /* Radio de borde */
+    -fx-effect: dropshadow(gaussian, black, 5, 0, 0, 0);
+}

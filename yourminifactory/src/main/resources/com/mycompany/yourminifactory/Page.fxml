@@ -65,7 +65,7 @@
       </HBox>
       <ScrollPane layoutY="63.0" prefHeight="607.0" prefWidth="1100.0">
         <content>
-            <VBox fx:id="contenido_page" prefHeight="605.0" prefWidth="1082.0" />
+            <VBox fx:id="contenido_page" alignment="CENTER" prefHeight="605.0" prefWidth="1082.0" />
         </content>
       </ScrollPane>
    </children>

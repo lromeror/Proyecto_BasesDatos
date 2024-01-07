@@ -5,22 +5,43 @@
 package com.mycompany.yourminifactory;
 
 import Clases.Conexion;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitMenuButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -61,47 +82,62 @@ public class PageController implements Initializable {
 
     @FXML
     private void home(MouseEvent event) {
-        List<List<String>> resultados = conexion.query(conn, "SELECT * FROM tribu");
-        GridPane grid = new GridPane();
-//        grid.setPadding(new Insets(10, 10, 10, 10));
-        grid.setVgap(10);
-        grid.setHgap(10);
-
-        // Suponiendo que tienes los datos de las tribus en tribeData
-        for (int i = 0; i < resultados.size(); i++) {
-            List<String> tribe = resultados.get(i);
-            VBox card = createTribeCard(tribe, i + 1);
-
-            // Agregar la tarjeta al GridPane
-            grid.add(card, i % 4, i / 4); // Esto organizará las tarjetas en filas de 4
-        }
-        contenido_page.getChildren().add(grid);  
     }
     private VBox createTribeCard(List<String> tribe, int index) {
-        // Cargar la imagen
         ImageView imageView = new ImageView(new Image(getImagePath(index)));
-        imageView.setFitWidth(100);
-        imageView.setPreserveRatio(true);
+        imageView.setFitWidth(200);
+        imageView.setFitHeight(150);
 
-        // Crear etiquetas para el nombre y los miembros de la tribu
-        Label nameLabel = new Label(tribe.get(0) + " - " + tribe.get(2));
-        Label membersLabel = new Label("Members: " + tribe.get(3));
-
-        // Organizar la imagen y las etiquetas en un VBox
+        Text nameLabel = new Text(tribe.get(0) + " - " + tribe.get(2));
+        Text membersLabel = new Text("Members: " + tribe.get(3));
+        nameLabel.setFont(Font.font("Arial", 16));
+        membersLabel.setFont(Font.font("Arial", 16));
+        
         VBox card = new VBox(10, imageView, nameLabel, membersLabel);
+        
+        card.setPrefSize(225, 231);
         card.setPadding(new Insets(10));
-        card.setStyle("-fx-border-style: solid; -fx-border-width: 1; -fx-border-color: black;");
+        card.getStyleClass().add("card");
 
         return card;
     }
     
     private String getImagePath(int index) {
-        // Cambia esto por la ruta donde tienes las imágenes de las tribus
         return "/Images/Images_tribes/" + index + ".png";
     }
 
     @FXML
     private void showTribesContent(MouseEvent event) {
+        List<List<String>> resultados = conexion.query(conn, "SELECT * FROM tribu");
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setVgap(40);
+        grid.setHgap(40);
+
+        // Suponiendo que tienes los datos de las tribus en tribeData
+        for (int i = 0; i < resultados.size(); i++) {
+            List<String> tribe = resultados.get(i);
+            VBox card = createTribeCard(tribe, i + 1);
+            card.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler() {
+                @Override
+                public void handle(Event event) {
+                    try {
+                        Parent root = FXMLLoader.load(getClass().getResource("home.fxml"));
+                        Scene scene = new Scene(root);
+                        Stage stage = (Stage) contenido_page.getScene().getWindow();
+                        stage.setScene(scene);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+
+            // Agregar la tarjeta al GridPane
+            grid.add(card, i % 4, i / 4); // Esto organizará las tarjetas en filas de 4
+        }
+        Platform.runLater(()->{
+            contenido_page.getChildren().add(grid);  
+        });
     }
 
     @FXML

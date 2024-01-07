@@ -1,3 +1,4 @@
+use YOURMINIFACTORY;
 -- Insertar datos en la tabla tribu
 INSERT INTO tribu (descripcion, name, num_pioneros) 
 VALUES 
@@ -274,12 +275,6 @@ INSERT INTO anadir (id_carrito, id_modelo) VALUES
     (17, 17),
     (18, 18),
     (19, 19),
-<<<<<<< HEAD
-    (1,2),
-    (1,6),
-    (1,20),
-    (20, 20);
-=======
     (20, 20),
 	(1,14),
     (1,13),
@@ -293,6 +288,5 @@ INSERT INTO anadir (id_carrito, id_modelo) VALUES
     (3,12),
     (1,15);
 
->>>>>>> e5b578e (newno)
 
     
