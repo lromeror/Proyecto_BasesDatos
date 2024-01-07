@@ -1,5 +1,6 @@
 import dash_bootstrap_components as dbc
 from dash import html, dcc, Input, Output, State, callback,dash
+import funtions as f  
 
 # Estilos externos
 external_stylesheets = [dbc.themes.BOOTSTRAP]
@@ -132,7 +133,24 @@ login_form = dbc.Container(
     fluid=True,
     className="my-5",
 )
+conexion = f.create_connection("yourminifactory.mysql.database.azure.com", "Administrador", "a5min#2023", "yourminifactory", 3306)
+q = 'SELECT * FROM yourminifactory.usuario;;'
+l_us = f.execute_read_query(conexion,q)
+user=0
 
+def getUser(username, password_):
+    for tupla in l_us:
+        id_usuario = tupla[0]
+        nombre = tupla[1]
+        apellido = tupla[2]
+        email = tupla[4]
+        password = tupla[3]
+    
+        if(email == username and  password == password_):
+            return id_usuario
+        else:
+            return 0
+      
 @callback(
     [Output('url', 'pathname'), Output('label_', 'children')],
     [Input('submit-button', 'n_clicks')],
@@ -140,10 +158,14 @@ login_form = dbc.Container(
     prevent_initial_call=True
 )
 def login(n_clicks, username, password):
-    if n_clicks and username and password:
+    user= getUser(username, password)
+    if getUser(username, password)!=0: 
+        
         return '/home', None
     elif n_clicks:
-        return dash.no_update, "There are empty fields!"
+        if getUser(username, password)==0:
+            return dash.no_update, "Incorrect username or password!"
+        return dash.no_update, "There are empty fields!"    
     return dash.no_update, None
 
 # Layout del archivo login.py
