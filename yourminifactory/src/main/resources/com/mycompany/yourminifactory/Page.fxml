@@ -20,7 +20,7 @@
    <children>
       <HBox alignment="CENTER_LEFT" layoutY="-3.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="66.0" prefWidth="1100.0" spacing="20.0" style="-fx-background-color: #eaeaea;">
          <children>
-            <ImageView fitHeight="37.0" fitWidth="224.0" onMouseClicked="#home" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="logo" fitHeight="37.0" fitWidth="224.0" onMouseClicked="#home" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../../Images/images_login/logo.png" />
                </image>
@@ -65,7 +65,7 @@
       </HBox>
       <ScrollPane layoutY="63.0" prefHeight="607.0" prefWidth="1100.0">
         <content>
-            <VBox prefHeight="605.0" prefWidth="1082.0" />
+            <VBox fx:id="contenido_page" prefHeight="605.0" prefWidth="1082.0" />
         </content>
       </ScrollPane>
    </children>
