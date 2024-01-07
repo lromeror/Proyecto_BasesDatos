@@ -274,6 +274,9 @@ INSERT INTO anadir (id_carrito, id_modelo) VALUES
     (17, 17),
     (18, 18),
     (19, 19),
+    (1,2),
+    (1,6),
+    (1,20),
     (20, 20);
 
     
