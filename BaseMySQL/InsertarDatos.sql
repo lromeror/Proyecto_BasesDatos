@@ -1,5 +1,5 @@
-use YOURMINIFACTORY;
 -- Insertar datos en la tabla tribu
+USE yourminifactory;
 INSERT INTO tribu (descripcion, name, num_pioneros) 
 VALUES 
     ('Miniatures', 'Witchsong', 6892),
@@ -253,9 +253,27 @@ INSERT INTO carro_compra (id_usuario, total, fecha_pago, descripcion) VALUES
     (18, 240.0, '2017-02-20', 'Diseños exclusivos de lámparas'),
     (19, 290.0, '2018-10-25', 'Esculturas en mármol personalizadas'),
     (20, 330.0, '2019-09-30', 'Arte digital abstracto');
+    
 
 -- Insertar datos en la tabla anadir
 INSERT INTO anadir (id_carrito, id_modelo) VALUES
+	(1,2),
+    (1,6),
+    (1,20),
+    (2,1),
+    (3,6),
+    (4,20),
+	(1,14),
+    (1,13),
+    (2,4),
+    (2,5),
+    (2,20),
+    (3,9),
+    (3,1),
+    (3,8),
+    (3,11),
+    (3,12),
+    (1,15),
     (1, 1),
     (2, 2),
     (3, 3),
@@ -275,18 +293,6 @@ INSERT INTO anadir (id_carrito, id_modelo) VALUES
     (17, 17),
     (18, 18),
     (19, 19),
-    (20, 20),
-	(1,14),
-    (1,13),
-    (2,4),
-    (2,5),
-    (2,20),
-    (3,9),
-    (3,1),
-    (3,8),
-    (3,11),
-    (3,12),
-    (1,15);
-
+    (20, 20);
 
     

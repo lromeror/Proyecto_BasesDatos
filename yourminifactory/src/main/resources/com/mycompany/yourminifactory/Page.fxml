@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
@@ -13,14 +20,14 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="671.0" prefWidth="1100.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.yourminifactory.PageController">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="671.0" prefWidth="1100.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.yourminifactory.PageController">
     <stylesheets>
         <URL value="@/styles/page.css" />
     </stylesheets>
    <children>
       <HBox alignment="CENTER_LEFT" layoutY="-3.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="66.0" prefWidth="1100.0" spacing="20.0" style="-fx-background-color: #eaeaea;">
          <children>
-            <ImageView fx:id="logo" fitHeight="37.0" fitWidth="224.0" onMouseClicked="#home" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="logo" fitHeight="37.0" fitWidth="224.0" onMouseClicked="#home" onMouseEntered="#handHome" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../../Images/images_login/logo.png" />
                </image>
@@ -28,7 +35,7 @@
                   <Insets left="10.0" />
                </HBox.margin>
             </ImageView>
-            <Label fx:id="link_tribes" onMouseClicked="#showTribesContent" text="TRIBES" textFill="#908c8c">
+            <Label fx:id="link_tribes" onMouseClicked="#showTribesContent" onMouseEntered="#hand" text="TRIBES" textFill="#908c8c">
                <HBox.margin>
                   <Insets left="20.0" />
                </HBox.margin>
@@ -36,12 +43,12 @@
                   <Font size="20.0" />
                </font>
             </Label>
-            <Label fx:id="link_tienda" onMouseClicked="#showTiendaContent" text="TIENDA" textFill="#908c8c">
+            <Label fx:id="link_tienda" onMouseClicked="#showTiendaContent" onMouseEntered="#hand1" text="TIENDA" textFill="#908c8c">
                <font>
                   <Font size="20.0" />
                </font>
             </Label>
-            <Label fx:id="link_carrito_compra" onMouseClicked="#show_carrito_compraContent" text="CARRITO_COMPRA" textFill="#908c8c">
+            <Label fx:id="link_carrito_compra" onMouseClicked="#show_carrito_compraContent" onMouseEntered="#hand2" text="CARRITO_COMPRA" textFill="#908c8c">
                <font>
                   <Font size="20.0" />
                </font>
@@ -53,7 +60,7 @@
                 <MenuItem mnemonicParsing="false" text="EXTRA" />
               </items>
             </SplitMenuButton>
-            <Label fx:id="link_user" onMouseClicked="#show_usercontent" text="USER" textFill="#908c8c">
+            <Label fx:id="link_user" onMouseClicked="#show_usercontent" onMouseEntered="#hand3" text="USER" textFill="#908c8c">
                <font>
                   <Font size="20.0" />
                </font>
