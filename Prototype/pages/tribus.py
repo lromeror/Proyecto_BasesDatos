@@ -3,6 +3,8 @@ import dash
 import dash_bootstrap_components as dbc
 from dash import html, dcc, Input, Output, State, callback,dash
 
+import funtions as f
+
 # Estilos externos
 external_stylesheets = [dbc.themes.BOOTSTRAP]
 
@@ -65,20 +67,11 @@ navbar = dbc.Navbar(
     expand="lg",  
     className="Container_header"
 )
-tribes = [
-        {'name': 'Witchsong', 'description': 'Miniatures', 'members': 6892},
-        {'name': 'Big Bad Evil Guy', 'description': 'Roleplaying Games', 'members': 2409},
-        {'name': 'Lord of the Print', 'description': 'High-Quality Prints', 'members': 2399},
-        {'name': 'The Witchguild', 'description': 'Fantasy Adventures', 'members': 2210},
-        {'name': 'Resinant Miniatures', 'description': 'Detailed Miniature Collections', 'members': 48},
-        {'name': 'Velrock Art Miniatures', 'description': 'Stylized Fantasy Figures', 'members': 175},
-        {'name': 'Lord of the Print', 'description': 'Epic Scale Miniatures', 'members': 2399},
-        {'name': 'Infinite Dimensions Games', 'description': 'Innovative Game Miniatures', 'members': 507},
-        {'name': 'Josh', 'description': 'Custom Designed Miniatures', 'members': 24},
-        {'name': 'Dark Realms Forge', 'description': 'Dark Fantasy World Creations', 'members': 121},
-        {'name': 'Little Shop of Sigil', 'description': 'Mythical Creature Sculptures', 'members': 6},
-        {'name': 'Nikita Breder', 'description': 'Historical Miniature Scenes', 'members': 26},
-    ]
+
+
+conexion = f.create_connection("yourminifactory.mysql.database.azure.com", "Administrador", "a5min#2023", "yourminifactory", 3306)
+queytribues = 'SELECT * FROM tribu;'
+l_tribus = f.execute_read_query(conexion,queytribues);
 
 
 def get_image_path(index):
@@ -86,11 +79,11 @@ def get_image_path(index):
 
 card_info = [
     {
-        "title": f"{tribe['name']} - {tribe['description']}",
-        "members": str(tribe['members']),
-        "image_src": get_image_path(index + 1),  
+        "title": f"{tribe[0]} - {tribe[1]}",
+        "members": str(tribe[2]),
+        "image_src": get_image_path(tribe[0] + 1),  
     }
-    for index, tribe in enumerate(tribes)  
+    for tribe in l_tribus  
 ]
 
 def create_tribe_card(tribe, index):
@@ -100,20 +93,20 @@ def create_tribe_card(tribe, index):
             dbc.NavLink(
                 dbc.CardBody(
                     [
-                        html.H5(f"{tribe['name']} - {tribe['description']}", className="card-title"),
-                        html.P(f"Members: {tribe['members']}", className="card-text"),
+                        html.H5(f"{tribe[0]} - {tribe[1]}", className="card-title"),
+                        html.P(f"Members: {tribe[2]}", className="card-text"),
                     ]
                 ),
                 href="/pay"
             ),
         ],
-        style={"width": "18rem"}
+        style={"width": "18rem",'heigth':'18rem'}
     )
 
 # Updated loop to use the create_tribe_card function
 card_rows = []
 current_row = []
-for index, tribe in enumerate(tribes, start=1):
+for index, tribe in enumerate(l_tribus, start=1):
     card = create_tribe_card(tribe, index)
     current_row.append(dbc.Col(card, width=3))
 
@@ -132,3 +125,4 @@ layout = html.Div([
     navbar,
     card_deck
 ], style={'margin': '0', 'padding': '0'})
+

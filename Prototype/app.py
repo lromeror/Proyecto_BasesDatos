@@ -3,6 +3,8 @@ import dash
 import dash_bootstrap_components as dbc
 from dash import Dash, dcc, html, Input, Output, callback
 from pages import home,join,login,tribus,comprar, pay,consultas, carrito_compras
+import funtions as f
+
 external_stylesheets = [dbc.themes.BOOTSTRAP]  
 
 app = Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=external_stylesheets,use_pages=True)
