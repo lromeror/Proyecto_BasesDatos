@@ -1,11 +1,13 @@
+drop database YOURMINIFACTORY;
 create database YOURMINIFACTORY;
 use YOURMINIFACTORY;
 
-create table tribu(
+CREATE TABLE tribu(
 	id_tribu int not null AUTO_INCREMENT  primary key,
-    descripcion varchar(100)  default null
+    descripcion varchar(100)  default null,
+    name varchar(50) default null,
+    num_pioneros int not null
 );
-
 CREATE TABLE Categoria (
     id_categoria int NOT NULL primary key,
     nombre varchar(255),
@@ -14,12 +16,12 @@ CREATE TABLE Categoria (
     FOREIGN KEY (id_tribu) REFERENCES Tribu(id_tribu)
 );
 
-
 create table tier(
 	id_tier int not null AUTO_INCREMENT primary key,
     nivelApoyo int default 0,
     recompensa varchar(100)
 );
+
 create table campana(
 	id_campana int not null auto_increment primary key,
     descricipcion varchar(100) default null,
@@ -39,7 +41,7 @@ CREATE TABLE pertenece (
 create table usuario(
 	id_usuario int not null primary key auto_increment,
     nombre varchar(100) not null,
-    fecha_impresion date not null,
+    fecha_nacimi date not null,
     contrasena varchar(100) not null,
     correo varchar(100) default 'none' not null,
     id_tribu int not null,
