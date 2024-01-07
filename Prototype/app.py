@@ -34,7 +34,7 @@ def display_page(pathname):
         return consultas.layout
     if pathname == '/carrito_compras':
         return carrito_compras.layout
-    if pathname == 'model':
+    if pathname == '/model':
         return model.layout
     if pathname=='/user':
         return user.layout

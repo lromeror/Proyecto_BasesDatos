@@ -1,5 +1,8 @@
 import dash
-
+import base64
+import datetime
+import io
+import os
 import dash_bootstrap_components as dbc
 from dash import html, dcc, Input, Output, State, callback,dash
 import funtions as f
@@ -90,7 +93,78 @@ page = html.Div([
     ),
     html.Div(id='output-data-upload')
 ])
-    
+page = dbc.Container([
+    dbc.Row(
+        dbc.Col(html.H1("Create a new 3D object"), width={"size": 6, "offset": 3})
+    ),
+    dbc.Row(
+        dbc.Col(
+            dcc.Upload(
+                id='upload-data',
+                children=html.Div([
+                    'Drag and drop your 3D files here or ',
+                    html.A('Select object files')
+                ]),
+                style={
+                    'width': '100%', 'height': '60px', 'lineHeight': '60px',
+                    'borderWidth': '1px', 'borderStyle': 'dashed',
+                    'borderRadius': '5px', 'textAlign': 'center', 'margin': '10px'
+                },
+                multiple=True
+            ), width=10
+        )
+    ),
+    dbc.Row(
+        dbc.Col(
+            dbc.CardGroup([
+                dbc.Label("Enter a name for your object"),
+                dbc.Input(type="text", id="input-name"),
+                dbc.Label("Enter tags"),
+                dbc.Input(type="text", id="input-tags"),
+                dbc.Label("Description"),
+                dbc.Textarea(id="textarea-description"),
+                dbc.Label("Visibility"),
+                dbc.Select(
+                    id="select-visibility",
+                    options=[
+                        {"label": "Public", "value": "public"},
+                        {"label": "Private", "value": "private"}
+                    ],
+                    value="public",
+                ),
+                # Placeholder for Advanced Settings
+            ]), width=10
+        )
+    ),
+    dbc.Row(
+        dbc.Col(
+            html.Button('Upload pictures', id='upload-pictures-button', className="btn btn-success"),
+            width={"size": 4, "offset": 4}
+        )
+    )
+], fluid=True,className="Margin")
+
+def save_file(name, content, folder="/Users/angelozurita/Repositorios_GitHub/Proyecto_BasesDatos/Prototype/assets/"):
+    """Guarda un archivo en una ruta específica del servidor."""
+    data = content.encode("utf8").split(b";base64,")[1]
+    file_path = os.path.join(folder, name)
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+    with open(file_path, "wb") as fp:
+        fp.write(base64.decodebytes(data))
+
+callback(
+    Output('output-image-upload', 'children'),
+    Input('upload-data', 'contents'),
+    State('upload-data', 'filename'),
+    prevent_initial_call=True
+)
+def update_output(list_of_contents, list_of_names):
+    if list_of_contents is not None:
+        children = []
+        for name, content in zip(list_of_names, list_of_contents):
+            save_file(name, content)
+            children.append(html.Div(f'Archivo guardado: {name}'))
+        return children
 layout = html.Div([
     navbar,
     page

@@ -69,10 +69,28 @@ navbar = dbc.Navbar(
     className="Container_header"
 )
 
+full_width_image = html.Div(
+    dbc.Container(
+        [
+            dbc.Row(
+                dbc.Col(
+                    html.Img(
+                        src="assets/img_Picture/nuevoDiagrama.jpeg",  # Reemplaza con la ruta de tu imagen
+                        style={"width": "100%", "height": "auto"}
+                    ),
+                    width=12
+                )
+            )
+        ],
+        fluid=True,  # Esto hace que el contenedor sea de ancho completo
+    ),
+    className="full-width-image-container"  # Clase opcional para aplicar estilos adicionales
+)
 
 # Agregar estilos CSS para asegurar que no haya margen o relleno afectando al navbar
 layout = html.Div([
-    navbar
+    navbar,
+    full_width_image
 ], style={'margin': '0', 'padding': '0'})
 
 
