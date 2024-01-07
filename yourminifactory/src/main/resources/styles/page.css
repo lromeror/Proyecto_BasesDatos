@@ -16,3 +16,28 @@
     -fx-border-radius: 10; /* Radio de borde */
     -fx-effect: dropshadow(gaussian, black, 5, 0, 0, 0);
 }
+.file-drop-area {
+    -fx-border-color: #000000;
+    -fx-border-width: 2px;
+    -fx-border-style: dashed;
+    -fx-background-color: #FFFFFF;
+    -fx-padding: 20px;
+}
+
+.file-drop-label {
+    -fx-text-fill: #000000;
+}
+
+.select-files-button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: #FFFFFF;
+    -fx-cursor: hand;
+}
+
+.select-files-button:hover {
+    -fx-background-color: #45A049;
+}
+.vbox_{
+    width: 400px;
+    height: 200px;
+}

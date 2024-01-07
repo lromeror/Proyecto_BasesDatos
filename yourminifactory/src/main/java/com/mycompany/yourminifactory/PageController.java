@@ -24,9 +24,13 @@ import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitMenuButton;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -38,6 +42,7 @@ import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -110,7 +115,8 @@ public class PageController implements Initializable {
     }
     @FXML
     private void showTribesContent(MouseEvent event) {
-        
+        contenido_page.getChildren().clear();
+
         List<List<String>> resultados = conexion.query(conn, "SELECT * FROM tribu");
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
@@ -146,6 +152,7 @@ public class PageController implements Initializable {
 
     @FXML
     private void showTiendaContent(MouseEvent event) {
+        
     }
 
     @FXML
@@ -187,6 +194,86 @@ public class PageController implements Initializable {
 
     @FXML
     private void modelo_option(ActionEvent event) {
+        contenido_page.getChildren().clear();
+        contenido_page.setAlignment(Pos.CENTER);
+        contenido_page.setSpacing(30);
+        
+        VBox vbox = new VBox();
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setMaxSize(800, 200);
+        vbox.getStyleClass().add("vbox_");
+        vbox.setSpacing(30);
+        
+        Label dragDropLabel = new Label("Drag and drop your 3D files here or");
+        Button selectFilesButton = new Button("Select object files");
+        selectFilesButton.getStyleClass().add("select-files-button");
+        VBox dragDropArea = new VBox(dragDropLabel, selectFilesButton);
+        dragDropArea.setAlignment(Pos.CENTER);
+        vbox.getChildren().addAll(dragDropArea);
+        vbox.getStyleClass().add("file-drop-area");
+        
+        
+        HBox hbox = new HBox();
+        
+        hbox.setAlignment(Pos.CENTER);
+        hbox.setPrefWidth(1080);
+        
+        VBox vb1 = new VBox();
+        vb1.setAlignment(Pos.CENTER);
+        vb1.setPrefWidth(400);
+        vb1.setSpacing(40);
+
+        VBox vb_nombre = new VBox();
+        vb_nombre.setSpacing(10);
+        vb_nombre.setAlignment(Pos.CENTER);
+        vb_nombre.setPrefWidth(350);
+        Label name = new Label("Escribe un nombre para su objecto");
+        TextField objectNameField = new TextField();
+        objectNameField.setMaxWidth(250);
+        objectNameField.setPromptText("NOMBRE");
+        vb_nombre.getChildren().addAll(name,objectNameField);
+
+        HBox hbox_visi_preico = new HBox();
+        hbox_visi_preico.setAlignment(Pos.CENTER);
+        hbox_visi_preico.setPrefWidth(350);
+        hbox_visi_preico.setSpacing(20);
+        
+        VBox vbox_C = new VBox();
+        vbox_C.setSpacing(10);
+        vbox_C.setAlignment(Pos.CENTER);
+        vbox_C.setMaxWidth(250);
+        Label l = new Label("Visibilidad");
+        ComboBox<String> visibilityComboBox = new ComboBox<>();
+        visibilityComboBox.getItems().addAll("Publico", "Privado");
+        visibilityComboBox.setValue("Publico");
+        vbox_C.getChildren().addAll(l,visibilityComboBox);
+        
+
+        VBox vbox_C2 = new VBox();
+        vbox_C2.setSpacing(10);
+        vbox_C2.setAlignment(Pos.CENTER);
+        Label l2 = new Label("Precio");
+        TextField precio = new TextField();
+        precio.setMaxSize(100, 50);
+        vbox_C2.getChildren().addAll(l2,precio);
+        
+        hbox_visi_preico.getChildren().addAll(vbox_C,vbox_C2);
+        vb1.getChildren().addAll(vb_nombre,hbox_visi_preico);
+        
+        
+        VBox vb2 = new VBox();
+        vb2.setAlignment(Pos.CENTER);
+        vb2.setPrefWidth(350);
+        vb2.setSpacing(20);
+        Label desc = new Label("Escriba una descripción para su objecto");
+        TextArea descriptionArea = new TextArea();
+        descriptionArea.setPromptText("DESCRIPCION");
+        vb2.getChildren().addAll(desc,descriptionArea);
+        
+        hbox.getChildren().addAll(vb1,vb2);
+        
+        // Añadiendo todos los elementos al VBox principal
+        contenido_page.getChildren().addAll(vbox,hbox);
     }
 
     @FXML
