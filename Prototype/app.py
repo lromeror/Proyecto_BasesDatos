@@ -2,7 +2,7 @@
 import dash
 import dash_bootstrap_components as dbc
 from dash import Dash, dcc, html, Input, Output, callback
-from pages import home,join,login,tribus,comprar, pay,consultas, carrito_compras
+from pages import home,join,login,tribus,comprar, pay,consultas, carrito_compras,model
 import funtions as f
 
 external_stylesheets = [dbc.themes.BOOTSTRAP]  
@@ -34,6 +34,8 @@ def display_page(pathname):
         return consultas.layout
     if pathname == '/carrito_compras':
         return carrito_compras.layout
+    if pathname == 'model':
+        return model.layout
     else:
         return home.layout
 

@@ -1,10 +1,13 @@
 import dash
-from dash import html
-import dash_bootstrap_components as dbc
 
+import dash_bootstrap_components as dbc
+from dash import html, dcc, Input, Output, State, callback,dash
+import funtions as f
 
 # Estilos externos
 external_stylesheets = [dbc.themes.BOOTSTRAP]
+
+# Menú desplegable
 dropdown = dbc.DropdownMenu(
     children=[
         dbc.DropdownMenuItem("OBJETO 3D", href="/model"),
@@ -17,6 +20,7 @@ dropdown = dbc.DropdownMenu(
     label="UPLOAD",
     className="dropdown"
 )
+
 navbar = dbc.Navbar(
     dbc.Container(
         [
@@ -34,7 +38,6 @@ navbar = dbc.Navbar(
                         dbc.NavItem(dbc.NavLink("TIENDA", href="/comprar")),
                         dbc.NavItem(dbc.NavLink("CONSULTAS", href="/consultas")),
                         dbc.NavItem(dbc.NavLink("CARRITO COMPRAS", href="/carrito_compras")),
-
                     ],
                     className="me-auto",
                     navbar=True
@@ -62,57 +65,32 @@ navbar = dbc.Navbar(
     expand="lg",  
     className="Container_header"
 )
-def get_image_path(index):
-    return f"assets/Images_compras/im_{index}.jpg"
 
-models = [
-    {'name': 'Modelo 1', 'price': 10.00},
-    {'name': 'Modelo 2', 'price': 15.00},
-    {'name': 'Modelo 3', 'price': 20.00},
-    {'name': 'Modelo 4', 'price': 25.00},
-    {'name': 'Modelo 5', 'price': 30.00},
-    {'name': 'Modelo 6', 'price': 20.00},
-    {'name': 'Modelo 7', 'price': 29.00},
-    {'name': 'Modelo 8', 'price': 90.00},
+page = html.Div([
+    dcc.Location(id='url', refresh=False),
+    html.Button('Upload Files', id='upload-button'),
+    dcc.Upload(
+        id='upload-data',
+        children=html.Div([
+            'Drag and Drop or ',
+            html.A('Select Files')
+        ]),
+        style={
+            'width': '100%',
+            'height': '60px',
+            'lineHeight': '60px',
+            'borderWidth': '2px',
+            'borderStyle': 'dashed',
+            'borderRadius': '5px',
+            'textAlign': 'center',
+            'margin': '10px'
+        },
+        className='upload-dropzone'
+    ),
+    html.Div(id='output-data-upload')
+])
     
-]
-
-
-def create_model_card(model, index):
-    image_src = get_image_path(index+1)
-    return dbc.Card(
-        [
-            dbc.CardImg(src=image_src, top=True),
-            dbc.Button(
-                dbc.CardBody(
-                    [
-                        html.H5(model['name'], className="card-title"),
-                        html.P(f"Price: ${model['price']}", className="card-text"),
-                    ]
-                ),
-                id=f"buy-{index}",
-                color="primary",
-                className="mt-auto"
-            ),
-        ],
-        style={"width": "18rem"}
-    )
-
-card_rows = []
-current_row = []
-for index, model in enumerate(models, start=1):
-    card = create_model_card(model, index)
-    current_row.append(dbc.Col(card, width=3))
-    if index % 4 == 0 and index:
-        card_rows.append(dbc.Row(current_row, className="mb-4"))
-        current_row = []
-
-if current_row:
-    card_rows.append(dbc.Row(current_row, className="mb-4"))
-
-card_deck = html.Div(card_rows)
-
 layout = html.Div([
     navbar,
-    card_deck
+    page
 ], style={'margin': '0', 'padding': '0'})

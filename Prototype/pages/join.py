@@ -10,7 +10,7 @@ external_stylesheets = [dbc.themes.BOOTSTRAP]
 # Menú desplegable
 dropdown = dbc.DropdownMenu(
     children=[
-        dbc.DropdownMenuItem("OBJETO 3D", href="#"),
+        dbc.DropdownMenuItem("OBJETO 3D", href="/model"),
         dbc.DropdownMenuItem("CUSTOMIZER", href="#"),
         dbc.DropdownMenuItem("IMAGEN", href="#"),
         dbc.DropdownMenuItem("ARTÍCULO", href="#"),

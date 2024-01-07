@@ -11,7 +11,7 @@ external_stylesheets = [dbc.themes.BOOTSTRAP]
 # Menú desplegable
 dropdown = dbc.DropdownMenu(
     children=[
-        dbc.DropdownMenuItem("OBJETO 3D", href="#"),
+        dbc.DropdownMenuItem("OBJETO 3D", href="/model"),
         dbc.DropdownMenuItem("CUSTOMIZER", href="#"),
         dbc.DropdownMenuItem("IMAGEN", href="#"),
         dbc.DropdownMenuItem("ARTÍCULO", href="#"),
@@ -73,18 +73,8 @@ conexion = f.create_connection("yourminifactory.mysql.database.azure.com", "Admi
 queytribues = 'SELECT * FROM tribu;'
 l_tribus = f.execute_read_query(conexion,queytribues);
 
-
 def get_image_path(index):
     return f"assets/Images_tribes/{index}.png"
-
-card_info = [
-    {
-        "title": f"{tribe[0]} - {tribe[1]}",
-        "members": str(tribe[2]),
-        "image_src": get_image_path(tribe[0] + 1),  
-    }
-    for tribe in l_tribus  
-]
 
 def create_tribe_card(tribe, index):
     return dbc.Card(
@@ -93,14 +83,14 @@ def create_tribe_card(tribe, index):
             dbc.NavLink(
                 dbc.CardBody(
                     [
-                        html.H5(f"{tribe[0]} - {tribe[1]}", className="card-title"),
-                        html.P(f"Members: {tribe[2]}", className="card-text"),
+                        html.H5(f"{tribe[0]} - {tribe[2]}", className="card-title"),
+                        html.P(f"Members: {tribe[3]}", className="card-text"),
                     ]
                 ),
                 href="/pay"
             ),
         ],
-        style={"width": "18rem",'heigth':'18rem'}
+        style={"width": "18rem",'heigth':'18rem','margin' : '10'}
     )
 
 # Updated loop to use the create_tribe_card function
@@ -117,7 +107,7 @@ for index, tribe in enumerate(l_tribus, start=1):
 if current_row:
     card_rows.append(dbc.Row(current_row, className="mb-4"))
 
-card_deck = html.Div(card_rows)
+card_deck = html.Div(card_rows,className="Margin-left")
 
         
     
