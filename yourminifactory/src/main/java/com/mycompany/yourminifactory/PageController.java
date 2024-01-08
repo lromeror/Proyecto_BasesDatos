@@ -5,12 +5,9 @@
 package com.mycompany.yourminifactory;
 
 import Clases.Conexion;
-<<<<<<< HEAD
 import Clases.Model;
-=======
 import Clases.Libreria;
 import java.io.File;
->>>>>>> 78092f5 (Ya se puede subir modelos)
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
