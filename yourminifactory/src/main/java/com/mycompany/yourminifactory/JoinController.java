@@ -133,20 +133,4 @@ public class JoinController implements Initializable {
         }
         return false;
     }
-
-    public static String convertirFormato(String fechaOriginal) {
-        String fechaFormateada = "";
-        SimpleDateFormat formatoOriginal = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
-        SimpleDateFormat formatoDeseado = new SimpleDateFormat("yyyy-MM-dd");
-
-        try {
-            Date fecha = formatoOriginal.parse(fechaOriginal);
-            fechaFormateada = formatoDeseado.format(fecha);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        return fechaFormateada;
-    }
-
 }

@@ -6,14 +6,18 @@ package com.mycompany.yourminifactory;
 
 import Clases.Conexion;
 import Clases.Model;
+import Clases.Libreria;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -27,7 +31,10 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -38,19 +45,15 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 /**
@@ -72,16 +75,20 @@ public class PageController implements Initializable {
     public MenuItem modelo_option;
     @FXML
     public Label link_user;
-
+    
     public Conexion conexion ;
     public Connection conn;
+
     @FXML
     private ImageView logo;
     @FXML
     private VBox contenido_page;
-    
+
+    private String nameUser;
     public int id_user;
-    
+    public boolean subido = false;
+    public String url_model;
+
     /**
      * Initializes the controller class.
      */
@@ -89,12 +96,27 @@ public class PageController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         conexion = new Conexion();
         conn = conexion.connect();
-        
-    }    
+        ImageView img = new ImageView(new Image("/Images/img_Picture/NuevoDiagramaLogico.jpeg"));
+        img.setFitHeight(600);
+        img.setFitWidth(1000);
+        contenido_page.getChildren().add(img);
+
+    }
+
+    public void setId_User(int id, String nameUser) {
+        this.id_user = id;
+        this.nameUser = nameUser;
+    }
 
     @FXML
     private void home(MouseEvent event) {
-        
+
+        contenido_page.getChildren().clear();
+        ImageView img = new ImageView(new Image("/Images/img_Picture/NuevoDiagramaLogico.jpeg"));
+        img.setFitHeight(600);
+        img.setFitWidth(1000);
+        contenido_page.getChildren().add(img);
+
     }
     
     private VBox createTribeCard(List<String> tribe, int index) {
@@ -106,16 +128,15 @@ public class PageController implements Initializable {
         Text membersLabel = new Text("Members: " + tribe.get(3));
         nameLabel.setFont(Font.font("Arial", 16));
         membersLabel.setFont(Font.font("Arial", 16));
-        
+
         VBox card = new VBox(10, imageView, nameLabel, membersLabel);
-        
+
         card.setPrefSize(225, 231);
         card.setPadding(new Insets(10));
         card.getStyleClass().add("card");
 
         return card;
     }
-    
     private VBox createModelCard(List<String> model, int index){
         // int idModel, String description, double price, String title, LocalDate publicationDate, int libraryId
         // [1, Modelo 3D Impresionante, 50, Estatua de Dragón, dragon.stl, 2023-03-01, 1, 1]
@@ -195,13 +216,14 @@ public class PageController implements Initializable {
 
     }
     
+
     private String getImagePath(int index) {
         return "/Images/Images_tribes/" + index + ".png";
     }    
     @FXML
     private void showTribesContent(MouseEvent event) {
+        this.contenido_page.getChildren().clear();
         contenido_page.getChildren().clear();
-
         List<List<String>> resultados = conexion.query(conn, "SELECT * FROM tribu");
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
@@ -229,6 +251,7 @@ public class PageController implements Initializable {
             // Agregar la tarjeta al GridPane
             grid.add(card, i % 4, i / 4); // Esto organizará las tarjetas en filas de 4
         }
+
         Platform.runLater(()->{
             contenido_page.getChildren().clear();
             contenido_page.getChildren().add(grid);  
@@ -309,6 +332,55 @@ public class PageController implements Initializable {
         });
     }
 
+    
+//    private void uploadFile(){   
+//        FileChooser fileChooser = new FileChooser();
+//        fileChooser.setTitle("CHOOSE 3D MODEL");
+//        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("3D Files", "*.stl", "*.obj", "*.fbx", "*.3ds","*.png","*.jpg","*.jpeg"));
+//        File selectedFile = fileChooser.showOpenDialog(null);
+//        
+//        if (selectedFile != null) {
+//            String originalFileName = selectedFile.getName();
+//            Path sourcePath = selectedFile.toPath();
+//            Path targetPath = Paths.get("src/main/resources/Images/Modelos/" + originalFileName);
+//            
+//            try {
+//                Files.createDirectories(targetPath.getParent());
+//                Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+//                
+//            } catch (IOException e) {
+//                Alert alert = new Alert(Alert.AlertType.INFORMATION,"PROBLEMAS AL CARGAR ARCHIVOS");
+//                alert.setTitle("CARGAR ARCHIVO");
+//                alert.setHeaderText("INFORMACIÓN");
+//                ButtonType okButton = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+//                alert.getButtonTypes().setAll(okButton);
+//                alert.showAndWait();
+//            }
+//        }
+//    }
+    public VBox createUploadedVBox(String fileName) {
+        ImageView imageView = new ImageView(new Image("/Images/img_Picture/archivo.png"));
+        imageView.setFitWidth(100); // Ajusta el ancho al deseado
+        imageView.setFitHeight(100); // Ajusta la altura al deseado
+        imageView.setPreserveRatio(true);
+
+        Text fileNameText = new Text(fileName);
+
+        VBox vbox = new VBox(10); // Espaciado de 10px entre elementos
+        vbox.getChildren().addAll(imageView, fileNameText);
+        return vbox;
+    }
+    
+    public static int countFilesInDirectory(String directoryPath) {
+        File directory = new File(directoryPath);
+        File[] files = directory.listFiles();
+        if (files != null) {
+            return files.length;
+        } else {
+            return -1;
+        }
+    }
+    
     @FXML
     private void modelo_option(ActionEvent event) {
         contenido_page.getChildren().clear();
@@ -329,7 +401,68 @@ public class PageController implements Initializable {
         vbox.getChildren().addAll(dragDropArea);
         vbox.getStyleClass().add("file-drop-area");
         
-        
+        selectFilesButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler(){
+            @Override
+            public void handle(Event event) {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("CHOOSE 3D MODEL");
+                fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("3D Files", "*.stl", "*.obj", "*.fbx", "*.3ds","*.png","*.jpg","*.jpeg"));
+                File selectedFile = fileChooser.showOpenDialog(null);
+                if (selectedFile != null) {
+                    String originalFileName = selectedFile.getName();
+                    Path sourcePath = selectedFile.toPath();
+                    int n_files = countFilesInDirectory("src/main/resources/Images/Modelos/");
+                    Path targetPath = Paths.get("src/main/resources/Images/Modelos/" + n_files+originalFileName);
+                    try {
+                        Files.createDirectories(targetPath.getParent());
+                        Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+                        vbox.getChildren().clear();
+                        VBox createUploadedVBox = createUploadedVBox(originalFileName);      
+                        vbox.getChildren().add(createUploadedVBox);
+                        subido = true;
+                        url_model = "/Images/Modelos/" +n_files+ originalFileName;
+                    } catch (IOException e) {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION,"PROBLEMAS AL CARGAR ARCHIVOS");
+                        alert.setTitle("CARGAR ARCHIVO");
+                        alert.setHeaderText("INFORMACIÓN");
+                        ButtonType okButton = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+                        alert.getButtonTypes().setAll(okButton);
+                        alert.showAndWait();
+                    }
+                }
+            }
+        });
+        dragDropArea.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler(){
+            @Override
+            public void handle(Event event) {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("CHOOSE 3D MODEL");
+                fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("3D Files", "*.stl", "*.obj", "*.fbx", "*.3ds","*.png","*.jpg","*.jpeg"));
+                File selectedFile = fileChooser.showOpenDialog(null);
+                if (selectedFile != null) {
+                    String originalFileName = selectedFile.getName();
+                    Path sourcePath = selectedFile.toPath();
+                    int n_files = countFilesInDirectory("src/main/resources/Images/Modelos/");
+                    Path targetPath = Paths.get("src/main/resources/Images/Modelos/" +n_files+ originalFileName);
+                    try {
+                        Files.createDirectories(targetPath.getParent());
+                        Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+                        vbox.getChildren().clear();
+                        VBox createUploadedVBox = createUploadedVBox(originalFileName);      
+                        vbox.getChildren().add(createUploadedVBox);
+                        subido = true;
+                        url_model = "/Images/Modelos/" +n_files+ originalFileName;
+                    } catch (IOException e) {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION,"PROBLEMAS AL CARGAR ARCHIVOS");
+                        alert.setTitle("CARGAR ARCHIVO");
+                        alert.setHeaderText("INFORMACIÓN");
+                        ButtonType okButton = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+                        alert.getButtonTypes().setAll(okButton);
+                        alert.showAndWait();
+                    }
+                }
+            }
+        });
         HBox hbox = new HBox();
         
         hbox.setAlignment(Pos.CENTER);
@@ -375,9 +508,30 @@ public class PageController implements Initializable {
         vbox_C2.getChildren().addAll(l2,precio);
         
         hbox_visi_preico.getChildren().addAll(vbox_C,vbox_C2);
-        vb1.getChildren().addAll(vb_nombre,hbox_visi_preico);
+
         
+        VBox libreria = new VBox();
+        libreria.setSpacing(10);
+        libreria.setAlignment(Pos.CENTER);
+        String sql = "SELECT * FROM libreria WHERE id_usuario = "+id_user;
+        List<List<String>> l_librerias  = conexion.query(conn, sql);
+        Label ll = new Label("Libreria");
+        ComboBox<Libreria> LibreriaComboBox = new ComboBox<>();
         
+        for(List<String> lista : l_librerias){
+            String palabra = lista.get(1);
+            int id = Integer.parseInt(lista.get(0));
+            Libreria libre = new Libreria(id,palabra);
+            LibreriaComboBox.getItems().add(libre);
+        }
+        
+        libreria.getChildren().addAll(ll,LibreriaComboBox);
+        String palabra = l_librerias.get(0).get(1);
+        int id = Integer.parseInt(l_librerias.get(0).get(0));
+        Libreria libre2 = new Libreria(id,palabra);
+        LibreriaComboBox.setValue(libre2);
+        vb1.getChildren().addAll(vb_nombre,hbox_visi_preico,libreria);
+       
         VBox vb2 = new VBox();
         vb2.setAlignment(Pos.CENTER);
         vb2.setPrefWidth(350);
@@ -389,12 +543,190 @@ public class PageController implements Initializable {
         
         hbox.getChildren().addAll(vb1,vb2);
         
+        Button btn_modelo = new Button("NUEVO MODELO");
+        btn_modelo.getStyleClass().add("select-files-button");
+        btn_modelo.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler(){
+            @Override
+            public void handle(Event event) {
+                String name = objectNameField.getText();
+                String visibilidad = visibilityComboBox.getValue();
+                if(visibilidad=="Publico"){
+                    visibilidad="1";
+                }
+                else{
+                    visibilidad="0";
+                }
+                String precio_s = precio.getText();
+                String descripcion = descriptionArea.getText();
+                String libreria_v = LibreriaComboBox.getValue().getId_libreria()+"";
+                Boolean available = false;
+                if(name!=null && visibilidad!=null && precio_s !=null && descripcion !=null && libreria_v!=null){
+                    if(!name.isEmpty() && !visibilidad.isEmpty() && !precio_s.isEmpty() && !descripcion.isEmpty()){
+                        available = true;
+                    }
+                }
+                if(available){
+                    conexion.insertarModelo(conn,descripcion,precio_s,name,url_model,libreria_v,visibilidad);
+                    url_model="";
+                    // aqui debo ir a home 
+                    contenido_page.getChildren().clear();
+                }
+                else{
+                     Alert alert = new Alert(Alert.AlertType.INFORMATION,"HAY CAMPOS ERRONEOS O VACIOS");
+                     alert.setTitle("CAMPOS ERRONES O VACIOS");
+                     alert.setHeaderText("INFORMACIÓN");
+                     ButtonType okButton = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+                     alert.getButtonTypes().setAll(okButton);
+                     alert.showAndWait();    
+                }    
+            }
+        });
         // Añadiendo todos los elementos al VBox principal
-        contenido_page.getChildren().addAll(vbox,hbox);
+        contenido_page.getChildren().addAll(vbox,hbox,btn_modelo);
+        
     }
 
     @FXML
     private void show_usercontent(MouseEvent event) {
+        this.contenido_page.getChildren().clear();
+        this.contenido_page.setAlignment(Pos.TOP_CENTER);
+        ImageView photo = new ImageView(new Image("Images/img_Picture/foto.png"));
+        photo.setFitWidth(1074);
+        photo.setFitHeight(400);
+        //photo.setPreserveRatio(true);
+        StackPane stackPane = new StackPane(photo);
+        stackPane.setStyle(        
+                "-fx-border-color: #BCBCBC  ; "  
+                 + "-fx-border-width: 7px; " 
+                 + "-fx-border-radius: 7px; "  
+                 + "-fx-background-radius: 7px; "
+                ); 
+        Text name = new Text("\n"+"Name: " + this.nameUser + "\n");
+        name.setFont(Font.font("null", FontWeight.BOLD, 19));
+        Button bt = new Button("Modelo");
+        bt.setStyle("-fx-background-color: #66D0A8; " 
+                + "-fx-text-fill: white; " 
+                + "-fx-font-weight: bold; " 
+                + "-fx-border-color: #FFFFFF; " 
+                + "-fx-border-width: 3px; "
+                + "-fx-border-radius: 4px; " 
+                + "-fx-background-radius: 6px; "
+                + "-fx-padding: 12px;" + "-fx-font-size: 15px;");
+        Button bt2 = new Button("Company");
+        bt2.setStyle("-fx-background-color: #F36230; "
+                + "-fx-text-fill: white; " 
+                + "-fx-font-weight: bold; " 
+                + "-fx-border-color: #FFFFFF; "
+                + "-fx-border-width: 3px; " 
+                + "-fx-border-radius: 4px; " 
+                + "-fx-background-radius: 6px; " 
+                + "-fx-padding: 12px;" + "-fx-font-size: 15px;");
+        Text espacio = new Text("      ");
+        HBox buts = new HBox(bt, espacio, bt2);
+        buts.setAlignment(Pos.CENTER);
+        VBox vConten = new VBox();
+        vConten.setAlignment(Pos.CENTER);
+        bt.addEventHandler(MouseEvent.MOUSE_CLICKED, (Event t) -> {
+            vConten.getChildren().clear();
+            Text tituloList = new Text("\n" + "Bookstore List" + "\n");
+            tituloList.setFont(Font.font("null", FontWeight.BOLD, 19));
+            GridPane grid = new GridPane();
+            grid.setAlignment(Pos.CENTER);
+            grid.setVgap(35);
+            grid.setHgap(35);
+            for (int i = 0; i < findLibreria().size(); i++) {
+                VBox tribe = findLibreria().get(i);
+                grid.add(tribe, i % 4, i / 4);
+            }
+            vConten.getChildren().addAll(tituloList, grid);
+        });
+        List<List<String>> lisLib = conexion.query(conn, "select * from campana;");
+        bt2.addEventHandler(MouseEvent.MOUSE_CLICKED, (Event t) -> {
+            vConten.getChildren().clear();
+            Text tituloList = new Text("\n" + "Campaign List" + "\n");
+            tituloList.setFont(Font.font("null", FontWeight.BOLD, 19));
+            GridPane grid = new GridPane();
+            grid.setAlignment(Pos.CENTER);
+            grid.setVgap(27);
+            grid.setHgap(27);
+            for (int i = 0; i < showCampana(lisLib).size(); i++) {
+                VBox tribe = showCampana(lisLib).get(i);
+                grid.add(tribe, i % 4, i / 4);
+            }
+            vConten.getChildren().addAll(tituloList, grid);
+        });
+
+        this.contenido_page.getChildren().add(stackPane);
+        this.contenido_page.getChildren().addAll(name);
+
+        this.contenido_page.getChildren().addAll(buts, vConten);
+    }
+    private List<VBox> findLibreria() {
+        List<VBox> lisFil = new ArrayList<>();
+        List<List<String>> lisLib = conexion.query(conn, "select * from libreria;");
+        for (List<String> infoLib : lisLib) {
+            if (Integer.parseInt(infoLib.get(2)) == this.id_user) {
+                List<List<String>> lisMode = conexion.query(conn, "select * from modelo;");
+                VBox table = findModel(Integer.parseInt(infoLib.get(0)), lisMode, infoLib.get(1));
+                lisFil.add(table);
+            }
+        }
+        return lisFil;
+    }
+
+    private VBox findModel(int id_libreia, List<List<String>> listModelos, String tituloLib) {
+        VBox v1 = new VBox();
+        Text tituloL = new Text("Libreria: \n" + tituloLib);
+        tituloL.setFill(Color.WHITE);
+        tituloL.setFont(Font.font("null", FontWeight.BOLD, 12));
+        tituloL.setUnderline(true);
+        v1.getChildren().add(tituloL);
+        for (List<String> infoMode : listModelos) {
+            if (Integer.parseInt(infoMode.get(6)) == id_libreia) {
+                HBox filaInfo = new HBox();
+                Text titulo = new Text(infoMode.get(3) + ":  ");
+                Text price = new Text(infoMode.get(2) + "$");
+                filaInfo.getChildren().addAll(titulo, price);
+                v1.setStyle("-fx-background-color: #B0BEC5; "
+                        + "-fx-border-color: black; "
+                        + "-fx-border-radius: 10; "
+                        + "-fx-background-radius: 10; "
+                        + "-fx-padding: 10;");
+                v1.getChildren().add(filaInfo);
+            }
+        }
+        return v1;
+    }
+
+    private List<VBox> showCampana(List<List<String>> lisLib) {
+        List<VBox> listVbox = new ArrayList<>();
+        for (List<String> lis : lisLib) {
+            VBox v1 = new VBox();
+            Text ti = new Text(lis.get(1) + "\n");
+            ti.setFill(Color.WHITE);
+            ti.setFont(Font.font("null", FontWeight.BOLD, 12));
+            HBox contenido = new HBox();
+            VBox pio = new VBox();
+            Text tiPio = new Text("Numbers Pioners:");
+            Text cantPio = new Text(lis.get(2));
+            pio.getChildren().addAll(tiPio, cantPio);
+            VBox money = new VBox();
+            Text espacio = new Text("   ");
+            Text tiDi = new Text("Raised money:");
+            Text cantMo = new Text(lis.get(3) + " $");
+            money.getChildren().addAll(tiDi, cantMo);
+            pio.setStyle("-fx-border-color: #FFFFFF; " + "-fx-padding: 5;" + "-fx-border-radius: 6; ");
+            money.setStyle("-fx-border-color: #FFFFFF; " + "-fx-padding: 5;" + "-fx-border-radius: 6; ");
+            contenido.getChildren().addAll(pio, espacio, money);
+            v1.getChildren().addAll(ti, contenido);
+            v1.setStyle("-fx-background-color: #B0BEC5; "
+                    + "-fx-border-color: black; "
+                    + "-fx-border-radius: 10; "
+                    + "-fx-background-radius: 10; "
+                    + "-fx-padding: 10;");
+            listVbox.add(v1);
+        }
+        return listVbox;
     }
 
     @FXML
