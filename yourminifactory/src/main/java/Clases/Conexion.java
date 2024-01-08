@@ -111,9 +111,6 @@ public class Conexion {
             if (ps != null) {
                 ps.close();
             }
-            if (conn != null && !conn.isClosed()) {
-                conn.close();
-            }
         } catch (SQLException se) {
             se.printStackTrace();
         }
@@ -146,9 +143,6 @@ public class Conexion {
         try {
             if (ps != null) {
                 ps.close();
-            }
-            if (conn != null && !conn.isClosed()) {
-                conn.close();
             }
         } catch (SQLException se) {
             se.printStackTrace();
@@ -187,9 +181,6 @@ public class Conexion {
         try {
             if (ps != null) {
                 ps.close();
-            }
-            if (conn != null && !conn.isClosed()) {
-                conn.close();
             }
         } catch (SQLException se) {
             se.printStackTrace();

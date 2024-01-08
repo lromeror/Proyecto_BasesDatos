@@ -202,7 +202,6 @@ public class PageController implements Initializable {
         addButton.setOnAction(Event -> {
             conexion.insertarDatoCarComp(conn, id_user, modId); // remember, the id_user will be the same as the id_car
             System.out.println("re biennnnn");
-            this.conn =conexion.connect();
             
         });
         addButton.getStyleClass().add("add-button");
@@ -267,7 +266,7 @@ public class PageController implements Initializable {
         grid.setVgap(40);
         grid.setHgap(40);
         
-        for (int i = 0; i < resultados.size(); i++) {
+        for (int i = 0; i < 20; i++) {
             List<String> model = resultados.get(i);
             System.out.println(model);
             VBox card = createModelCardTienda(model, i + 1);
@@ -756,7 +755,7 @@ public class PageController implements Initializable {
     }
 
     private void show_carrito_compraContent_AV(ActionEvent Event) {
-List<List<String>> resultados = conexion.query(conn, "select *\n" +
+        List<List<String>> resultados = conexion.query(conn, "select *\n" +
         "from modelo \n" +
         "where modelo.id_modelo in (select modelo.id_modelo\n" +
         "from modelo join anadir on modelo.id_modelo=anadir.id_modelo join carro_compra on carro_compra.id_carrito=anadir.id_carrito\n" +
