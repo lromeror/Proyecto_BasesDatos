@@ -132,6 +132,8 @@ public class PageController implements Initializable {
         imageView.setFitHeight(150);
         
         Text nameLabel = new Text(m.getIdModel() + " - " + m.getTitle());
+        Text priceLabel = new Text("Price: " + pr);
+        priceLabel.setFont(Font.font("Arial", 16));
         nameLabel.setFont(Font.font("Arial", 16));
         Button deleteButton = new Button("Eliminar");
         deleteButton.setOnAction(Event -> {
@@ -141,7 +143,7 @@ public class PageController implements Initializable {
         });
         deleteButton.getStyleClass().add("delete-button");
         
-        VBox card = new VBox(10, imageView, nameLabel, deleteButton);
+        VBox card = new VBox(10, imageView, nameLabel,priceLabel, deleteButton);
         
         card.setPrefSize(225, 231);
         card.setPadding(new Insets(10));
@@ -159,23 +161,31 @@ public class PageController implements Initializable {
         int libId= Integer.parseInt(model.get(6));
         int vis= Integer.parseInt(model.get(7));
         String date= model.get(5);
-        
-        Model m=new Model(modId, model.get(1), pr , model.get(3), date , libId, vis);
+        Model m=null;
+        if (modId<=20){
+            m=new Model(modId, model.get(1), pr , model.get(3), date , libId, vis);
+        }
+        else{
+            m=new Model(modId, model.get(1), pr , model.get(3), date , libId, vis, model.get(4));
+        }
         
         ImageView imageView = new ImageView(new Image(m.getImage()));
         imageView.setFitWidth(200);
         imageView.setFitHeight(150);
         
         Text nameLabel = new Text(m.getIdModel() + " - " + m.getTitle());
+        Text priceLabel = new Text("Price: " + pr);
+        priceLabel.setFont(Font.font("Arial", 16));
         nameLabel.setFont(Font.font("Arial", 16));
         Button addButton  = new Button("Añadir");
         addButton.setOnAction(Event -> {
             conexion.insertarDatoCarComp(conn, id_user, modId); // remember, the id_user will be the same as the id_car
             System.out.println("re biennnnn");
+            this.conn =conexion.connect();
+            
         });
         addButton.getStyleClass().add("add-button");
-        
-        VBox card = new VBox(10, imageView, nameLabel, addButton);
+        VBox card = new VBox(10, imageView, nameLabel, priceLabel, addButton);
         
         card.setPrefSize(225, 231);
         card.setPadding(new Insets(10));
@@ -227,7 +237,7 @@ public class PageController implements Initializable {
 
     @FXML
     private void showTiendaContent(MouseEvent event) {
-         List<List<String>> resultados = conexion.query(conn, "SELECT * FROM yourminifactory.modelo;");
+         List<List<String>> resultados = conexion.query(conn, "SELECT * FROM yourminifactory.modelo where visibilidad=1;");
             
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
@@ -259,9 +269,10 @@ public class PageController implements Initializable {
             contenido_page.getChildren().add(grid);  
         });
     }
-
+    
     @FXML
     private void show_carrito_compraContent(MouseEvent event) {
+        
         List<List<String>> resultados = conexion.query(conn, "select *\n" +
         "from modelo \n" +
         "where modelo.id_modelo in (select modelo.id_modelo\n" +

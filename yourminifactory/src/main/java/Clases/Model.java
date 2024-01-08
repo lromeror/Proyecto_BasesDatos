@@ -28,7 +28,20 @@ public class Model {
         this.publicationDate = publicationDate;
         this.libraryId = libraryId;
         this.visibility=visibility;
-        this.image= "Images/Images_compras/im_"+idModel+".jpg";
+        if(idModel<=20){
+            this.image= "Images/Images_compras/im_"+idModel+".jpg";
+        }
+    }
+    
+    public Model(int idModel, String description, double price, String title, String publicationDate, int libraryId, int visibility, String img){
+        this.idModel = idModel;
+        this.description = description;
+        this.price = price;
+        this.title = title;
+        this.publicationDate = publicationDate;
+        this.libraryId = libraryId;
+        this.visibility=visibility;
+        this.image= img;
     }
     
     public int getIdModel() {
