@@ -5,9 +5,11 @@
 package com.mycompany.yourminifactory;
 
 import Clases.Conexion;
+import Clases.Model;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -91,6 +93,7 @@ public class PageController implements Initializable {
     @FXML
     private void home(MouseEvent event) {
     }
+    
     private VBox createTribeCard(List<String> tribe, int index) {
         ImageView imageView = new ImageView(new Image(getImagePath(index)));
         imageView.setFitWidth(200);
@@ -110,9 +113,45 @@ public class PageController implements Initializable {
         return card;
     }
     
+    private VBox createModelCard(List<String> model, int index){
+        // int idModel, String description, double price, String title, LocalDate publicationDate, int libraryId
+        // [1, Modelo 3D Impresionante, 50, Estatua de Dragón, dragon.stl, 2023-03-01, 1, 1]
+        int modId= Integer.parseInt(model.get(0));
+        double pr= Double.parseDouble(model.get(2));
+        int libId= Integer.parseInt(model.get(6));
+        int vis= Integer.parseInt(model.get(7));
+        String date= model.get(5);
+        
+        Model m=new Model(modId, model.get(1), pr , model.get(3), date , libId, vis);
+        
+        ImageView imageView = new ImageView(new Image(m.getImage()));
+        imageView.setFitWidth(200);
+        imageView.setFitHeight(150);
+        
+        Text nameLabel = new Text(m.getIdModel() + " - " + m.getTitle());
+        nameLabel.setFont(Font.font("Arial", 16));
+        Button deleteButton = new Button("Eliminar");
+        deleteButton.setOnAction(event -> {
+            // Logic to delete the model goes here.
+            // For example, you might call a method that removes the model from the database
+            // and then removes the card from the UI.
+            // This is a hypothetical method call.
+        });
+        deleteButton.getStyleClass().add("delete-button");
+        
+        VBox card = new VBox(10, imageView, nameLabel, deleteButton);
+        
+        card.setPrefSize(225, 231);
+        card.setPadding(new Insets(10));
+        card.getStyleClass().add("card");
+
+        return card;
+
+    }
+    
     private String getImagePath(int index) {
         return "/Images/Images_tribes/" + index + ".png";
-    }
+    }    
     @FXML
     private void showTribesContent(MouseEvent event) {
         contenido_page.getChildren().clear();
@@ -157,39 +196,40 @@ public class PageController implements Initializable {
 
     @FXML
     private void show_carrito_compraContent(MouseEvent event) {
-//        List<List<String>> resultados = conexion.query(conn, "select distinct modelo.id_modelo, modelo.precio, carro_compra.id_usuario\n" +
-//"from modelo join anadir on modelo.id_modelo=anadir.id_modelo join carro_compra on carro_compra.id_carrito=anadir.id_carrito\n" +
-//"where carro_compra.id_usuario="+this.id_user);
-//        
-//        GridPane grid = new GridPane();
-//        grid.setAlignment(Pos.CENTER);
-//        grid.setVgap(40);
-//        grid.setHgap(40);
-//        
-//        for (int i = 0; i < resultados.size(); i++) {
-//            List<String> tribe = resultados.get(i);
-//            VBox card = createTribeCard(tribe, i + 1);
-//            card.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler() {
-//                @Override
-//                public void handle(Event event) {
-//                    try {
-//                        Parent root = FXMLLoader.load(getClass().getResource("home.fxml"));
-//                        Scene scene = new Scene(root);
-//                        Stage stage = (Stage) contenido_page.getScene().getWindow();
-//                        stage.setScene(scene);
-//                    } catch (IOException ex) {
-//                        ex.printStackTrace();
-//                    }
-//                }
-//            });
-//
-//            // Agregar la tarjeta al GridPane
-//            grid.add(card, i % 4, i / 4); // Esto organizará las tarjetas en filas de 4
-//        }
-//        Platform.runLater(()->{
-//            contenido_page.getChildren().clear();
-//            contenido_page.getChildren().add(grid);  
-//        });
+        List<List<String>> resultados = conexion.query(conn, "select *\n" +
+        "from modelo \n" +
+        "where modelo.id_modelo in (select modelo.id_modelo\n" +
+        "from modelo join anadir on modelo.id_modelo=anadir.id_modelo join carro_compra on carro_compra.id_carrito=anadir.id_carrito\n" +
+        "where carro_compra.id_usuario="+this.id_user+")");
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setVgap(40);
+        grid.setHgap(40);
+        
+        for (int i = 0; i < resultados.size(); i++) {
+            List<String> model = resultados.get(i);
+            System.out.println(model);
+            VBox card = createModelCard(model, i + 1);
+            card.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler() {
+                @Override
+                public void handle(Event event) {
+                    try {
+                        Parent root = FXMLLoader.load(getClass().getResource("home.fxml"));
+                        Scene scene = new Scene(root);
+                        Stage stage = (Stage) contenido_page.getScene().getWindow();
+                        stage.setScene(scene);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+
+            grid.add(card, i % 4, i / 4); // Esto organizará las tarjetas en filas de 4
+        }
+        Platform.runLater(()->{
+            contenido_page.getChildren().clear();
+            contenido_page.getChildren().add(grid);  
+        });
     }
 
     @FXML

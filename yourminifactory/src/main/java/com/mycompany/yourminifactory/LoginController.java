@@ -79,7 +79,7 @@ public class LoginController implements Initializable {
 
     private void changeInterfaz(int idUser) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("C:\\Users\\davsu\\Proyecto_BasesDatos\\yourminifactory\\src\\main\\resources\\com\\mycompany\\yourminifactory\\Page.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Page.fxml"));
             Parent root = loader.load();
 
             PageController controller = loader.getController();
@@ -135,7 +135,7 @@ public class LoginController implements Initializable {
             String mailUser = lineUser.get(4);
             String pasUser = lineUser.get(3);
             if (mailUser.equals(emil) && pass.equals(pasUser)) {
-                return Integer.parseInt(lineUser.get(1)) ;
+                return Integer.parseInt(lineUser.get(0)) ;
             }
         }
         return 0;

@@ -15,24 +15,21 @@ public class Model {
     private String description;
     private double price;
     private String title;
-    private String modelFileName; // do not matter
-    private LocalDate publicationDate; // Assuming a date without time information
+    private String publicationDate; // Assuming a date without time information
     private int libraryId; // this connect it with the user
-    private boolean visibility; 
+    private int visibility; 
     private String image;
 
-    public Model(int idModel, String description, double price, String title, LocalDate publicationDate, int libraryId) {
+    public Model(int idModel, String description, double price, String title, String publicationDate, int libraryId, int visibility) {
         this.idModel = idModel;
         this.description = description;
         this.price = price;
         this.title = title;
         this.publicationDate = publicationDate;
         this.libraryId = libraryId;
-        
-        this.visibility=true;
-        this.image= "im_"+idModel+".jpg";
+        this.visibility=visibility;
+        this.image= "Images/Images_compras/im_"+idModel+".jpg";
     }
-    
     
     public int getIdModel() {
         return idModel;
@@ -66,19 +63,11 @@ public class Model {
         this.title = title;
     }
 
-    public String getModelFileName() {
-        return modelFileName;
-    }
-
-    public void setModelFileName(String modelFileName) {
-        this.modelFileName = modelFileName;
-    }
-
-    public LocalDate getPublicationDate() {
+    public String getPublicationDate() {
         return publicationDate;
     }
 
-    public void setPublicationDate(LocalDate publicationDate) {
+    public void setPublicationDate(String publicationDate) {
         this.publicationDate = publicationDate;
     }
 
@@ -90,11 +79,11 @@ public class Model {
         this.libraryId = libraryId;
     }
 
-    public boolean isVisibility() {
+    public int isVisibility() {
         return visibility;
     }
 
-    public void setVisibility(boolean visibility) {
+    public void setVisibility(int visibility) {
         this.visibility = visibility;
     }
 
