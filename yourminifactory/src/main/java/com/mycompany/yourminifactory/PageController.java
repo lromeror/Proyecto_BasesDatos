@@ -24,6 +24,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -35,6 +36,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -92,6 +94,7 @@ public class PageController implements Initializable {
 
     @FXML
     private void home(MouseEvent event) {
+        
     }
     
     private VBox createTribeCard(List<String> tribe, int index) {
@@ -131,15 +134,48 @@ public class PageController implements Initializable {
         Text nameLabel = new Text(m.getIdModel() + " - " + m.getTitle());
         nameLabel.setFont(Font.font("Arial", 16));
         Button deleteButton = new Button("Eliminar");
-        deleteButton.setOnAction(event -> {
-            // Logic to delete the model goes here.
-            // For example, you might call a method that removes the model from the database
-            // and then removes the card from the UI.
-            // This is a hypothetical method call.
+        deleteButton.setOnAction(Event -> {
+            System.out.println(conexion.deleteRecordAnadir(id_user, modId));
+            this.show_carrito_compraContent_AV(Event);
+            System.out.println("re biennnnn");
         });
         deleteButton.getStyleClass().add("delete-button");
         
         VBox card = new VBox(10, imageView, nameLabel, deleteButton);
+        
+        card.setPrefSize(225, 231);
+        card.setPadding(new Insets(10));
+        card.getStyleClass().add("card");
+
+        return card;
+
+    }
+    
+    private VBox createModelCardTienda(List<String> model, int index){
+        // int idModel, String description, double price, String title, LocalDate publicationDate, int libraryId
+        // [1, Modelo 3D Impresionante, 50, Estatua de Dragón, dragon.stl, 2023-03-01, 1, 1]
+        int modId= Integer.parseInt(model.get(0));
+        double pr= Double.parseDouble(model.get(2));
+        int libId= Integer.parseInt(model.get(6));
+        int vis= Integer.parseInt(model.get(7));
+        String date= model.get(5);
+        
+        Model m=new Model(modId, model.get(1), pr , model.get(3), date , libId, vis);
+        
+        ImageView imageView = new ImageView(new Image(m.getImage()));
+        imageView.setFitWidth(200);
+        imageView.setFitHeight(150);
+        
+        Text nameLabel = new Text(m.getIdModel() + " - " + m.getTitle());
+        nameLabel.setFont(Font.font("Arial", 16));
+        Button addButton  = new Button("Añadir");
+        addButton.setOnAction(Event -> {
+            conexion.insertarDatoCarComp(conn, id_user, modId); // remember, the id_user will be the same as the id_car
+            System.out.println("re biennnnn");
+        });
+        addButton.getStyleClass().add("add-button");
+        
+        VBox card = new VBox(10, imageView, nameLabel, addButton);
         
         card.setPrefSize(225, 231);
         card.setPadding(new Insets(10));
@@ -191,7 +227,37 @@ public class PageController implements Initializable {
 
     @FXML
     private void showTiendaContent(MouseEvent event) {
+         List<List<String>> resultados = conexion.query(conn, "SELECT * FROM yourminifactory.modelo;");
+            
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setVgap(40);
+        grid.setHgap(40);
         
+        for (int i = 0; i < resultados.size(); i++) {
+            List<String> model = resultados.get(i);
+            System.out.println(model);
+            VBox card = createModelCardTienda(model, i + 1);
+            card.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler() {
+                @Override
+                public void handle(Event event) {
+                    try {
+                        Parent root = FXMLLoader.load(getClass().getResource("home.fxml"));
+                        Scene scene = new Scene(root);
+                        Stage stage = (Stage) contenido_page.getScene().getWindow();
+                        stage.setScene(scene);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+
+            grid.add(card, i % 4, i / 4); // Esto organizará las tarjetas en filas de 4
+        }
+        Platform.runLater(()->{
+            contenido_page.getChildren().clear();
+            contenido_page.getChildren().add(grid);  
+        });
     }
 
     @FXML
@@ -345,5 +411,41 @@ public class PageController implements Initializable {
     private void hand3(MouseEvent event) {
         this.link_user.setCursor(Cursor.HAND);
     }
+
+    private void show_carrito_compraContent_AV(ActionEvent Event) {
+List<List<String>> resultados = conexion.query(conn, "select *\n" +
+        "from modelo \n" +
+        "where modelo.id_modelo in (select modelo.id_modelo\n" +
+        "from modelo join anadir on modelo.id_modelo=anadir.id_modelo join carro_compra on carro_compra.id_carrito=anadir.id_carrito\n" +
+        "where carro_compra.id_usuario="+this.id_user+")");
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setVgap(40);
+        grid.setHgap(40);
+        
+        for (int i = 0; i < resultados.size(); i++) {
+            List<String> model = resultados.get(i);
+            System.out.println(model);
+            VBox card = createModelCard(model, i + 1);
+            card.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler() {
+                @Override
+                public void handle(Event event) {
+                    try {
+                        Parent root = FXMLLoader.load(getClass().getResource("home.fxml"));
+                        Scene scene = new Scene(root);
+                        Stage stage = (Stage) contenido_page.getScene().getWindow();
+                        stage.setScene(scene);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+
+            grid.add(card, i % 4, i / 4); // Esto organizará las tarjetas en filas de 4
+        }
+        Platform.runLater(()->{
+            contenido_page.getChildren().clear();
+            contenido_page.getChildren().add(grid);  
+        });    }
     
 }

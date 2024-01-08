@@ -127,5 +127,61 @@ public class Conexion {
         co.insertarDato(conn, "Pitusa2", "2020-12-01", "12345679","correo@pitusa.ec");
 
     }
+    public void insertarDatoCarComp(Connection conn, int id_car, int id_mod) {
+    PreparedStatement ps = null;
+    try {
+        String sql = "INSERT INTO anadir (id_carrito, id_modelo) VALUES (?, ?)";
+        ps = conn.prepareStatement(sql);
+        ps.setInt(1, id_car);
+        ps.setInt(2, id_mod);
+
+
+        int filasInsertadas = ps.executeUpdate();
+        if (filasInsertadas > 0) {
+            System.out.println("Inserción exitosa");
+        } else {
+            System.out.println("No se pudo insertar el dato");
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (ps != null) {
+                ps.close();
+            }
+            if (conn != null && !conn.isClosed()) {
+                conn.close();
+            }
+        } catch (SQLException se) {
+            se.printStackTrace();
+        }
+    }}
+    
+
+    public boolean deleteRecordAnadir(int idCarrito, int idModelo) {
+        // SQL DELETE statement
+        String sql = "DELETE FROM anadir WHERE id_carrito = ? AND id_modelo = ?";
+
+    // Try-with-resources to ensure that resources are closed after the program is finished
+    try (Connection conn = DriverManager.getConnection(cadena, usuario, contraseña);
+         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+        // Set the values for the placeholders
+        pstmt.setInt(1, idCarrito);
+        pstmt.setInt(2, idModelo);
+
+        // Execute the delete statement
+        int rowsAffected = pstmt.executeUpdate();
+
+        // Return true if a row was deleted
+        return rowsAffected > 0;
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    // Return false if no row was deleted or an exception occurred
+    return false;
+    }
+
 
 }
