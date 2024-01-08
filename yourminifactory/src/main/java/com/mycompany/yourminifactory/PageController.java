@@ -5,9 +5,18 @@
 package com.mycompany.yourminifactory;
 
 import Clases.Conexion;
+<<<<<<< HEAD
 import Clases.Model;
+=======
+import Clases.Libreria;
+import java.io.File;
+>>>>>>> 78092f5 (Ya se puede subir modelos)
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.List;
@@ -26,7 +35,10 @@ import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -49,6 +61,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 /**
@@ -78,8 +91,9 @@ public class PageController implements Initializable {
     @FXML
     private VBox contenido_page;
     
-    public int id_user;
-    
+    public int id_user=1;
+    public boolean subido = false;
+    public String url_model;
     /**
      * Initializes the controller class.
      */
@@ -232,6 +246,55 @@ public class PageController implements Initializable {
         });
     }
 
+    
+//    private void uploadFile(){   
+//        FileChooser fileChooser = new FileChooser();
+//        fileChooser.setTitle("CHOOSE 3D MODEL");
+//        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("3D Files", "*.stl", "*.obj", "*.fbx", "*.3ds","*.png","*.jpg","*.jpeg"));
+//        File selectedFile = fileChooser.showOpenDialog(null);
+//        
+//        if (selectedFile != null) {
+//            String originalFileName = selectedFile.getName();
+//            Path sourcePath = selectedFile.toPath();
+//            Path targetPath = Paths.get("src/main/resources/Images/Modelos/" + originalFileName);
+//            
+//            try {
+//                Files.createDirectories(targetPath.getParent());
+//                Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+//                
+//            } catch (IOException e) {
+//                Alert alert = new Alert(Alert.AlertType.INFORMATION,"PROBLEMAS AL CARGAR ARCHIVOS");
+//                alert.setTitle("CARGAR ARCHIVO");
+//                alert.setHeaderText("INFORMACIÓN");
+//                ButtonType okButton = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+//                alert.getButtonTypes().setAll(okButton);
+//                alert.showAndWait();
+//            }
+//        }
+//    }
+    public VBox createUploadedVBox(String fileName) {
+        ImageView imageView = new ImageView(new Image("/Images/img_Picture/archivo.png"));
+        imageView.setFitWidth(100); // Ajusta el ancho al deseado
+        imageView.setFitHeight(100); // Ajusta la altura al deseado
+        imageView.setPreserveRatio(true);
+
+        Text fileNameText = new Text(fileName);
+
+        VBox vbox = new VBox(10); // Espaciado de 10px entre elementos
+        vbox.getChildren().addAll(imageView, fileNameText);
+        return vbox;
+    }
+    
+    public static int countFilesInDirectory(String directoryPath) {
+        File directory = new File(directoryPath);
+        File[] files = directory.listFiles();
+        if (files != null) {
+            return files.length;
+        } else {
+            return -1;
+        }
+    }
+    
     @FXML
     private void modelo_option(ActionEvent event) {
         contenido_page.getChildren().clear();
@@ -252,7 +315,68 @@ public class PageController implements Initializable {
         vbox.getChildren().addAll(dragDropArea);
         vbox.getStyleClass().add("file-drop-area");
         
-        
+        selectFilesButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler(){
+            @Override
+            public void handle(Event event) {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("CHOOSE 3D MODEL");
+                fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("3D Files", "*.stl", "*.obj", "*.fbx", "*.3ds","*.png","*.jpg","*.jpeg"));
+                File selectedFile = fileChooser.showOpenDialog(null);
+                if (selectedFile != null) {
+                    String originalFileName = selectedFile.getName();
+                    Path sourcePath = selectedFile.toPath();
+                    int n_files = countFilesInDirectory("src/main/resources/Images/Modelos/");
+                    Path targetPath = Paths.get("src/main/resources/Images/Modelos/" + n_files+originalFileName);
+                    try {
+                        Files.createDirectories(targetPath.getParent());
+                        Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+                        vbox.getChildren().clear();
+                        VBox createUploadedVBox = createUploadedVBox(originalFileName);      
+                        vbox.getChildren().add(createUploadedVBox);
+                        subido = true;
+                        url_model = "/Images/Modelos/" +n_files+ originalFileName;
+                    } catch (IOException e) {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION,"PROBLEMAS AL CARGAR ARCHIVOS");
+                        alert.setTitle("CARGAR ARCHIVO");
+                        alert.setHeaderText("INFORMACIÓN");
+                        ButtonType okButton = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+                        alert.getButtonTypes().setAll(okButton);
+                        alert.showAndWait();
+                    }
+                }
+            }
+        });
+        dragDropArea.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler(){
+            @Override
+            public void handle(Event event) {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("CHOOSE 3D MODEL");
+                fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("3D Files", "*.stl", "*.obj", "*.fbx", "*.3ds","*.png","*.jpg","*.jpeg"));
+                File selectedFile = fileChooser.showOpenDialog(null);
+                if (selectedFile != null) {
+                    String originalFileName = selectedFile.getName();
+                    Path sourcePath = selectedFile.toPath();
+                    int n_files = countFilesInDirectory("src/main/resources/Images/Modelos/");
+                    Path targetPath = Paths.get("src/main/resources/Images/Modelos/" +n_files+ originalFileName);
+                    try {
+                        Files.createDirectories(targetPath.getParent());
+                        Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+                        vbox.getChildren().clear();
+                        VBox createUploadedVBox = createUploadedVBox(originalFileName);      
+                        vbox.getChildren().add(createUploadedVBox);
+                        subido = true;
+                        url_model = "/Images/Modelos/" +n_files+ originalFileName;
+                    } catch (IOException e) {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION,"PROBLEMAS AL CARGAR ARCHIVOS");
+                        alert.setTitle("CARGAR ARCHIVO");
+                        alert.setHeaderText("INFORMACIÓN");
+                        ButtonType okButton = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+                        alert.getButtonTypes().setAll(okButton);
+                        alert.showAndWait();
+                    }
+                }
+            }
+        });
         HBox hbox = new HBox();
         
         hbox.setAlignment(Pos.CENTER);
@@ -298,9 +422,30 @@ public class PageController implements Initializable {
         vbox_C2.getChildren().addAll(l2,precio);
         
         hbox_visi_preico.getChildren().addAll(vbox_C,vbox_C2);
-        vb1.getChildren().addAll(vb_nombre,hbox_visi_preico);
+
         
+        VBox libreria = new VBox();
+        libreria.setSpacing(10);
+        libreria.setAlignment(Pos.CENTER);
+        String sql = "SELECT * FROM libreria WHERE id_usuario = "+id_user;
+        List<List<String>> l_librerias  = conexion.query(conn, sql);
+        Label ll = new Label("Libreria");
+        ComboBox<Libreria> LibreriaComboBox = new ComboBox<>();
         
+        for(List<String> lista : l_librerias){
+            String palabra = lista.get(1);
+            int id = Integer.parseInt(lista.get(0));
+            Libreria libre = new Libreria(id,palabra);
+            LibreriaComboBox.getItems().add(libre);
+        }
+        
+        libreria.getChildren().addAll(ll,LibreriaComboBox);
+        String palabra = l_librerias.get(0).get(1);
+        int id = Integer.parseInt(l_librerias.get(0).get(0));
+        Libreria libre2 = new Libreria(id,palabra);
+        LibreriaComboBox.setValue(libre2);
+        vb1.getChildren().addAll(vb_nombre,hbox_visi_preico,libreria);
+       
         VBox vb2 = new VBox();
         vb2.setAlignment(Pos.CENTER);
         vb2.setPrefWidth(350);
@@ -312,8 +457,47 @@ public class PageController implements Initializable {
         
         hbox.getChildren().addAll(vb1,vb2);
         
+        Button btn_modelo = new Button("NUEVO MODELO");
+        btn_modelo.getStyleClass().add("select-files-button");
+        btn_modelo.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler(){
+            @Override
+            public void handle(Event event) {
+                String name = objectNameField.getText();
+                String visibilidad = visibilityComboBox.getValue();
+                if(visibilidad=="Publico"){
+                    visibilidad="1";
+                }
+                else{
+                    visibilidad="0";
+                }
+                String precio_s = precio.getText();
+                String descripcion = descriptionArea.getText();
+                String libreria_v = LibreriaComboBox.getValue().getId_libreria()+"";
+                Boolean available = false;
+                if(name!=null && visibilidad!=null && precio_s !=null && descripcion !=null && libreria_v!=null){
+                    if(!name.isEmpty() && !visibilidad.isEmpty() && !precio_s.isEmpty() && !descripcion.isEmpty()){
+                        available = true;
+                    }
+                }
+                if(available){
+                    conexion.insertarModelo(conn,descripcion,precio_s,name,url_model,libreria_v,visibilidad);
+                    url_model="";
+                    // aqui debo ir a home 
+                    contenido_page.getChildren().clear();
+                }
+                else{
+                     Alert alert = new Alert(Alert.AlertType.INFORMATION,"HAY CAMPOS ERRONEOS O VACIOS");
+                     alert.setTitle("CAMPOS ERRONES O VACIOS");
+                     alert.setHeaderText("INFORMACIÓN");
+                     ButtonType okButton = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+                     alert.getButtonTypes().setAll(okButton);
+                     alert.showAndWait();    
+                }    
+            }
+        });
         // Añadiendo todos los elementos al VBox principal
-        contenido_page.getChildren().addAll(vbox,hbox);
+        contenido_page.getChildren().addAll(vbox,hbox,btn_modelo);
+        
     }
 
     @FXML

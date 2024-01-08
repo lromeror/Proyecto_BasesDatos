@@ -110,7 +110,7 @@ public class LoginController implements Initializable {
     @FXML
     private void btnJoin(MouseEvent event) {
         try {
-           Parent root = FXMLLoader.load(getClass().getResource("join.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("join.fxml"));
         Scene scene = new Scene(root);
         Stage stage = (Stage) labelUsername.getScene().getWindow();
         stage.setScene(scene);

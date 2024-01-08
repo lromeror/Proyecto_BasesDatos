@@ -10,6 +10,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -115,8 +117,45 @@ public class Conexion {
         } catch (SQLException se) {
             se.printStackTrace();
         }
+        }  
     }
-}
+    public void insertarModelo(Connection conn, String descripcion, String precio, String titulo, String model, String libreria,String visibilidad) {
+    PreparedStatement ps = null;
+    try {
+        LocalDate date = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String fecha = date.format(formatter);
+        String sql = "INSERT INTO modelo (descripcion, precio, titulo, model,fecha_publicacion,id_libreria,visibilidad) VALUES (?, ?, ?, ?, ?, ?, ? )";
+        ps = conn.prepareStatement(sql);
+        ps.setString(1, descripcion);
+        ps.setString(2, precio);
+        ps.setString(3, titulo);
+        ps.setString(4, model);
+        ps.setString(5, fecha);
+        ps.setString(6, libreria);
+        ps.setString(7, visibilidad);
+        int filasInsertadas = ps.executeUpdate();
+        if (filasInsertadas > 0) {
+            System.out.println("Inserción exitosa");
+        } else {
+            System.out.println("No se pudo insertar el dato");
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (ps != null) {
+                ps.close();
+            }
+            if (conn != null && !conn.isClosed()) {
+                conn.close();
+            }
+        } catch (SQLException se) {
+            se.printStackTrace();
+        }
+        }
+    }
+    
 
 
     public static void main(String[] args) {
