@@ -15,15 +15,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
-<<<<<<< HEAD
 import java.util.ArrayList;
-=======
-import java.time.LocalDate;
->>>>>>> bbaf65d1f4cc83333e67da0b6de1d4b787c80167
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -36,15 +30,11 @@ import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-<<<<<<< HEAD
-import javafx.scene.control.Button;
-=======
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
->>>>>>> bbaf65d1f4cc83333e67da0b6de1d4b787c80167
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitMenuButton;
@@ -53,21 +43,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-<<<<<<< HEAD
-import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
-=======
->>>>>>> bbaf65d1f4cc83333e67da0b6de1d4b787c80167
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -95,28 +73,20 @@ public class PageController implements Initializable {
     public MenuItem modelo_option;
     @FXML
     public Label link_user;
-
-<<<<<<< HEAD
-    private Conexion conexion;
-    private Connection conn;
-=======
+    
     public Conexion conexion ;
     public Connection conn;
->>>>>>> bbaf65d1f4cc83333e67da0b6de1d4b787c80167
+
     @FXML
     private ImageView logo;
     @FXML
     private VBox contenido_page;
-<<<<<<< HEAD
-    private int id_user;
-    private String nameUser;
 
-=======
-    
-    public int id_user=1;
+    private String nameUser;
+    public int id_user;
     public boolean subido = false;
     public String url_model;
->>>>>>> bbaf65d1f4cc83333e67da0b6de1d4b787c80167
+
     /**
      * Initializes the controller class.
      */
@@ -135,11 +105,7 @@ public class PageController implements Initializable {
     @FXML
     private void home(MouseEvent event) {
     }
-<<<<<<< HEAD
-
-=======
     
->>>>>>> bbaf65d1f4cc83333e67da0b6de1d4b787c80167
     private VBox createTribeCard(List<String> tribe, int index) {
         ImageView imageView = new ImageView(new Image(getImagePath(index)));
         imageView.setFitWidth(200);
@@ -158,10 +124,6 @@ public class PageController implements Initializable {
 
         return card;
     }
-<<<<<<< HEAD
-
-=======
-    
     private VBox createModelCard(List<String> model, int index){
         // int idModel, String description, double price, String title, LocalDate publicationDate, int libraryId
         // [1, Modelo 3D Impresionante, 50, Estatua de Dragón, dragon.stl, 2023-03-01, 1, 1]
@@ -198,18 +160,14 @@ public class PageController implements Initializable {
 
     }
     
->>>>>>> bbaf65d1f4cc83333e67da0b6de1d4b787c80167
+
     private String getImagePath(int index) {
         return "/Images/Images_tribes/" + index + ".png";
     }    
     @FXML
     private void showTribesContent(MouseEvent event) {
-<<<<<<< HEAD
         this.contenido_page.getChildren().clear();
-=======
         contenido_page.getChildren().clear();
-
->>>>>>> bbaf65d1f4cc83333e67da0b6de1d4b787c80167
         List<List<String>> resultados = conexion.query(conn, "SELECT * FROM tribu");
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
@@ -237,14 +195,10 @@ public class PageController implements Initializable {
             // Agregar la tarjeta al GridPane
             grid.add(card, i % 4, i / 4); // Esto organizará las tarjetas en filas de 4
         }
-<<<<<<< HEAD
-        Platform.runLater(() -> {
-            contenido_page.getChildren().add(grid);
-=======
+
         Platform.runLater(()->{
             contenido_page.getChildren().clear();
             contenido_page.getChildren().add(grid);  
->>>>>>> bbaf65d1f4cc83333e67da0b6de1d4b787c80167
         });
     }
 
@@ -620,8 +574,6 @@ public class PageController implements Initializable {
 
         this.contenido_page.getChildren().addAll(buts, vConten);
     }
-
-<<<<<<< HEAD
     private List<VBox> findLibreria() {
         List<VBox> lisFil = new ArrayList<>();
         List<List<String>> lisLib = conexion.query(conn, "select * from libreria;");
@@ -690,7 +642,6 @@ public class PageController implements Initializable {
         return listVbox;
     }
 
-=======
     @FXML
     private void hand(MouseEvent event) {
         this.link_tribes.setCursor(Cursor.HAND);
@@ -717,5 +668,4 @@ public class PageController implements Initializable {
         this.link_user.setCursor(Cursor.HAND);
     }
     
->>>>>>> bbaf65d1f4cc83333e67da0b6de1d4b787c80167
 }
