@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -44,8 +45,14 @@ public class LoginController implements Initializable {
     private List<List<String>> listUsuarios = co.query(co.connect(), "Select * from usuario");
     @FXML
     private Label msgW;
+<<<<<<< HEAD
     private int id_User;
     private String nameUser;
+=======
+    
+    public static int id_user;
+
+>>>>>>> bbaf65d1f4cc83333e67da0b6de1d4b787c80167
 
     /**
      * Initializes the controller class.
@@ -59,12 +66,17 @@ public class LoginController implements Initializable {
     @FXML
     private void btnLogin(MouseEvent event) {
         String email = labelUsername.getText();
-        String passW = this.labelPasswor.getText();
+        String passW = labelPasswor.getText();
         System.out.println(validarRegistro(email, passW));
         if (validarRegistro(email, passW)) {
             labelUsername.setText("");
             labelPasswor.setText("");
+<<<<<<< HEAD
             changeInterfaz(this.id_User);
+=======
+            id_user= this.getUser(email, passW);
+            changeInterfaz(id_user);
+>>>>>>> bbaf65d1f4cc83333e67da0b6de1d4b787c80167
         } else {
             Alert alerta = new Alert(AlertType.INFORMATION);
             alerta.setTitle("LOGIN");
@@ -79,11 +91,28 @@ public class LoginController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("Page.fxml"));
             Parent root = loader.load();
             PageController controller = loader.getController();
+<<<<<<< HEAD
             controller.setId_User(idUser,this.nameUser);
+=======
+            controller.id_user=idUser; // se guarda el ide para luego tenerlo al iniciar sesion en page
+            //controller.setContact(c);
+>>>>>>> bbaf65d1f4cc83333e67da0b6de1d4b787c80167
             Scene scene = new Scene(root);
             Stage stage = (Stage) labelUsername.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
+//            
+//            System.out.println(id);
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ec/edu/espol/ed_proyect1/contact_List.fxml"));
+//            Parent cancelarParent = loader.load();
+//            Scene cancelarScene = new Scene(cancelarParent);
+//            Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
+//            Contact_ListController contact_ListController = loader.getController();
+//            System.out.println("NO?");
+//            contact_ListController.sesionIniciada(c,id);
+//            System.out.println("SI?");
+//            window.setScene(cancelarScene);
+//            window.show()
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -92,7 +121,7 @@ public class LoginController implements Initializable {
     @FXML
     private void btnJoin(MouseEvent event) {
         try {
-           Parent root = FXMLLoader.load(getClass().getResource("join.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("join.fxml"));
         Scene scene = new Scene(root);
         Stage stage = (Stage) labelUsername.getScene().getWindow();
         stage.setScene(scene);
@@ -112,5 +141,16 @@ public class LoginController implements Initializable {
             }
         }
         return false;
+    }
+    
+    public int getUser(String emil, String pass){
+        for (List<String> lineUser : this.listUsuarios) {
+            String mailUser = lineUser.get(4);
+            String pasUser = lineUser.get(3);
+            if (mailUser.equals(emil) && pass.equals(pasUser)) {
+                return Integer.parseInt(lineUser.get(0)) ;
+            }
+        }
+        return 0;
     }
 }
