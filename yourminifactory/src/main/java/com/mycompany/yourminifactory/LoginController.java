@@ -44,6 +44,8 @@ public class LoginController implements Initializable {
     private List<List<String>> listUsuarios = co.query(co.connect(), "Select * from usuario");
     @FXML
     private Label msgW;
+    private int id_User;
+    private String nameUser;
 
     /**
      * Initializes the controller class.
@@ -62,7 +64,7 @@ public class LoginController implements Initializable {
         if (validarRegistro(email, passW)) {
             labelUsername.setText("");
             labelPasswor.setText("");
-            changeInterfaz(0);
+            changeInterfaz(this.id_User);
         } else {
             Alert alerta = new Alert(AlertType.INFORMATION);
             alerta.setTitle("LOGIN");
@@ -76,11 +78,9 @@ public class LoginController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("Page.fxml"));
             Parent root = loader.load();
-
             PageController controller = loader.getController();
-            //controller.setContact(c);
+            controller.setId_User(idUser,this.nameUser);
             Scene scene = new Scene(root);
-            scene.getStylesheets().add("/styles/showContact.css");
             Stage stage = (Stage) labelUsername.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -106,6 +106,8 @@ public class LoginController implements Initializable {
             String mailUser = lineUser.get(4);
             String pasUser = lineUser.get(3);
             if (mailUser.equals(emil) && pass.equals(pasUser)) {
+                this.id_User=Integer.parseInt(lineUser.get(0));//guardo el ide del usuario
+                this.nameUser=lineUser.get(1);
                 return true;
             }
         }
