@@ -94,6 +94,10 @@ public class PageController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         conexion = new Conexion();
         conn = conexion.connect();
+        ImageView img = new ImageView(new Image("/Images/img_Picture/NuevoDiagramaLogico.jpeg"));
+        img.setFitHeight(600);
+        img.setFitWidth(1000);
+        contenido_page.getChildren().add(img);
 
     }
 
@@ -104,6 +108,11 @@ public class PageController implements Initializable {
 
     @FXML
     private void home(MouseEvent event) {
+        contenido_page.getChildren().clear();
+        ImageView img = new ImageView(new Image("/Images/img_Picture/NuevoDiagramaLogico.jpeg"));
+        img.setFitHeight(600);
+        img.setFitWidth(1000);
+        contenido_page.getChildren().add(img);
     }
     
     private VBox createTribeCard(List<String> tribe, int index) {
