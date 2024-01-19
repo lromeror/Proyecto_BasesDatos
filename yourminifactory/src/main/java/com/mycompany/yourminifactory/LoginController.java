@@ -69,7 +69,6 @@ public class LoginController implements Initializable {
         if (validarRegistro(email, passW)) {
             labelUsername.setText("");
             labelPasswor.setText("");
-            changeInterfaz(this.id_user);
             id_user= this.getUser(email, passW);
             changeInterfaz(id_user);
 
@@ -91,9 +90,8 @@ public class LoginController implements Initializable {
             controller.id_user=idUser; // se guarda el ide para luego tenerlo al iniciar sesion en page
             //controller.setContact(c);
             Scene scene = new Scene(root);
-            Stage stage = (Stage) labelUsername.getScene().getWindow();
+            Stage stage = (Stage) page_login.getScene().getWindow();
             stage.setScene(scene);
-            stage.show();
 //            
 //            System.out.println(id);
 //            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ec/edu/espol/ed_proyect1/contact_List.fxml"));
