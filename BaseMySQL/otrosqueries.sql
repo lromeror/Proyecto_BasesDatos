@@ -17,3 +17,15 @@ where id_modelo>= 0;
 -- 	MODIFY fecha_pago date;
 -- Alter table carro_compra
 -- 	MODIFY descripcion varchar(255);
+
+/*
+
+create table administrador(
+	id_admin int not null primary key auto_increment,
+    nombre varchar(100) not null,
+    fecha_nacimi date not null,
+    contrasena varchar(100) not null,
+    correo varchar(100) not null,
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+*/

@@ -88,6 +88,7 @@ public class PageController implements Initializable {
     public int id_user;
     public boolean subido = false;
     public String url_model;
+    private String typeUser;
 
     /**
      * Initializes the controller class.
@@ -106,6 +107,12 @@ public class PageController implements Initializable {
     public void setId_User(int id, String nameUser) {
         this.id_user = id;
         this.nameUser = nameUser;
+    }
+    
+    public void setId_User(int id, String nameUser,String type) {
+        this.id_user = id;
+        this.nameUser = nameUser;
+        this.typeUser=type;
     }
 
     @FXML
@@ -136,48 +143,6 @@ public class PageController implements Initializable {
         card.getStyleClass().add("card");
 
         return card;
-    }
-    
-    private String getImagePath(int index) {
-        return "/Images/Images_tribes/" + index + ".png";
-    }   
-    
-    @FXML
-    private void showTribesContent(MouseEvent event) {
-        contenido_page.getChildren().clear();
-        List<List<String>> resultados = conexion.query(conn, "SELECT * FROM tribu");
-        System.out.println("El tamaño de tribues "+ resultados.size());
-        GridPane grid = new GridPane();
-        grid.setAlignment(Pos.CENTER);
-        grid.setVgap(40);
-        grid.setHgap(40);
-
-        // Suponiendo que tienes los datos de las tribus en tribeData
-        for (int i = 0; i < resultados.size(); i++) {
-            List<String> tribe = resultados.get(i);
-            VBox card = createTribeCard(tribe, i + 1);
-            card.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler() {
-                @Override
-                public void handle(Event event) {
-                    try {
-                        Parent root = FXMLLoader.load(getClass().getResource("home.fxml"));
-                        Scene scene = new Scene(root);
-                        Stage stage = (Stage) contenido_page.getScene().getWindow();
-                        stage.setScene(scene);
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            });
-
-            // Agregar la tarjeta al GridPane
-            grid.add(card, i % 4, i / 4); // Esto organizará las tarjetas en filas de 4
-        }
-
-        Platform.runLater(()->{
-            contenido_page.getChildren().clear();
-            contenido_page.getChildren().add(grid);  
-        });
     }
     private VBox createModelCard(List<String> model, int index){
         // int idModel, String description, double price, String title, LocalDate publicationDate, int libraryId
@@ -257,6 +222,48 @@ public class PageController implements Initializable {
 
     }
     
+
+    private String getImagePath(int index) {
+        return "/Images/Images_tribes/" + index + ".png";
+    }    
+    @FXML
+    private void showTribesContent(MouseEvent event) {
+        this.contenido_page.getChildren().clear();
+        contenido_page.getChildren().clear();
+        List<List<String>> resultados = conexion.query(conn, "SELECT * FROM tribu");
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setVgap(40);
+        grid.setHgap(40);
+
+        // Suponiendo que tienes los datos de las tribus en tribeData
+        for (int i = 0; i < resultados.size(); i++) {
+            List<String> tribe = resultados.get(i);
+            VBox card = createTribeCard(tribe, i + 1);
+            card.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler() {
+                @Override
+                public void handle(Event event) {
+                    try {
+                        Parent root = FXMLLoader.load(getClass().getResource("home.fxml"));
+                        Scene scene = new Scene(root);
+                        Stage stage = (Stage) contenido_page.getScene().getWindow();
+                        stage.setScene(scene);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+
+            // Agregar la tarjeta al GridPane
+            grid.add(card, i % 4, i / 4); // Esto organizará las tarjetas en filas de 4
+        }
+
+        Platform.runLater(()->{
+            contenido_page.getChildren().clear();
+            contenido_page.getChildren().add(grid);  
+        });
+    }
+
     @FXML
     private void showTiendaContent(MouseEvent event) {
          List<List<String>> resultados = conexion.query(conn, "SELECT * FROM yourminifactory.modelo where visibilidad=1;");

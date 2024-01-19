@@ -14,7 +14,6 @@ import java.util.logging.Logger;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -44,13 +43,14 @@ public class LoginController implements Initializable {
 
     private Conexion co = new Conexion();
     private List<List<String>> listUsuarios = co.query(co.connect(), "Select * from usuario");
+    private List<List<String>> listAdmin = co.query(co.connect(), "Select * from administrador");
     @FXML
     private Label msgW;
     private int id_user;
     private String nameUser;
     @FXML
     private AnchorPane page_login;
-    
+    private String typeUser;
 
     /**
      * Initializes the controller class.
@@ -65,13 +65,19 @@ public class LoginController implements Initializable {
     private void btnLogin(MouseEvent event) {
         String email = labelUsername.getText();
         String passW = labelPasswor.getText();
-        System.out.println(validarRegistro(email, passW));
-        if (validarRegistro(email, passW)) {
+        if (validarRegistro(email, passW, this.listUsuarios)) {
             labelUsername.setText("");
             labelPasswor.setText("");
-            id_user= this.getUser(email, passW);
+            id_user = getUser(email, passW, this.listUsuarios);
+            typeUser="User";
             changeInterfaz(id_user);
 
+        } else if (validarRegistro(email, passW, this.listAdmin)) {
+            this.typeUser="Admin";
+            labelUsername.setText("");
+            labelPasswor.setText("");
+            id_user = getUser(email, passW, this.listAdmin);
+            changeInterfaz(id_user);
         } else {
             Alert alerta = new Alert(AlertType.INFORMATION);
             alerta.setTitle("LOGIN");
@@ -86,24 +92,12 @@ public class LoginController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("Page.fxml"));
             Parent root = loader.load();
             PageController controller = loader.getController();
-            controller.setId_User(idUser,this.nameUser);
-            controller.id_user=idUser; // se guarda el ide para luego tenerlo al iniciar sesion en page
-            //controller.setContact(c);
+            controller.setId_User(idUser, this.nameUser,this.typeUser);
+            controller.id_user = idUser; // se guarda el ide para luego tenerlo al iniciar sesion en page
             Scene scene = new Scene(root);
-            Stage stage = (Stage) page_login.getScene().getWindow();
+            Stage stage = (Stage) imageLogo.getScene().getWindow();
             stage.setScene(scene);
-//            
-//            System.out.println(id);
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ec/edu/espol/ed_proyect1/contact_List.fxml"));
-//            Parent cancelarParent = loader.load();
-//            Scene cancelarScene = new Scene(cancelarParent);
-//            Stage window = (Stage) ((Node) event.getSource()).getScene().getWindow();
-//            Contact_ListController contact_ListController = loader.getController();
-//            System.out.println("NO?");
-//            contact_ListController.sesionIniciada(c,id);
-//            System.out.println("SI?");
-//            window.setScene(cancelarScene);
-//            window.show()
+            stage.show();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -112,34 +106,34 @@ public class LoginController implements Initializable {
     @FXML
     private void btnJoin(MouseEvent event) {
         try {
-        Parent root = FXMLLoader.load(getClass().getResource("join.fxml"));
-        Scene scene = new Scene(root);
-        Stage stage = (Stage) page_login.getScene().getWindow();
-        stage.setScene(scene);
+            Parent root = FXMLLoader.load(getClass().getResource("join.fxml"));
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) page_login.getScene().getWindow();
+            stage.setScene(scene);
         } catch (IOException ex) {
             Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public boolean validarRegistro(String emil, String pass) {
-        for (List<String> lineUser : this.listUsuarios) {
+    private boolean validarRegistro(String emil, String pass, List<List<String>> listUsers) {
+        for (List<String> lineUser : listUsers) {
             String mailUser = lineUser.get(4);
             String pasUser = lineUser.get(3);
             if (mailUser.equals(emil) && pass.equals(pasUser)) {
-                this.id_user=Integer.parseInt(lineUser.get(0));//guardo el ide del usuario
-                this.nameUser=lineUser.get(1);
+                this.id_user = Integer.parseInt(lineUser.get(0));//guardo el ide del usuario
+                this.nameUser = lineUser.get(1);
                 return true;
             }
         }
         return false;
     }
-    
-    public int getUser(String emil, String pass){
-        for (List<String> lineUser : this.listUsuarios) {
+
+    private static int getUser(String emil, String pass, List<List<String>> listUsers) {
+        for (List<String> lineUser : listUsers) {
             String mailUser = lineUser.get(4);
             String pasUser = lineUser.get(3);
             if (mailUser.equals(emil) && pass.equals(pasUser)) {
-                return Integer.parseInt(lineUser.get(0)) ;
+                return Integer.parseInt(lineUser.get(0));
             }
         }
         return 0;

@@ -7,9 +7,6 @@ package com.mycompany.yourminifactory;
 import Clases.Conexion;
 import java.io.IOException;
 import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -20,7 +17,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -55,6 +52,9 @@ public class JoinController implements Initializable {
     @FXML
     private DatePicker labelDateBirth;
     private Conexion co;
+    @FXML
+    private ComboBox<String> cmbUserType;
+    private int id_RegistroCont;
 
     /**
      * Initializes the controller class.
@@ -68,6 +68,7 @@ public class JoinController implements Initializable {
         img3.setImage(new Image("Images/images_login/3.png"));
         img4.setImage(new Image("Images/images_login/4.png"));
         co = new Conexion();
+        cmbUserType.getItems().addAll("User", "Admin");
     }
 
     @FXML
@@ -76,7 +77,7 @@ public class JoinController implements Initializable {
         labelEmail.setText("");
         labelPass.setText("");
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("Page.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("Login.fxml"));
             Scene scene = new Scene(root);
             Stage stage = (Stage) labelEmail.getScene().getWindow();
             stage.setScene(scene);
@@ -87,38 +88,23 @@ public class JoinController implements Initializable {
 
     @FXML
     private void btnJoin(MouseEvent event) {
+        String TypeUser = cmbUserType.getValue();
         String name = labelName.getText();
         String mail = labelEmail.getText();
         String pass = labelPass.getText();
         String date = String.valueOf(labelDateBirth.getValue());
-
-        System.out.println("");
-        if (!(name == null || mail == null || pass == null || date == null)) {
-            List<List<String>> listUsuarios = co.query(co.connect(), "Select * from usuario");
-            if (!validarRegistro(mail, listUsuarios)) {
-                co.insertarUsuario(co.connect(), name, date, pass, mail);
-                labelName.setText("");
-                labelEmail.setText("");
-                labelPass.setText("");
-                try {
-                    Parent root = FXMLLoader.load(getClass().getResource("Page.fxml"));
-                    Scene scene = new Scene(root);
-                    Stage stage = (Stage) labelEmail.getScene().getWindow();
-                    stage.setScene(scene);
-                } catch (IOException ex) {
-                    Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
-                }
+        if (!(name == null || mail == null || pass == null || date == null || TypeUser.equals("User type")) && validarCorreo(mail)) {
+            if (TypeUser.equals("Admin")) {
+                List<List<String>> listUsuarios = co.query(co.connect(), "Select * from administrador");
+                insertarDato(listUsuarios, name, date, pass, mail,"administrador");
             } else {
-                Alert alerta = new Alert(Alert.AlertType.INFORMATION);
-                alerta.setTitle("JOIN");
-                alerta.setHeaderText("User already exist");
-                alerta.setContentText("¡Intente Nuevamente!");
-                alerta.show();
+                List<List<String>> listUsuarios = co.query(co.connect(), "Select * from usuario");
+                insertarDato(listUsuarios, name, date, pass, mail,"usuario");
             }
         } else {
             Alert alerta = new Alert(Alert.AlertType.INFORMATION);
             alerta.setTitle("JOIN");
-            alerta.setHeaderText("Field Empty");
+            alerta.setHeaderText("Error");
             alerta.setContentText("¡Intente Nuevamente!");
             alerta.show();
         }
@@ -133,6 +119,40 @@ public class JoinController implements Initializable {
         }
         return false;
     }
-    
 
+    public static boolean validarCorreo(String correo) {
+        for (char co : correo.toCharArray()) {
+            if (co == '@') {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void changeInterfaz() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("Login.fxml"));
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) labelEmail.getScene().getWindow();
+            stage.setScene(scene);
+        } catch (IOException ex) {
+            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void insertarDato(List<List<String>> listUsuarios, String name, String date, String pass, String mail,String type) {
+        if (!validarRegistro(mail, listUsuarios)) {
+            co.insertarDatoSuper(co.connect(),type, name, date, pass, mail);
+            labelName.setText("");
+            labelEmail.setText("");
+            labelPass.setText("");
+            changeInterfaz();
+        } else {
+            Alert alerta = new Alert(Alert.AlertType.INFORMATION);
+            alerta.setTitle("JOIN");
+            alerta.setHeaderText("User already exist");
+            alerta.setContentText("¡Intente Nuevamente!");
+            alerta.show();
+        }
+    }
 }
