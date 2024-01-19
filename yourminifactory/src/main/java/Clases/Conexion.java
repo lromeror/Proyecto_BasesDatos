@@ -88,7 +88,9 @@ public class Conexion {
         return resultados;
     }
 
-    public void insertarDato(Connection conn, String nombre, String fecha, String passw, String correo) {
+    public boolean insertarUsuario(Connection conn, String nombre, String fecha, String passw, String correo) {
+        
+     boolean t=false;   
     PreparedStatement ps = null;
     try {
         String sql = "INSERT INTO usuario (nombre, fecha_nacimi, contrasena, correo) VALUES (?, ?, ?, ?)";
@@ -99,10 +101,23 @@ public class Conexion {
         ps.setString(4, correo);
 
         int filasInsertadas = ps.executeUpdate();
+        
+        
+        
+        String sqlCarComp = "INSERT INTO sqlCarComp (sqlCarComp, sqlCarComp, contrasena, correo) VALUES (?, ?, ?, ?)";
+        ps2 = conn.prepareStatement(sqlCarComp);
+        ps2.setString(1, nombre);
+        ps2.setString(2, fecha);
+        ps2.setString(3, passw);
+        ps2.setString(4, correo);
+
+        int filasInsertadasCarCoopm = ps2.executeUpdate();
         if (filasInsertadas > 0) {
             System.out.println("Inserción exitosa");
+            t= true;
         } else {
             System.out.println("No se pudo insertar el dato");
+            
         }
     } catch (SQLException e) {
         e.printStackTrace();
@@ -114,7 +129,9 @@ public class Conexion {
         } catch (SQLException se) {
             se.printStackTrace();
         }
-        }  
+        } 
+    return t;
+    
     }
     public void insertarModelo(Connection conn, String descripcion, String precio, String titulo, String model, String libreria,String visibilidad) {
     PreparedStatement ps = null;
@@ -157,10 +174,12 @@ public class Conexion {
         Connection conn = co.connect();
 
         // Ejemplo de inserción de datos en la tabla
-        co.insertarDato(conn, "Pitusa2", "2020-12-01", "12345679","correo@pitusa.ec");
+        co.insertarUsuario(conn, "Pitusa2", "2020-12-01", "12345679","correo@pitusa.ec");
 
     }
-    public void insertarDatoCarComp(Connection conn, int id_car, int id_mod) {
+    public boolean insertarDatoCarComp(Connection conn, int id_car, int id_mod) {
+        // el id_car por practicidad es el mismo que el usuario
+     boolean t=false;
     PreparedStatement ps = null;
     try {
         String sql = "INSERT INTO anadir (id_carrito, id_modelo) VALUES (?, ?)";
@@ -171,6 +190,7 @@ public class Conexion {
 
         int filasInsertadas = ps.executeUpdate();
         if (filasInsertadas > 0) {
+            t=true;
             System.out.println("Inserción exitosa");
         } else {
             System.out.println("No se pudo insertar el dato");
@@ -185,7 +205,9 @@ public class Conexion {
         } catch (SQLException se) {
             se.printStackTrace();
         }
-    }}
+    }
+    return t;
+    }
     
 
     public boolean deleteRecordAnadir(int idCarrito, int idModelo) {

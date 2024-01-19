@@ -96,7 +96,7 @@ public class JoinController implements Initializable {
         if (!(name == null || mail == null || pass == null || date == null)) {
             List<List<String>> listUsuarios = co.query(co.connect(), "Select * from usuario");
             if (!validarRegistro(mail, listUsuarios)) {
-                co.insertarDato(co.connect(), name, date, pass, mail);
+                co.insertarUsuario(co.connect(), name, date, pass, mail);
                 labelName.setText("");
                 labelEmail.setText("");
                 labelPass.setText("");
@@ -133,4 +133,6 @@ public class JoinController implements Initializable {
         }
         return false;
     }
+    
+
 }
