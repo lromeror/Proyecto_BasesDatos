@@ -47,32 +47,6 @@ VALUES
     ('Mythical Legends Artwork', 'Mythic Artisans', 532, 20),
     ('Interactive Puzzle Games', 'Brain Teaser Buffs', 874, 20),
     ('Enchanted Forest Miniatures', 'Greenwood Mystics', 208, 2);
-
--- Insertar datos en la tabla tribu
-INSERT INTO tribu (descripcion, name, num_pioneros,id_categoria) 
-VALUES 
-    ('Miniatures', 'Witchsong', 6892,1),
-    ('Roleplaying Games', 'Big Bad Evil Guy', 2409,2),
-    ('High-Quality Prints', 'Lord of the Print', 2399,3),
-    ('Fantasy Adventures', 'The Witchguild', 2210,4),
-    ('Detailed Miniature Collections', 'Resinant Miniatures', 48,5),
-    ('Stylized Fantasy Figures', 'Velrock Art Miniatures', 175,7),
-    ('Epic Scale Miniatures', 'Lord of the Print', 2399,8),
-    ('Innovative Game Miniatures', 'Infinite Dimensions Games', 507,1),
-    ('Custom Designed Miniatures', 'Josh', 24,1),
-    ('Dark Fantasy World Creations', 'Dark Realms Forge', 121,3),
-    ('Mythical Creature Sculptures', 'Little Shop of Sigil', 6,7),
-    ('Historical Miniature Scenes', 'Nikita Breder', 26,2),
-    ('Mystical Landscapes', 'Echoes of Eldoria', 3120,6),
-    ('Space Odyssey Models', 'Galactic Frontier', 867,8),
-    ('Ancient Civilization Artifacts', 'Timeless Relics', 1543,9),
-    ('Steampunk Gadgets', 'Cog & Gear Creations', 982,12),
-    ('Futuristic Cityscapes', 'Neo-Urban Legends', 645,12),
-	('Cyberpunk Chronicles', 'Neo-Tokyo Drifters', 1345,17),
-    ('Underwater Exploration Models', 'Deep Sea Discoverers', 789,19),
-    ('Mythical Legends Artwork', 'Mythic Artisans', 532,13),
-    ('Interactive Puzzle Games', 'Brain Teaser Buffs', 874,20),
-    ('Enchanted Forest Miniatures', 'Greenwood Mystics', 208,9);
     
 -- Insertar datos en la tabla tier
 INSERT INTO tier (nivelApoyo, recompensa) VALUES
@@ -213,29 +187,6 @@ INSERT INTO modelo (descripcion, precio, titulo, model, fecha_publicacion, id_li
     ('Arte Digital Abstracto', 90, 'Arte Abstracto en Digital', 'abstracto4.jpg', '2019-07-30', 20);
 
 -- Insertar datos en la tabla carro_compra
-
-INSERT INTO carro_compra (id_usuario, total, fecha_pago, descripcion) VALUES
-    (1, 100.0, '2023-03-05', 'Compra de modelos 3D'),
-    (2, 150.0, '2023-04-10', 'Colección de arte'),
-    (3, 200.0, '2023-02-15', 'Diseños exclusivos'),
-    (4, 250.0, '2023-05-20', 'Esculturas personalizadas'),
-    (5, 300.0, '2023-03-25', 'Arte realista'),
-    (6, 90.0, '2015-12-12', 'Compra de modelos 3D'),
-    (7, 130.0, '2016-08-20', 'Colección de arte'),
-    (8, 180.0, '2017-04-25', 'Diseños exclusivos'),
-    (9, 220.0, '2018-11-30', 'Esculturas personalizadas'),
-    (10, 260.0, '2019-10-15', 'Arte realista'),
-    (11, 110.0, '2015-10-12', 'Compra de arte'),
-    (12, 160.0, '2016-07-20', 'Colección de modelos 3D'),
-    (13, 220.0, '2017-03-25', 'Esculturas únicas'),
-    (14, 280.0, '2018-11-30', 'Diseños personalizados'),
-    (15, 320.0, '2019-09-30', 'Arte contemporáneo'),
-    (16, 120.0, '2015-06-10', 'Compra de arte contemporáneo'),
-    (17, 170.0, '2016-04-15', 'Colección de pinturas'),
-    (18, 240.0, '2017-02-20', 'Diseños exclusivos de lámparas'),
-    (19, 290.0, '2018-10-25', 'Esculturas en mármol personalizadas'),
-    (20, 330.0, '2019-09-30', 'Arte digital abstracto');
-
 INSERT INTO carro_compra (id_usuario, total, fecha_pago, descripcion, state) VALUES
     (1, 100.0, '2023-03-05', 'Compra de modelos 3D', TRUE),
     (2, 150.0, '2023-04-10', 'Colección de arte', TRUE),

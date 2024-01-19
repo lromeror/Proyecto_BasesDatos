@@ -1,6 +1,6 @@
 use yourminifactory;
 // Trigger 
--- Al momento de crear un nuevo usuario, me cree una libreria que todo usuario tiene por default
+-- Al momento de crear un nuevo usuario, me cree una libreria que todo usuario tiene por default, y su respectivo carro de compra
 DELIMITER |
 CREATE TRIGGER CreateAfterUser AFTER INSERT ON usuario
 FOR EACH ROW

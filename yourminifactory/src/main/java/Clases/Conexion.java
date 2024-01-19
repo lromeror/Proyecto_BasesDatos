@@ -102,23 +102,23 @@ public class Conexion {
 
         int filasInsertadas = ps.executeUpdate();
         
-        
-        
-        String sqlCarComp = "INSERT INTO sqlCarComp (sqlCarComp, sqlCarComp, contrasena, correo) VALUES (?, ?, ?, ?)";
-        ps2 = conn.prepareStatement(sqlCarComp);
-        ps2.setString(1, nombre);
-        ps2.setString(2, fecha);
-        ps2.setString(3, passw);
-        ps2.setString(4, correo);
-
-        int filasInsertadasCarCoopm = ps2.executeUpdate();
-        if (filasInsertadas > 0) {
-            System.out.println("Inserción exitosa");
-            t= true;
-        } else {
-            System.out.println("No se pudo insertar el dato");
-            
-        }
+//        
+//        
+//        String sqlCarComp = "INSERT INTO sqlCarComp (sqlCarComp, sqlCarComp, contrasena, correo) VALUES (?, ?, ?, ?)";
+//        ps2 = conn.prepareStatement(sqlCarComp);
+//        ps2.setString(1, nombre);
+//        ps2.setString(2, fecha);
+//        ps2.setString(3, passw);
+//        ps2.setString(4, correo);
+//
+//        int filasInsertadasCarCoopm = ps2.executeUpdate();
+//        if (filasInsertadas > 0) {
+//            System.out.println("Inserción exitosa");
+//            t= true;
+//        } else {
+//            System.out.println("No se pudo insertar el dato");
+//            
+//        }
     } catch (SQLException e) {
         e.printStackTrace();
     } finally {

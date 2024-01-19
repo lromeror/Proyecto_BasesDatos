@@ -72,8 +72,6 @@ create table modelo(
     foreign key (id_libreria) references libreria(id_libreria)
 );
 
-
-
 create table carro_compra(
 	id_carrito int not null auto_increment primary key,
     id_usuario int not null,
