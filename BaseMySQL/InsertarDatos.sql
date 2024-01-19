@@ -1,31 +1,5 @@
 -- Insertar datos en la tabla tribu
 USE yourminifactory;
-INSERT INTO tribu (descripcion, name, num_pioneros) 
-VALUES 
-    ('Miniatures', 'Witchsong', 6892),
-    ('Roleplaying Games', 'Big Bad Evil Guy', 2409),
-    ('High-Quality Prints', 'Lord of the Print', 2399),
-    ('Fantasy Adventures', 'The Witchguild', 2210),
-    ('Detailed Miniature Collections', 'Resinant Miniatures', 48),
-    ('Stylized Fantasy Figures', 'Velrock Art Miniatures', 175),
-    ('Epic Scale Miniatures', 'Lord of the Print', 2399),
-    ('Innovative Game Miniatures', 'Infinite Dimensions Games', 507),
-    ('Custom Designed Miniatures', 'Josh', 24),
-    ('Dark Fantasy World Creations', 'Dark Realms Forge', 121),
-    ('Mythical Creature Sculptures', 'Little Shop of Sigil', 6),
-    ('Historical Miniature Scenes', 'Nikita Breder', 26),
-    ('Mystical Landscapes', 'Echoes of Eldoria', 3120),
-    ('Space Odyssey Models', 'Galactic Frontier', 867),
-    ('Ancient Civilization Artifacts', 'Timeless Relics', 1543),
-    ('Steampunk Gadgets', 'Cog & Gear Creations', 982),
-    ('Futuristic Cityscapes', 'Neo-Urban Legends', 645),
-	('Cyberpunk Chronicles', 'Neo-Tokyo Drifters', 1345),
-    ('Underwater Exploration Models', 'Deep Sea Discoverers', 789),
-    ('Mythical Legends Artwork', 'Mythic Artisans', 532),
-    ('Interactive Puzzle Games', 'Brain Teaser Buffs', 874),
-    ('Enchanted Forest Miniatures', 'Greenwood Mystics', 208);
-use YOURMINIFACTORY;
-
 -- Insertar datos en la tabla Categoria
 INSERT INTO Categoria (id_categoria, nombre) VALUES
     (1, 'Categoría 1'),
@@ -49,6 +23,31 @@ INSERT INTO Categoria (id_categoria, nombre) VALUES
     (19, 'Categoría 19'),
     (20, 'Categoría 20');
     
+INSERT INTO tribu (descripcion, name, num_pioneros, id_categoria) 
+VALUES 
+    ('Miniatures', 'Witchsong', 6892, 1),
+    ('Roleplaying Games', 'Big Bad Evil Guy', 2409, 2),
+    ('High-Quality Prints', 'Lord of the Print', 2399, 3),
+    ('Fantasy Adventures', 'The Witchguild', 2210, 4),
+    ('Detailed Miniature Collections', 'Resinant Miniatures', 48, 5),
+    ('Stylized Fantasy Figures', 'Velrock Art Miniatures', 175, 6),
+    ('Epic Scale Miniatures', 'Lord of the Print', 2399, 7),
+    ('Innovative Game Miniatures', 'Infinite Dimensions Games', 507, 8),
+    ('Custom Designed Miniatures', 'Josh', 24, 9),
+    ('Dark Fantasy World Creations', 'Dark Realms Forge', 121, 10),
+    ('Mythical Creature Sculptures', 'Little Shop of Sigil', 6, 11),
+    ('Historical Miniature Scenes', 'Nikita Breder', 26, 12),
+    ('Mystical Landscapes', 'Echoes of Eldoria', 3120, 13),
+    ('Space Odyssey Models', 'Galactic Frontier', 867, 14),
+    ('Ancient Civilization Artifacts', 'Timeless Relics', 1543, 15),
+    ('Steampunk Gadgets', 'Cog & Gear Creations', 982, 16),
+    ('Futuristic Cityscapes', 'Neo-Urban Legends', 645, 17),
+    ('Cyberpunk Chronicles', 'Neo-Tokyo Drifters', 1345, 18),
+    ('Underwater Exploration Models', 'Deep Sea Discoverers', 789, 19),
+    ('Mythical Legends Artwork', 'Mythic Artisans', 532, 20),
+    ('Interactive Puzzle Games', 'Brain Teaser Buffs', 874, 20),
+    ('Enchanted Forest Miniatures', 'Greenwood Mystics', 208, 2);
+
 -- Insertar datos en la tabla tribu
 INSERT INTO tribu (descripcion, name, num_pioneros,id_categoria) 
 VALUES 
@@ -213,9 +212,6 @@ INSERT INTO modelo (descripcion, precio, titulo, model, fecha_publicacion, id_li
     ('Escultura en Mármol', 70, 'Figura en Mármol', 'marmol.obj', '2018-08-05', 19),
     ('Arte Digital Abstracto', 90, 'Arte Abstracto en Digital', 'abstracto4.jpg', '2019-07-30', 20);
 
-
-
-
 -- Insertar datos en la tabla carro_compra
 
 INSERT INTO carro_compra (id_usuario, total, fecha_pago, descripcion) VALUES
@@ -300,18 +296,7 @@ INSERT INTO anadir (id_carrito, id_modelo) VALUES
     (17, 17),
     (18, 18),
     (19, 19),
-    (20, 20),
-	(1,14),
-    (1,13),
-    (2,4),
-    (2,5),
-    (2,20),
-    (3,9),
-    (3,1),
-    (3,8),
-    (3,11),
-    (3,12),
-    (1,15);
+    (20, 20);
     
 -- Insertar datos en la tabla Asignación  
 INSERT INTO Asignacion (id_campana, id_tier, id_modelo) VALUES

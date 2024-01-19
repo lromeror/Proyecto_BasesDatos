@@ -77,10 +77,10 @@ create table modelo(
 create table carro_compra(
 	id_carrito int not null auto_increment primary key,
     id_usuario int not null,
-    total double not null default 0,
-    fecha_pago date not null,
-    descripcion varchar(100) not null,
-    state boolean not null ,
+    total double default 0,
+    fecha_pago date ,
+    descripcion varchar(100),
+    state boolean default false,
     foreign key(id_usuario) references usuario(id_usuario)
 );
 
