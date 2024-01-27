@@ -238,5 +238,33 @@ public class Conexion {
         // Return false if no row was deleted or an exception occurred
         return false;
     }
+    
+    public void insertarDatoCamapana(Connection conn, String descripcion, String pionero, String moneyRe) {
+        PreparedStatement ps = null;
+        try {
+            String sql = "INSERT INTO campana (descripcion, pioneros,dinerorecaudado) VALUES (?, ?, ?)";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, descripcion);
+            ps.setString(2, pionero);
+            ps.setString(3, moneyRe);
+
+            int filasInsertadas = ps.executeUpdate();
+            if (filasInsertadas > 0) {
+                System.out.println("Inserción exitosa");
+            } else {
+                System.out.println("No se pudo insertar el dato");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
+        }
+    }
 
 }
