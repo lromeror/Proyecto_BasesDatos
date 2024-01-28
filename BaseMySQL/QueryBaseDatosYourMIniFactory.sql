@@ -83,9 +83,10 @@ create table carro_compra(
 );
 
 CREATE TABLE anadir (
+	id_anadir int NOT NULL auto_increment,
     id_carrito int NOT NULL,
     id_modelo int NOT NULL,
-    PRIMARY KEY (id_carrito, id_modelo),
+    PRIMARY KEY (id_anadir),
     FOREIGN KEY (id_carrito) REFERENCES carro_compra(id_carrito),
     FOREIGN KEY (id_modelo) REFERENCES modelo(id_modelo)
 );

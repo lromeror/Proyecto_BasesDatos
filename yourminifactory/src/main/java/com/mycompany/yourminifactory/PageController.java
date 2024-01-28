@@ -15,9 +15,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -52,7 +54,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  * FXML Controller class
@@ -176,6 +180,32 @@ public class PageController implements Initializable {
 
     }
 
+    private void mostrarNotificacion(String mensaje, int duracionSegundos) {
+        Stage notificacionStage = new Stage();
+        notificacionStage.initModality(Modality.NONE);
+        notificacionStage.initStyle(StageStyle.TRANSPARENT); 
+       
+        Label mensajeLabel = new Label(mensaje);
+        mensajeLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: white;");
+        
+        VBox layout = new VBox(mensajeLabel);
+        layout.setStyle("-fx-padding: 15; -fx-background-color: #2c3e50; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-width: 2; -fx-border-color: #34495e; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 10);");
+        
+        Scene scene = new Scene(layout);
+        scene.setFill(Color.TRANSPARENT);
+        
+        notificacionStage.setScene(scene);
+        Stage stage = (Stage) contenido_page.getScene().getWindow();
+        notificacionStage.setX(stage.getX() +(stage.getWidth() / 2) - 100);
+        notificacionStage.setY(stage.getY() + stage.getHeight() * 0.2);
+
+        notificacionStage.show();
+        
+        PauseTransition delay = new PauseTransition(javafx.util.Duration.seconds(duracionSegundos));
+        delay.setOnFinished(e -> notificacionStage.close());
+        delay.play();
+    }
+
     private VBox createModelCardTienda(List<String> model, int index) {
         // int idModel, String description, double price, String title, LocalDate publicationDate, int libraryId
         // [1, Modelo 3D Impresionante, 50, Estatua de Dragón, dragon.stl, 2023-03-01, 1, 1]
@@ -202,8 +232,7 @@ public class PageController implements Initializable {
         Button addButton = new Button("Añadir");
         addButton.setOnAction(Event -> {
             conexion.insertarDatoCarComp(conn, id_user, modId); // remember, the id_user will be the same as the id_car
-            System.out.println("re biennnnn");
-
+            mostrarNotificacion("Añadido exitosamente", 1);
         });
         addButton.getStyleClass().add("add-button");
         VBox card = new VBox(10, imageView, nameLabel, priceLabel, addButton);
