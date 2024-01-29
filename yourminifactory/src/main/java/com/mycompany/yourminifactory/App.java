@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import javafx.scene.image.Image;
 
 /**
  * JavaFX App
@@ -20,7 +21,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-
+        stage.getIcons().add(new Image("Images/images_login/logo2.png"));
         scene = new Scene(loadFXML("login"));
         stage.setScene(scene);
         stage.show();

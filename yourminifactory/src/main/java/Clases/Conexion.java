@@ -261,16 +261,16 @@ public class Conexion {
         return false;
     }
     
-    public void insertarDatoCamapana(Connection conn, String descripcion, String pionero, String moneyRe) {
-        CallableStatement cs = null;
+    public void insertarDatoCamapana(Connection conn, String descripcion) {
+        PreparedStatement ps = null;
         try {
-            String sql = "{CALL InsertarDatoCampana(?, ?, ?)}";
-            cs = conn.prepareCall(sql);
-            cs.setString(1, descripcion);
-            cs.setInt(2, Integer.parseInt(pionero));
-            cs.setBigDecimal(3, new BigDecimal(moneyRe));
+            String sql = "INSERT INTO campana (descripcion) VALUES (?)";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, descripcion);
+//            ps.setString(2, pionero);
+//            ps.setString(3, moneyRe);
 
-            int filasInsertadas = cs.executeUpdate();
+            int filasInsertadas = ps.executeUpdate();
             if (filasInsertadas > 0) {
                 System.out.println("Inserción exitosa");
             } else {
@@ -279,12 +279,12 @@ public class Conexion {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            if (cs != null) {
-                try {
-                    cs.close();
-                } catch (SQLException se) {
-                    se.printStackTrace();
+            try {
+                if (ps != null) {
+                    ps.close();
                 }
+            } catch (SQLException se) {
+                se.printStackTrace();
             }
         }
     }
@@ -334,15 +334,16 @@ public class Conexion {
         }
     }
      
-     public void insertarDatoTribu(Connection conn, String descripcion, String title) {
-        CallableStatement cs = null;
+     public void insertarDatoTribu(Connection conn, String descripcion, String title, int id_cate) {
+        PreparedStatement ps = null;
         try {
-            String sql = "{CALL InsertarDatoTribu(?, ?)}";
-            cs = conn.prepareCall(sql);
-            cs.setString(1, descripcion);
-            cs.setString(2, title);
+            String sql = "INSERT INTO tribu (descripcion, name, id_categoria) VALUES (?,?,?)";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, descripcion);
+            ps.setString(2, title);
+            ps.setInt(3, id_cate);
 
-            int filasInsertadas = cs.executeUpdate();
+            int filasInsertadas = ps.executeUpdate();
             if (filasInsertadas > 0) {
                 System.out.println("Inserción exitosa");
             } else {
@@ -351,15 +352,16 @@ public class Conexion {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            if (cs != null) {
-                try {
-                    cs.close();
-                } catch (SQLException se) {
-                    se.printStackTrace();
+            try {
+                if (ps != null) {
+                    ps.close();
                 }
+            } catch (SQLException se) {
+                se.printStackTrace();
             }
         }
     }
+
     
 
 

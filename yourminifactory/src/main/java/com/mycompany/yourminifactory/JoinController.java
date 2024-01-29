@@ -17,6 +17,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.PasswordField;
@@ -53,6 +54,10 @@ public class JoinController implements Initializable {
     private DatePicker labelDateBirth;
     private Conexion co;
     private int id_RegistroCont;
+    @FXML
+    private Button btnCancel;
+    @FXML
+    private Button btnJoin;
 
     /**
      * Initializes the controller class.
@@ -60,6 +65,26 @@ public class JoinController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+        btnJoin.setStyle("-fx-background-color: #55C959; " + "-fx-text-fill: white; "
+                +  "-fx-font-weight: bold; " + // Negrita
+                "-fx-border-color: transparent; " + "-fx-border-radius: 5; " + "-fx-background-radius: 5; " + "-fx-font-size: 10px;" + "-fx-padding: 3 18;");
+        btnJoin.setOnMousePressed(e -> btnJoin.setStyle("-fx-background-color: #367C39; " + "-fx-text-fill: white; "
+                +  "-fx-font-weight: bold; " + // Negrita
+                "-fx-border-color: transparent; " + "-fx-border-radius: 5;" + "-fx-background-radius: 5; " + "-fx-font-size: 10px;" + "-fx-padding: 3 18;"));
+        btnJoin.setOnMouseReleased(e -> btnJoin.setStyle("-fx-background-color: #55C959; " + "-fx-text-fill: white; "
+                + "-fx-font-weight: bold; " + // Negrita
+                "-fx-border-color: transparent; " + "-fx-border-radius: 5; " + "-fx-background-radius: 5; " + "-fx-font-size: 10px;" + "-fx-padding: 3 18;"));
+        
+        btnCancel.setStyle("-fx-background-color: #CE2A43; " + "-fx-text-fill: white; "
+                +  "-fx-font-weight: bold; " + // Negrita
+                "-fx-border-color: transparent; " + "-fx-border-radius: 5; " + "-fx-background-radius: 5; " + "-fx-font-size: 10px;" + "-fx-padding: 3 15;");
+        btnCancel.setOnMousePressed(e -> btnCancel.setStyle("-fx-background-color: #D3735E; " + "-fx-text-fill: white; "
+                +  "-fx-font-weight: bold; " + // Negrita
+                "-fx-border-color: transparent; " + "-fx-border-radius: 5;" + "-fx-background-radius: 5; " + "-fx-font-size: 10px;" + "-fx-padding: 3 15;"));
+        btnCancel.setOnMouseReleased(e -> btnCancel.setStyle("-fx-background-color: #CE2A43; " + "-fx-text-fill: white; "
+                + "-fx-font-weight: bold; " + // Negrita
+                "-fx-border-color: transparent; " + "-fx-border-radius: 5; " + "-fx-background-radius: 5; " + "-fx-font-size: 10px;" + "-fx-padding: 3 15;"));
+        
         imgLogo.setImage(new Image("Images/images_login/logo2.png"));
         img1.setImage(new Image("Images/images_login/1.png"));
         img2.setImage(new Image("Images/images_login/2.png"));

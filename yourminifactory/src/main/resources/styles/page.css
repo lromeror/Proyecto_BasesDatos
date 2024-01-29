@@ -72,3 +72,41 @@
 .verde{
     -fx-text-fill: green;
 }
+
+
+.combo-box {
+    -fx-padding: 4px 4px;
+    -fx-background-color:  #45A4B9;
+    -fx-background-radius: 5;
+    -fx-text-fill: white;
+    -fx-mark-color: white;
+}
+
+.combo-box .list-cell {
+    -fx-padding: 4px 7px;
+    -fx-background-color: white;
+    -fx-text-fill:  #333;
+}
+
+
+.combo-box .list-cell:filled:selected, .combo-box .list-cell:filled:selected:hover {
+    -fx-background-color: #45A4B9;
+    -fx-text-fill: white;
+}
+
+
+.combo-box .list-cell:hover {
+    -fx-background-color: #EEE;
+}
+
+
+.combo-box .list-view {
+    -fx-background-color: white;
+    -fx-background-insets: 0;
+    -fx-background-radius: 5;
+}
+
+
+.combo-box-base {
+    -fx-background-radius: 5;
+}

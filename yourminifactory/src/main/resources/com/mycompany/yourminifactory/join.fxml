@@ -60,8 +60,8 @@
          </font>
       </Label>
       <PasswordField fx:id="labelPass" layoutX="409.0" layoutY="277.0" prefHeight="26.0" prefWidth="215.0" />
-      <Button layoutX="484.0" layoutY="375.0" mnemonicParsing="false" onMouseClicked="#btnCancel" prefHeight="26.0" prefWidth="63.0" text="Cancel" />
-      <Button layoutX="411.0" layoutY="375.0" mnemonicParsing="false" onMouseClicked="#btnJoin" prefHeight="26.0" prefWidth="63.0" text="JOIN" />
+      <Button fx:id="btnCancel" layoutX="484.0" layoutY="375.0" mnemonicParsing="false" onMouseClicked="#btnCancel" prefHeight="26.0" prefWidth="63.0" text="Cancel" />
+      <Button fx:id="btnJoin" layoutX="411.0" layoutY="375.0" mnemonicParsing="false" onMouseClicked="#btnJoin" prefHeight="26.0" prefWidth="63.0" text="JOIN" />
       <DatePicker fx:id="labelDateBirth" layoutX="411.0" layoutY="335.0" prefHeight="26.0" prefWidth="215.0" />
       <Label layoutX="410.0" layoutY="313.0" text="Date of birth">
          <font>

@@ -653,11 +653,12 @@ public class PageController implements Initializable {
     @FXML
     private void show_usercontent(MouseEvent event) {
         returnStyleLabel();
+        this.contenido_page.setStyle("-fx-background-color: #F7F7F7;");
         link_user.getStyleClass().add("verde");
         this.contenido_page.getChildren().clear();
         this.contenido_page.setAlignment(Pos.TOP_CENTER);
         ImageView photo = new ImageView(new Image("Images/img_Picture/foto.png"));
-        photo.setFitWidth(1072);
+        photo.setFitWidth(1076);
         photo.setFitHeight(400);
         StackPane stackPane = new StackPane(photo);
         stackPane.setStyle("-fx-border-color: #BCBCBC  ; " + "-fx-border-width: 7px; " + "-fx-border-radius: 7px; " + "-fx-background-radius: 7px; ");
@@ -749,13 +750,26 @@ public class PageController implements Initializable {
             TextField nameField = new TextField();
             Label descTi = new Label("Description:");
             TextField descFie = new TextField();
+            ComboBox<String> cmbCategorias = new ComboBox<>();
+            List<List<String>> lisLib = conexion.query(conn, "select * from categoria");
+            cmbCategorias.setPromptText("Categories");
+            for (List<String> info : lisLib) {
+                cmbCategorias.getItems().add(info.get(1));
+            }
+
+            cmbCategorias.getStylesheets().add("combo-box");
+            final int[] idC = {0};
+            cmbCategorias.valueProperty().addListener((observable, oldValue, newValue) -> {
+                idC[0] = idCategoria(lisLib, newValue);
+            });
+
             Button btnSave = new Button("Save");
             Button btnCancel = new Button("Cancel");
             HBox btnsAd = new HBox(btnSave, btnCancel);
             btnsAd.setSpacing(15);
             Text alert = new Text();
             btnSave.addEventHandler(MouseEvent.MOUSE_CLICKED, (Event e) -> {
-                alert.setText(this.btnRegisterTribu(nameField,descFie));
+                alert.setText(this.btnRegisterTribu(nameField, descFie, idC[0]));
                 nameField.setText("");
                 descFie.setText("");
             });
@@ -782,7 +796,7 @@ public class PageController implements Initializable {
             btnCancel.setOnMouseReleased(e -> btnCancel.setStyle("-fx-background-color: #457bba; " + "-fx-text-fill: white; "
                     + // "-fx-font-weight: bold; " + // Negrita
                     "-fx-border-color: transparent; " + "-fx-border-radius: 5; " + "-fx-background-radius: 5; " + "-fx-font-size: 14px;" + "-fx-padding: 3 20;"));
-            vConten.getChildren().addAll(tiReg, NameTit, nameField, descTi, descFie, btnsAd, alert);
+            vConten.getChildren().addAll(tiReg, NameTit, nameField, descTi, descFie, cmbCategorias, btnsAd, alert);
         });
 
         Button bt = new Button("Modelos");
@@ -889,20 +903,28 @@ public class PageController implements Initializable {
 
     private String btnRegisterSave(TextField descrFie) {
         if (!(descrFie.getText().equals(""))) {
-            this.conexion.insertarDatoCamapana(conn, descrFie.getText(), null,null);
+            this.conexion.insertarDatoCamapana(conn, descrFie.getText());
             return "Successful registration";
         }
         return "Please fill out the data fields";
     }
 
-    private String btnRegisterTribu(TextField TitleName, TextField descripName) {
+    private String btnRegisterTribu(TextField TitleName, TextField descripName, int id_Cate) {
         if (!(TitleName.getText().equals("") || descripName.getText().equals(""))) {
-            this.conexion.insertarDatoTribu(conn,descripName.getText(), TitleName.getText());
+            this.conexion.insertarDatoTribu(conn, descripName.getText(), TitleName.getText(), id_Cate);
             return "Successful registration";
         }
         return "Please fill out the data fields";
     }
 
+    private int idCategoria(List<List<String>> listCate, String Cate) {
+        for (List<String> info : listCate) {
+            if (info.get(1).equals(Cate)) {
+                return Integer.parseInt(info.get(0));
+            }
+        }
+        return -1;
+    }
     @FXML
     private void hand(MouseEvent event) {
         this.link_tribes.setCursor(Cursor.HAND);

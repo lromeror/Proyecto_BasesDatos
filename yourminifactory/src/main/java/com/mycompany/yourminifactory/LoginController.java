@@ -24,6 +24,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -51,15 +52,38 @@ public class LoginController implements Initializable {
     @FXML
     private AnchorPane page_login;
     private String typeUser;
+    @FXML
+    private Button btnLogin;
+    @FXML
+    private Button btnJoin;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
         imageLogo.setImage(new Image("Images/images_login/logo2.png"));
-    }
+        btnLogin.setStyle("-fx-background-color: #55C959; " + "-fx-text-fill: white; "
+                +  "-fx-font-weight: bold; " + // Negrita
+                "-fx-border-color: transparent; " + "-fx-border-radius: 5; " + "-fx-background-radius: 5; " + "-fx-font-size: 12px;" + "-fx-padding: 3 16;");
+        btnLogin.setOnMousePressed(e -> btnLogin.setStyle("-fx-background-color: #367C39; " + "-fx-text-fill: white; "
+                +  "-fx-font-weight: bold; " + // Negrita
+                "-fx-border-color: transparent; " + "-fx-border-radius: 5;" + "-fx-background-radius: 5; " + "-fx-font-size: 12px;" + "-fx-padding: 3 16;"));
+        btnLogin.setOnMouseReleased(e -> btnLogin.setStyle("-fx-background-color: #55C959; " + "-fx-text-fill: white; "
+                + "-fx-font-weight: bold; " + // Negrita
+                "-fx-border-color: transparent; " + "-fx-border-radius: 5; " + "-fx-background-radius: 5; " + "-fx-font-size: 12px;" + "-fx-padding: 3 16;"));
+        
+        
+        btnJoin.setStyle("-fx-background-color: #55C959; " + "-fx-text-fill: white; "
+                +  "-fx-font-weight: bold; " + // Negrita
+                "-fx-border-color: transparent; " + "-fx-border-radius: 5; " + "-fx-background-radius: 5; " + "-fx-font-size: 12px;" + "-fx-padding: 3 10;");
+        btnJoin.setOnMousePressed(e -> btnLogin.setStyle("-fx-background-color: #367C39; " + "-fx-text-fill: white; "
+                +  "-fx-font-weight: bold; " + // Negrita
+                "-fx-border-color: transparent; " + "-fx-border-radius: 5;" + "-fx-background-radius: 5; " + "-fx-font-size: 12px;" + "-fx-padding: 3 10;"));
+        btnJoin.setOnMouseReleased(e -> btnLogin.setStyle("-fx-background-color: #55C959; " + "-fx-text-fill: white; "
+                + "-fx-font-weight: bold; " + // Negrita
+                "-fx-border-color: transparent; " + "-fx-border-radius: 5; " + "-fx-background-radius: 5; " + "-fx-font-size: 12px;" + "-fx-padding: 3 10;"));
+}
 
     @FXML
     private void btnLogin(MouseEvent event) {
