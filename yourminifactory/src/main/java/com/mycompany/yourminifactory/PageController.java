@@ -108,7 +108,7 @@ public class PageController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         conexion = new Conexion();
         conn = conexion.connect();
-        ImageView img = new ImageView(new Image("/Images/img_Picture/NuevoDiagramaLogico.jpeg"));
+        ImageView img = new ImageView(new Image("/Images/img_Picture/diagrama.jpeg"));
         img.setFitHeight(600);
         img.setFitWidth(1000);
         contenido_page.getChildren().add(img);
