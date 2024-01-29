@@ -4,6 +4,8 @@
  */
 package Clases;
 
+import java.math.BigDecimal;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -117,16 +119,46 @@ public class Conexion {
     }
 
     public void insertarDato(Connection conn, String nombre, String fecha, String passw, String correo) {
-        PreparedStatement ps = null;
-        try {
-            String sql = "INSERT INTO usuario (nombre, fecha_nacimi, contrasena, correo) VALUES (?, ?, ?, ?)";
-            ps = conn.prepareStatement(sql);
-            ps.setString(1, nombre);
-            ps.setString(2, fecha);
-            ps.setString(3, passw);
-            ps.setString(4, correo);
+        CallableStatement cs = null;
+    try {
+        String sql = "{CALL InsertarUsuario(?, ?, ?, ?)}";
+        cs = conn.prepareCall(sql);
+        cs.setString(1, nombre);
+        cs.setString(2, fecha);
+        cs.setString(3, passw);
+        cs.setString(4, correo);
 
-            int filasInsertadas = ps.executeUpdate();
+        int filasInsertadas = cs.executeUpdate();
+        if (filasInsertadas > 0) {
+            System.out.println("Inserción exitosa");
+        } else {
+            System.out.println("No se pudo insertar el dato");
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (cs != null) {
+                cs.close();
+            }
+        } catch (SQLException se) {
+            se.printStackTrace();
+        }
+    }
+    }
+
+    public void insertarDatoSuper(Connection conn, String nameTable, String nombre, String fecha, String passw, String correo) {
+        CallableStatement cs = null;
+        try {
+            String sql = "{CALL InsertarDatoSuper(?, ?, ?, ?, ?)}";
+            cs = conn.prepareCall(sql);
+            cs.setString(1, nameTable);
+            cs.setString(2, nombre);
+            cs.setString(3, fecha);
+            cs.setString(4, passw);
+            cs.setString(5, correo);
+
+            int filasInsertadas = cs.executeUpdate();
             if (filasInsertadas > 0) {
                 System.out.println("Inserción exitosa");
             } else {
@@ -135,61 +167,30 @@ public class Conexion {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (ps != null) {
-                    ps.close();
+            if (cs != null) {
+                try {
+                    cs.close();
+                } catch (SQLException se) {
+                    se.printStackTrace();
                 }
-            } catch (SQLException se) {
-                se.printStackTrace();
             }
         }
     }
 
-    public void insertarDatoSuper(Connection conn, String nameTable,String nombre, String fecha, String passw, String correo) {
-        PreparedStatement ps = null;
-        try {
-            String sql = "INSERT INTO "+nameTable+" (nombre, fecha_nacimi, contrasena, correo) VALUES (?, ?, ?, ?)";
-            ps = conn.prepareStatement(sql);
-            ps.setString(1, nombre);
-            ps.setString(2, fecha);
-            ps.setString(3, passw);
-            ps.setString(4, correo);
-
-            int filasInsertadas = ps.executeUpdate();
-            if (filasInsertadas > 0) {
-                System.out.println("Inserción exitosa");
-            } else {
-                System.out.println("No se pudo insertar el dato");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (ps != null) {
-                    ps.close();
-                }
-            } catch (SQLException se) {
-                se.printStackTrace();
-            }
-        }
-    }
 
     public void insertarModelo(Connection conn, String descripcion, String precio, String titulo, String model, String libreria, String visibilidad) {
-        PreparedStatement ps = null;
+        CallableStatement cs = null;
         try {
-            LocalDate date = LocalDate.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            String fecha = date.format(formatter);
-            String sql = "INSERT INTO modelo (descripcion, precio, titulo, model,fecha_publicacion,id_libreria,visibilidad) VALUES (?, ?, ?, ?, ?, ?, ? )";
-            ps = conn.prepareStatement(sql);
-            ps.setString(1, descripcion);
-            ps.setString(2, precio);
-            ps.setString(3, titulo);
-            ps.setString(4, model);
-            ps.setString(5, fecha);
-            ps.setString(6, libreria);
-            ps.setString(7, visibilidad);
-            int filasInsertadas = ps.executeUpdate();
+            String sql = "{CALL InsertarModelo(?, ?, ?, ?, ?, ?, ?)}";
+            cs = conn.prepareCall(sql);
+            cs.setString(1, descripcion);
+            cs.setString(2, precio);
+            cs.setString(3, titulo);
+            cs.setString(4, model);
+            cs.setInt(5, Integer.parseInt(libreria));
+            cs.setBoolean(6, Boolean.parseBoolean(visibilidad));
+
+            int filasInsertadas = cs.executeUpdate();
             if (filasInsertadas > 0) {
                 System.out.println("Inserción exitosa");
             } else {
@@ -198,12 +199,12 @@ public class Conexion {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (ps != null) {
-                    ps.close();
+            if (cs != null) {
+                try {
+                    cs.close();
+                } catch (SQLException se) {
+                    se.printStackTrace();
                 }
-            } catch (SQLException se) {
-                se.printStackTrace();
             }
         }
     }
@@ -218,67 +219,58 @@ public class Conexion {
     }
 
     public void insertarDatoCarComp(Connection conn, int id_car, int id_mod) {
-        PreparedStatement ps = null;
+        CallableStatement cs = null;
         try {
-            String sql = "INSERT INTO anadir (id_carrito, id_modelo) VALUES (?, ?)";
-            ps = conn.prepareStatement(sql);
-            ps.setInt(1, id_car);
-            ps.setInt(2, id_mod);
+            String sql = "{CALL InsertarDatoCarComp(?, ?)}";
+            cs = conn.prepareCall(sql);
+            cs.setInt(1, id_car);
+            cs.setInt(2, id_mod);
 
-            int filasInsertadas = ps.executeUpdate();
-            if (filasInsertadas > 0) {
-                System.out.println("Inserción exitosa");
-            } else {
-                System.out.println("No se pudo insertar el dato");
-            }
+            cs.executeUpdate();
+            System.out.println("Operación realizada con éxito");
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("Error al insertar datos: " + e.getMessage());
         } finally {
-            try {
-                if (ps != null) {
-                    ps.close();
+            if (cs != null) {
+                try {
+                    cs.close();
+                } catch (SQLException se) {
+                    se.printStackTrace();
                 }
-            } catch (SQLException se) {
-                se.printStackTrace();
             }
         }
     }
 
     public boolean deleteRecordAnadir(int idCarrito, int idModelo) {
-        // SQL DELETE statement
-        String sql = "DELETE FROM anadir WHERE id_carrito = ? AND id_modelo = ?";
+        String sql = "{CALL EliminarRegistroAnadir(?, ?)}";
 
-        // Try-with-resources to ensure that resources are closed after the program is finished
         try (Connection conn = DriverManager.getConnection(cadena, usuario, contraseña); 
-            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             CallableStatement cstmt = conn.prepareCall(sql)) {
 
-            // Set the values for the placeholders
-            pstmt.setInt(1, idCarrito);
-            pstmt.setInt(2, idModelo);
+            cstmt.setInt(1, idCarrito);
+            cstmt.setInt(2, idModelo);
 
-            // Execute the delete statement
-            int rowsAffected = pstmt.executeUpdate();
+            int rowsAffected = cstmt.executeUpdate();
 
-            // Return true if a row was deleted
             return rowsAffected > 0;
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        // Return false if no row was deleted or an exception occurred
+
         return false;
     }
     
     public void insertarDatoCamapana(Connection conn, String descripcion, String pionero, String moneyRe) {
-        PreparedStatement ps = null;
+        CallableStatement cs = null;
         try {
-            String sql = "INSERT INTO campana (descripcion, pioneros,dinerorecaudado) VALUES (?, ?, ?)";
-            ps = conn.prepareStatement(sql);
-            ps.setString(1, descripcion);
-            ps.setString(2, pionero);
-            ps.setString(3, moneyRe);
+            String sql = "{CALL InsertarDatoCampana(?, ?, ?)}";
+            cs = conn.prepareCall(sql);
+            cs.setString(1, descripcion);
+            cs.setInt(2, Integer.parseInt(pionero));
+            cs.setBigDecimal(3, new BigDecimal(moneyRe));
 
-            int filasInsertadas = ps.executeUpdate();
+            int filasInsertadas = cs.executeUpdate();
             if (filasInsertadas > 0) {
                 System.out.println("Inserción exitosa");
             } else {
@@ -287,25 +279,24 @@ public class Conexion {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (ps != null) {
-                    ps.close();
+            if (cs != null) {
+                try {
+                    cs.close();
+                } catch (SQLException se) {
+                    se.printStackTrace();
                 }
-            } catch (SQLException se) {
-                se.printStackTrace();
             }
         }
     }
     
     public boolean deleteRecordApoya(Connection conn, int idUsuario, int idCampana) {
-        String sql = "DELETE FROM Apoya WHERE id_usuario = ? AND id_campana = ?";
+        String sql = "{CALL EliminarRegistroApoya(?, ?)}";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (CallableStatement cstmt = conn.prepareCall(sql)) {
+            cstmt.setInt(1, idUsuario);
+            cstmt.setInt(2, idCampana);
 
-            pstmt.setInt(1, idUsuario);
-            pstmt.setInt(2, idCampana);
-            
-            int rowsAffected = pstmt.executeUpdate();
+            int rowsAffected = cstmt.executeUpdate();
             return rowsAffected > 0;
 
         } catch (SQLException e) {
@@ -314,17 +305,16 @@ public class Conexion {
         }
     }
     
-    public void insertarDatoApoya(Connection conn, int idUsuario, int idCampana, int nivel) {
-        PreparedStatement ps = null;
+     public void insertarDatoApoya(Connection conn, int idUsuario, int idCampana, int nivel) {
+        CallableStatement cs = null;
         try {
-            String sql = "INSERT INTO Apoya (id_usuario, id_campana,nivel) VALUES (?, ?, ?)";
-            ps = conn.prepareStatement(sql);
-            ps.setInt(1, idUsuario);
-            ps.setInt(2, idCampana);
-             ps.setInt(3, nivel);
-            
-            
-            int filasInsertadas = ps.executeUpdate();
+            String sql = "{CALL InsertarDatoApoya(?, ?, ?)}";
+            cs = conn.prepareCall(sql);
+            cs.setInt(1, idUsuario);
+            cs.setInt(2, idCampana);
+            cs.setInt(3, nivel);
+
+            int filasInsertadas = cs.executeUpdate();
             if (filasInsertadas > 0) {
                 System.out.println("Inserción exitosa en la tabla Apoya");
             } else {
@@ -334,9 +324,9 @@ public class Conexion {
             System.out.println("Error al insertar en la tabla Apoya");
             e.printStackTrace();
         } finally {
-            if (ps != null) {
+            if (cs != null) {
                 try {
-                    ps.close();
+                    cs.close();
                 } catch (SQLException se) {
                     se.printStackTrace();
                 }
