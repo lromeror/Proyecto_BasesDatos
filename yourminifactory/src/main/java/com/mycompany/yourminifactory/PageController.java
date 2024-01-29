@@ -431,31 +431,31 @@ public class PageController implements Initializable {
         contenido_page.setAlignment(Pos.CENTER);
         contenido_page.setSpacing(30);
         
+//        
+//        VBox header = new VBox();
+//        header.setAlignment(Pos.CENTER);
+//        header.setMaxSize(800, 200);
+//        header.getStyleClass().add("vbox_");
+//        header.setSpacing(30);
+//        
+//        Label title = new Label("SOLICITUDES AL ADMINISTRADOR");
+//        title.setStyle("-fx-font-size: 25px; -fx-text-fill: black; -fx-font-weight: bold;");
+//        
+//        
+//        Label text = new Label("Escoge el tipo de solitud: ");
+//        text.setStyle("-fx-font-size: 14px; -fx-text-fill: black;");
+//        ComboBox<String> comboBox = new ComboBox<>();
+//        comboBox.getItems().addAll("Campaña", "Tribu");
+//        comboBox.setValue("Campaña");
+//        header.getChildren().addAll(title,text,comboBox);
         
-        VBox header = new VBox();
-        header.setAlignment(Pos.CENTER);
-        header.setMaxSize(800, 200);
-        header.getStyleClass().add("vbox_");
-        header.setSpacing(30);
         
-        Label title = new Label("SOLICITUDES AL ADMINISTRADOR");
-        title.setStyle("-fx-font-size: 25px; -fx-text-fill: black; -fx-font-weight: bold;");
-        
-        
-        Label text = new Label("Escoge el tipo de solitud: ");
-        text.setStyle("-fx-font-size: 14px; -fx-text-fill: black;");
-        ComboBox<String> comboBox = new ComboBox<>();
-        comboBox.getItems().addAll("Campaña", "Tribu");
-        comboBox.setValue("Campaña");
-        header.getChildren().addAll(title,text,comboBox);
-        
-        
-        String tipo = comboBox.getValue();
-        if(tipo.equals("Campaña")){
-            Platform.runLater(()->{
-                
-            });
-        }
+//        String tipo = comboBox.getValue();
+//        if(tipo.equals("Campaña")){
+//            Platform.runLater(()->{
+//                
+//            });
+//        }
         
         VBox vbox = new VBox();
         vbox.setAlignment(Pos.CENTER);
@@ -581,7 +581,10 @@ public class PageController implements Initializable {
         VBox libreria = new VBox();
         libreria.setSpacing(10);
         libreria.setAlignment(Pos.CENTER);
+        
         String sql = "SELECT * FROM libreria WHERE id_usuario = " + id_user;
+        
+        
         List<List<String>> l_librerias = conexion.query(conn, sql);
         Label ll = new Label("Libreria");
         ComboBox<Libreria> LibreriaComboBox = new ComboBox<>();
@@ -646,7 +649,7 @@ public class PageController implements Initializable {
             }
         });
         // Añadiendo todos los elementos al VBox principal
-        contenido_page.getChildren().addAll(header ,vbox, hbox, btn_modelo);
+        contenido_page.getChildren().addAll(vbox, hbox, btn_modelo);
 
     }
 
@@ -988,8 +991,8 @@ public class PageController implements Initializable {
         });
     }
 
-//    @FXML
-//    private void solicitud(ActionEvent event) {
+    @FXML
+    private void solicitud(ActionEvent event) {}
 //        contenido_page.getChildren().clear();
 //        contenido_page.setAlignment(Pos.CENTER);
 //        contenido_page.setSpacing(30);
