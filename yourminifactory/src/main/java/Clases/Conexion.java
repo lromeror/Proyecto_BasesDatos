@@ -333,6 +333,34 @@ public class Conexion {
             }
         }
     }
+     
+     public void insertarDatoTribu(Connection conn, String descripcion, String title) {
+        CallableStatement cs = null;
+        try {
+            String sql = "{CALL InsertarDatoTribu(?, ?)}";
+            cs = conn.prepareCall(sql);
+            cs.setString(1, descripcion);
+            cs.setString(2, title);
+
+            int filasInsertadas = cs.executeUpdate();
+            if (filasInsertadas > 0) {
+                System.out.println("Inserción exitosa");
+            } else {
+                System.out.println("No se pudo insertar el dato");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (cs != null) {
+                try {
+                    cs.close();
+                } catch (SQLException se) {
+                    se.printStackTrace();
+                }
+            }
+        }
+    }
+    
 
 
 }

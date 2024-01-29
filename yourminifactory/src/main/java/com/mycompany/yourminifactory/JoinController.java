@@ -52,8 +52,6 @@ public class JoinController implements Initializable {
     @FXML
     private DatePicker labelDateBirth;
     private Conexion co;
-    @FXML
-    private ComboBox<String> cmbUserType;
     private int id_RegistroCont;
 
     /**
@@ -68,7 +66,6 @@ public class JoinController implements Initializable {
         img3.setImage(new Image("Images/images_login/3.png"));
         img4.setImage(new Image("Images/images_login/4.png"));
         co = new Conexion();
-        cmbUserType.getItems().addAll("User", "Admin");
     }
 
     @FXML
@@ -88,19 +85,14 @@ public class JoinController implements Initializable {
 
     @FXML
     private void btnJoin(MouseEvent event) {
-        String TypeUser = cmbUserType.getValue();
         String name = labelName.getText();
         String mail = labelEmail.getText();
         String pass = labelPass.getText();
         String date = String.valueOf(labelDateBirth.getValue());
-        if (!(name == null || mail == null || pass == null || date == null || TypeUser.equals("User type")) && validarCorreo(mail)) {
-            if (TypeUser.equals("Admin")) {
-                List<List<String>> listUsuarios = co.query(co.connect(), "Select * from administrador");
-                insertarDato(listUsuarios, name, date, pass, mail,"administrador");
-            } else {
-                List<List<String>> listUsuarios = co.query(co.connect(), "Select * from usuario");
-                insertarDato(listUsuarios, name, date, pass, mail,"usuario");
-            }
+        if (!(name == null || mail == null || pass == null || date == null) && validarCorreo(mail)) {
+            List<List<String>> listUsuarios = co.query(co.connect(), "Select * from usuario");
+            insertarDato(listUsuarios, name, date, pass, mail, "usuario");
+
         } else {
             Alert alerta = new Alert(Alert.AlertType.INFORMATION);
             alerta.setTitle("JOIN");
@@ -140,9 +132,9 @@ public class JoinController implements Initializable {
         }
     }
 
-    public void insertarDato(List<List<String>> listUsuarios, String name, String date, String pass, String mail,String type) {
+    public void insertarDato(List<List<String>> listUsuarios, String name, String date, String pass, String mail, String type) {
         if (!validarRegistro(mail, listUsuarios)) {
-            co.insertarDatoSuper(co.connect(),type, name, date, pass, mail);
+            co.insertarDatoSuper(co.connect(), type, name, date, pass, mail);
             labelName.setText("");
             labelEmail.setText("");
             labelPass.setText("");

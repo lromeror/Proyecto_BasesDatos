@@ -79,8 +79,8 @@ public class SolicitudController implements Initializable {
     }
     private void createTiers(){
         container_nivel.getChildren().clear();
-        String querie = "SELECT *, (SELECT Count(a.cant) FROM asignacion a WHERE a.id_campana = " + id_campana + " AND a.id_tier = t.id_tier) AS total_producto " +
-"FROM tier t WHERE t.id_tier IN (SELECT DISTINCT id_tier FROM campana c WHERE c.id_campana = " + id_campana + ") ORDER BY nivelApoyo;";
+        String querie = "SELECT *, (SELECT Count(a.cant) FROM asignacion a WHERE a.id_campana = " + id_campana + " AND a.id_tier = t.id_tier) AS total_producto " 
+                +"FROM tier t WHERE t.id_tier IN (SELECT DISTINCT id_tier FROM campana c WHERE c.id_campana = " + id_campana + ") ORDER BY nivelApoyo;";
         List<List<String>> query = conexion.query(conn, querie);
         for(List<String> tier : query){
             HBox containerprincipal = new HBox();
@@ -125,7 +125,9 @@ public class SolicitudController implements Initializable {
         scrollPaneModelos.setMinHeight(200);
         scrollPaneModelos.setContent(scrollContent);
         
-        String modelos_tier = "SELECT * FROM Modelo m WHERE m.id_modelo IN (SELECT a.id_modelo FROM asignacion a WHERE a.id_tier = " + id_tier + " AND a.id_campana = " + id_campana + ");";
+        String modelos_tier = "SELECT * FROM Modelo m WHERE m.id_modelo IN (SELECT a.id_modelo FROM asignacion a WHERE a.id_tier = " + id_tier + 
+                " AND a.id_campana = " + id_campana + ");";
+        
         List<List<String>> modelos_tier_l = conexion.query(conn, modelos_tier);
         for(List<String> modelo : modelos_tier_l){
             VBox createModelCardTienda = createModelCardTienda(modelo);
