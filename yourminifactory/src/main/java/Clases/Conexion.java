@@ -243,29 +243,21 @@ public class Conexion {
             }
         }
     }
+    
 
     public boolean deleteRecordAnadir(int idCarrito, int idModelo) {
-        // SQL DELETE statement
+        
         String sql = "DELETE FROM anadir WHERE id_carrito = ? AND id_modelo = ?";
-
-        // Try-with-resources to ensure that resources are closed after the program is finished
         try (Connection conn = DriverManager.getConnection(cadena, usuario, contraseña); 
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            // Set the values for the placeholders
             pstmt.setInt(1, idCarrito);
             pstmt.setInt(2, idModelo);
-
-            // Execute the delete statement
             int rowsAffected = pstmt.executeUpdate();
-
-            // Return true if a row was deleted
             return rowsAffected > 0;
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        // Return false if no row was deleted or an exception occurred
         return false;
     }
     

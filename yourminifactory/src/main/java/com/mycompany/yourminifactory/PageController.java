@@ -966,206 +966,206 @@ public class PageController implements Initializable {
         });
     }
 
-    @FXML
-    private void solicitud(ActionEvent event) {
-        contenido_page.getChildren().clear();
-        contenido_page.setAlignment(Pos.CENTER);
-        contenido_page.setSpacing(30);
-
-        VBox vbox = new VBox();
-        vbox.setAlignment(Pos.CENTER);
-        vbox.setMaxSize(800, 200);
-        vbox.getStyleClass().add("vbox_");
-        vbox.setSpacing(30);
-
-        Label dragDropLabel = new Label("Drag and drop your 3D files here or");
-        Button selectFilesButton = new Button("Select object files");
-        selectFilesButton.getStyleClass().add("select-files-button");
-        VBox dragDropArea = new VBox(dragDropLabel, selectFilesButton);
-        dragDropArea.setAlignment(Pos.CENTER);
-        vbox.getChildren().addAll(dragDropArea);
-        vbox.getStyleClass().add("file-drop-area");
-
-        selectFilesButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler() {
-            @Override
-            public void handle(Event event) {
-                FileChooser fileChooser = new FileChooser();
-                fileChooser.setTitle("CHOOSE 3D MODEL");
-                fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("3D Files", "*.stl", "*.obj", "*.fbx", "*.3ds", "*.png", "*.jpg", "*.jpeg"));
-                File selectedFile = fileChooser.showOpenDialog(null);
-                if (selectedFile != null) {
-                    String originalFileName = selectedFile.getName();
-                    Path sourcePath = selectedFile.toPath();
-                    int n_files = countFilesInDirectory("src/main/resources/Images/Modelos/");
-                    Path targetPath = Paths.get("src/main/resources/Images/Modelos/" + n_files + originalFileName);
-                    try {
-                        Files.createDirectories(targetPath.getParent());
-                        Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
-                        vbox.getChildren().clear();
-                        VBox createUploadedVBox = createUploadedVBox(originalFileName);
-                        vbox.getChildren().add(createUploadedVBox);
-                        subido = true;
-                        url_model = "/Images/Modelos/" + n_files + originalFileName;
-                    } catch (IOException e) {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION, "PROBLEMAS AL CARGAR ARCHIVOS");
-                        alert.setTitle("CARGAR ARCHIVO");
-                        alert.setHeaderText("INFORMACIÓN");
-                        ButtonType okButton = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
-                        alert.getButtonTypes().setAll(okButton);
-                        alert.showAndWait();
-                    }
-                }
-            }
-        });
-        dragDropArea.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler() {
-            @Override
-            public void handle(Event event) {
-                FileChooser fileChooser = new FileChooser();
-                fileChooser.setTitle("CHOOSE 3D MODEL");
-                fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("3D Files", "*.stl", "*.obj", "*.fbx", "*.3ds", "*.png", "*.jpg", "*.jpeg"));
-                File selectedFile = fileChooser.showOpenDialog(null);
-                if (selectedFile != null) {
-                    String originalFileName = selectedFile.getName();
-                    Path sourcePath = selectedFile.toPath();
-                    int n_files = countFilesInDirectory("src/main/resources/Images/Modelos/");
-                    Path targetPath = Paths.get("src/main/resources/Images/Modelos/" + n_files + originalFileName);
-                    try {
-                        Files.createDirectories(targetPath.getParent());
-                        Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
-                        vbox.getChildren().clear();
-                        VBox createUploadedVBox = createUploadedVBox(originalFileName);
-                        vbox.getChildren().add(createUploadedVBox);
-                        subido = true;
-                        url_model = "/Images/Modelos/" + n_files + originalFileName;
-                    } catch (IOException e) {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION, "PROBLEMAS AL CARGAR ARCHIVOS");
-                        alert.setTitle("CARGAR ARCHIVO");
-                        alert.setHeaderText("INFORMACIÓN");
-                        ButtonType okButton = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
-                        alert.getButtonTypes().setAll(okButton);
-                        alert.showAndWait();
-                    }
-                }
-            }
-        });
-        HBox hbox = new HBox();
-
-        hbox.setAlignment(Pos.CENTER);
-        hbox.setPrefWidth(1080);
-
-        VBox vb1 = new VBox();
-        vb1.setAlignment(Pos.CENTER);
-        vb1.setPrefWidth(400);
-        vb1.setSpacing(40);
-
-        VBox vb_nombre = new VBox();
-        vb_nombre.setSpacing(10);
-        vb_nombre.setAlignment(Pos.CENTER);
-        vb_nombre.setPrefWidth(350);
-        Label name = new Label("Escribe un nombre para su objecto");
-        TextField objectNameField = new TextField();
-        objectNameField.setMaxWidth(250);
-        objectNameField.setPromptText("NOMBRE");
-        vb_nombre.getChildren().addAll(name, objectNameField);
-
-        HBox hbox_visi_preico = new HBox();
-        hbox_visi_preico.setAlignment(Pos.CENTER);
-        hbox_visi_preico.setPrefWidth(350);
-        hbox_visi_preico.setSpacing(20);
-
-        VBox vbox_C = new VBox();
-        vbox_C.setSpacing(10);
-        vbox_C.setAlignment(Pos.CENTER);
-        vbox_C.setMaxWidth(250);
-        Label l = new Label("Visibilidad");
-        ComboBox<String> visibilityComboBox = new ComboBox<>();
-        visibilityComboBox.getItems().addAll("Publico", "Privado");
-        visibilityComboBox.setValue("Publico");
-        vbox_C.getChildren().addAll(l, visibilityComboBox);
-
-        VBox vbox_C2 = new VBox();
-        vbox_C2.setSpacing(10);
-        vbox_C2.setAlignment(Pos.CENTER);
-        Label l2 = new Label("Precio");
-        TextField precio = new TextField();
-        precio.setMaxSize(100, 50);
-        vbox_C2.getChildren().addAll(l2, precio);
-
-        hbox_visi_preico.getChildren().addAll(vbox_C, vbox_C2);
-
-        VBox libreria = new VBox();
-        libreria.setSpacing(10);
-        libreria.setAlignment(Pos.CENTER);
-        String sql = "SELECT * FROM libreria WHERE id_usuario = " + id_user;
-        List<List<String>> l_librerias = conexion.query(conn, sql);
-        Label ll = new Label("Libreria");
-        ComboBox<Libreria> LibreriaComboBox = new ComboBox<>();
-        for (List<String> lista : l_librerias) {
-            String palabra = lista.get(1);
-            int id = Integer.parseInt(lista.get(0));
-            Libreria libre = new Libreria(id, palabra);
-            LibreriaComboBox.getItems().add(libre);
-        }
-        libreria.getChildren().addAll(ll, LibreriaComboBox);
-        String palabra = l_librerias.get(0).get(1);
-        int id = Integer.parseInt(l_librerias.get(0).get(0));
-        Libreria libre2 = new Libreria(id, palabra);
-        LibreriaComboBox.setValue(libre2);
-        vb1.getChildren().addAll(vb_nombre, hbox_visi_preico, libreria);
-
-        VBox vb2 = new VBox();
-        vb2.setAlignment(Pos.CENTER);
-        vb2.setPrefWidth(350);
-        vb2.setSpacing(20);
-        Label desc = new Label("Escriba una descripción para su objecto");
-        TextArea descriptionArea = new TextArea();
-        descriptionArea.setPromptText("DESCRIPCION");
-        vb2.getChildren().addAll(desc, descriptionArea);
-
-        hbox.getChildren().addAll(vb1, vb2);
-
-        Button btn_modelo = new Button("NUEVO MODELO");
-        btn_modelo.getStyleClass().add("select-files-button");
-        btn_modelo.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler() {
-            @Override
-            public void handle(Event event) {
-                String name = objectNameField.getText();
-                String visibilidad = visibilityComboBox.getValue();
-                if (visibilidad == "Publico") {
-                    visibilidad = "1";
-                } else {
-                    visibilidad = "0";
-                }
-                String precio_s = precio.getText();
-                String descripcion = descriptionArea.getText();
-                String libreria_v = LibreriaComboBox.getValue().getId_libreria() + "";
-                Boolean available = false;
-                if (name != null && visibilidad != null && precio_s != null && descripcion != null && libreria_v != null) {
-                    if (!name.isEmpty() && !visibilidad.isEmpty() && !precio_s.isEmpty() && !descripcion.isEmpty()) {
-                        available = true;
-                    }
-                }
-                if (available) {
-                    conexion.insertarModelo(conn, descripcion, precio_s, name, url_model, libreria_v, visibilidad);
-                    url_model = "";
-                    // aqui debo ir a home 
-                    contenido_page.getChildren().clear();
-                } else {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "HAY CAMPOS ERRONEOS O VACIOS");
-                    alert.setTitle("CAMPOS ERRONES O VACIOS");
-                    alert.setHeaderText("INFORMACIÓN");
-                    ButtonType okButton = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
-                    alert.getButtonTypes().setAll(okButton);
-                    alert.showAndWait();
-                }
-            }
-        });
-        // Añadiendo todos los elementos al VBox principal
-        contenido_page.getChildren().addAll(vbox, hbox, btn_modelo);
-        if(true){
-            
-        }
-    }
+//    @FXML
+//    private void solicitud(ActionEvent event) {
+//        contenido_page.getChildren().clear();
+//        contenido_page.setAlignment(Pos.CENTER);
+//        contenido_page.setSpacing(30);
+//
+//        VBox vbox = new VBox();
+//        vbox.setAlignment(Pos.CENTER);
+//        vbox.setMaxSize(800, 200);
+//        vbox.getStyleClass().add("vbox_");
+//        vbox.setSpacing(30);
+//
+//        Label dragDropLabel = new Label("Drag and drop your 3D files here or");
+//        Button selectFilesButton = new Button("Select object files");
+//        selectFilesButton.getStyleClass().add("select-files-button");
+//        VBox dragDropArea = new VBox(dragDropLabel, selectFilesButton);
+//        dragDropArea.setAlignment(Pos.CENTER);
+//        vbox.getChildren().addAll(dragDropArea);
+//        vbox.getStyleClass().add("file-drop-area");
+//
+//        selectFilesButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler() {
+//            @Override
+//            public void handle(Event event) {
+//                FileChooser fileChooser = new FileChooser();
+//                fileChooser.setTitle("CHOOSE 3D MODEL");
+//                fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("3D Files", "*.stl", "*.obj", "*.fbx", "*.3ds", "*.png", "*.jpg", "*.jpeg"));
+//                File selectedFile = fileChooser.showOpenDialog(null);
+//                if (selectedFile != null) {
+//                    String originalFileName = selectedFile.getName();
+//                    Path sourcePath = selectedFile.toPath();
+//                    int n_files = countFilesInDirectory("src/main/resources/Images/Modelos/");
+//                    Path targetPath = Paths.get("src/main/resources/Images/Modelos/" + n_files + originalFileName);
+//                    try {
+//                        Files.createDirectories(targetPath.getParent());
+//                        Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+//                        vbox.getChildren().clear();
+//                        VBox createUploadedVBox = createUploadedVBox(originalFileName);
+//                        vbox.getChildren().add(createUploadedVBox);
+//                        subido = true;
+//                        url_model = "/Images/Modelos/" + n_files + originalFileName;
+//                    } catch (IOException e) {
+//                        Alert alert = new Alert(Alert.AlertType.INFORMATION, "PROBLEMAS AL CARGAR ARCHIVOS");
+//                        alert.setTitle("CARGAR ARCHIVO");
+//                        alert.setHeaderText("INFORMACIÓN");
+//                        ButtonType okButton = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+//                        alert.getButtonTypes().setAll(okButton);
+//                        alert.showAndWait();
+//                    }
+//                }
+//            }
+//        });
+//        dragDropArea.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler() {
+//            @Override
+//            public void handle(Event event) {
+//                FileChooser fileChooser = new FileChooser();
+//                fileChooser.setTitle("CHOOSE 3D MODEL");
+//                fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("3D Files", "*.stl", "*.obj", "*.fbx", "*.3ds", "*.png", "*.jpg", "*.jpeg"));
+//                File selectedFile = fileChooser.showOpenDialog(null);
+//                if (selectedFile != null) {
+//                    String originalFileName = selectedFile.getName();
+//                    Path sourcePath = selectedFile.toPath();
+//                    int n_files = countFilesInDirectory("src/main/resources/Images/Modelos/");
+//                    Path targetPath = Paths.get("src/main/resources/Images/Modelos/" + n_files + originalFileName);
+//                    try {
+//                        Files.createDirectories(targetPath.getParent());
+//                        Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+//                        vbox.getChildren().clear();
+//                        VBox createUploadedVBox = createUploadedVBox(originalFileName);
+//                        vbox.getChildren().add(createUploadedVBox);
+//                        subido = true;
+//                        url_model = "/Images/Modelos/" + n_files + originalFileName;
+//                    } catch (IOException e) {
+//                        Alert alert = new Alert(Alert.AlertType.INFORMATION, "PROBLEMAS AL CARGAR ARCHIVOS");
+//                        alert.setTitle("CARGAR ARCHIVO");
+//                        alert.setHeaderText("INFORMACIÓN");
+//                        ButtonType okButton = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+//                        alert.getButtonTypes().setAll(okButton);
+//                        alert.showAndWait();
+//                    }
+//                }
+//            }
+//        });
+//        HBox hbox = new HBox();
+//
+//        hbox.setAlignment(Pos.CENTER);
+//        hbox.setPrefWidth(1080);
+//
+//        VBox vb1 = new VBox();
+//        vb1.setAlignment(Pos.CENTER);
+//        vb1.setPrefWidth(400);
+//        vb1.setSpacing(40);
+//
+//        VBox vb_nombre = new VBox();
+//        vb_nombre.setSpacing(10);
+//        vb_nombre.setAlignment(Pos.CENTER);
+//        vb_nombre.setPrefWidth(350);
+//        Label name = new Label("Escribe un nombre para su objecto");
+//        TextField objectNameField = new TextField();
+//        objectNameField.setMaxWidth(250);
+//        objectNameField.setPromptText("NOMBRE");
+//        vb_nombre.getChildren().addAll(name, objectNameField);
+//
+//        HBox hbox_visi_preico = new HBox();
+//        hbox_visi_preico.setAlignment(Pos.CENTER);
+//        hbox_visi_preico.setPrefWidth(350);
+//        hbox_visi_preico.setSpacing(20);
+//
+//        VBox vbox_C = new VBox();
+//        vbox_C.setSpacing(10);
+//        vbox_C.setAlignment(Pos.CENTER);
+//        vbox_C.setMaxWidth(250);
+//        Label l = new Label("Visibilidad");
+//        ComboBox<String> visibilityComboBox = new ComboBox<>();
+//        visibilityComboBox.getItems().addAll("Publico", "Privado");
+//        visibilityComboBox.setValue("Publico");
+//        vbox_C.getChildren().addAll(l, visibilityComboBox);
+//
+//        VBox vbox_C2 = new VBox();
+//        vbox_C2.setSpacing(10);
+//        vbox_C2.setAlignment(Pos.CENTER);
+//        Label l2 = new Label("Precio");
+//        TextField precio = new TextField();
+//        precio.setMaxSize(100, 50);
+//        vbox_C2.getChildren().addAll(l2, precio);
+//
+//        hbox_visi_preico.getChildren().addAll(vbox_C, vbox_C2);
+//
+//        VBox libreria = new VBox();
+//        libreria.setSpacing(10);
+//        libreria.setAlignment(Pos.CENTER);
+//        String sql = "SELECT * FROM libreria WHERE id_usuario = " + id_user;
+//        List<List<String>> l_librerias = conexion.query(conn, sql);
+//        Label ll = new Label("Libreria");
+//        ComboBox<Libreria> LibreriaComboBox = new ComboBox<>();
+//        for (List<String> lista : l_librerias) {
+//            String palabra = lista.get(1);
+//            int id = Integer.parseInt(lista.get(0));
+//            Libreria libre = new Libreria(id, palabra);
+//            LibreriaComboBox.getItems().add(libre);
+//        }
+//        libreria.getChildren().addAll(ll, LibreriaComboBox);
+//        String palabra = l_librerias.get(0).get(1);
+//        int id = Integer.parseInt(l_librerias.get(0).get(0));
+//        Libreria libre2 = new Libreria(id, palabra);
+//        LibreriaComboBox.setValue(libre2);
+//        vb1.getChildren().addAll(vb_nombre, hbox_visi_preico, libreria);
+//
+//        VBox vb2 = new VBox();
+//        vb2.setAlignment(Pos.CENTER);
+//        vb2.setPrefWidth(350);
+//        vb2.setSpacing(20);
+//        Label desc = new Label("Escriba una descripción para su objecto");
+//        TextArea descriptionArea = new TextArea();
+//        descriptionArea.setPromptText("DESCRIPCION");
+//        vb2.getChildren().addAll(desc, descriptionArea);
+//
+//        hbox.getChildren().addAll(vb1, vb2);
+//
+//        Button btn_modelo = new Button("NUEVO MODELO");
+//        btn_modelo.getStyleClass().add("select-files-button");
+//        btn_modelo.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler() {
+//            @Override
+//            public void handle(Event event) {
+//                String name = objectNameField.getText();
+//                String visibilidad = visibilityComboBox.getValue();
+//                if (visibilidad == "Publico") {
+//                    visibilidad = "1";
+//                } else {
+//                    visibilidad = "0";
+//                }
+//                String precio_s = precio.getText();
+//                String descripcion = descriptionArea.getText();
+//                String libreria_v = LibreriaComboBox.getValue().getId_libreria() + "";
+//                Boolean available = false;
+//                if (name != null && visibilidad != null && precio_s != null && descripcion != null && libreria_v != null) {
+//                    if (!name.isEmpty() && !visibilidad.isEmpty() && !precio_s.isEmpty() && !descripcion.isEmpty()) {
+//                        available = true;
+//                    }
+//                }
+//                if (available) {
+//                    conexion.insertarModelo(conn, descripcion, precio_s, name, url_model, libreria_v, visibilidad);
+//                    url_model = "";
+//                    // aqui debo ir a home 
+//                    contenido_page.getChildren().clear();
+//                } else {
+//                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "HAY CAMPOS ERRONEOS O VACIOS");
+//                    alert.setTitle("CAMPOS ERRONES O VACIOS");
+//                    alert.setHeaderText("INFORMACIÓN");
+//                    ButtonType okButton = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+//                    alert.getButtonTypes().setAll(okButton);
+//                    alert.showAndWait();
+//                }
+//            }
+//        });
+//        // Añadiendo todos los elementos al VBox principal
+//        contenido_page.getChildren().addAll(vbox, hbox, btn_modelo);
+//        if(true){
+//            
+//        }
+//    }
 
     @FXML
     private void showCampanas(MouseEvent event) {
