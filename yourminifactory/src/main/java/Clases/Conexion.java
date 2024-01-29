@@ -269,14 +269,42 @@ public class Conexion {
         return false;
     }
     
-    public void insertarDatoCamapana(Connection conn, String descripcion, String pionero, String moneyRe) {
+    public void insertarDatoCamapana(Connection conn, String descripcion) {
         PreparedStatement ps = null;
         try {
-            String sql = "INSERT INTO campana (descripcion, pioneros,dinerorecaudado) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO campana (descripcion) VALUES (?)";
             ps = conn.prepareStatement(sql);
             ps.setString(1, descripcion);
-            ps.setString(2, pionero);
-            ps.setString(3, moneyRe);
+//            ps.setString(2, pionero);
+//            ps.setString(3, moneyRe);
+
+            int filasInsertadas = ps.executeUpdate();
+            if (filasInsertadas > 0) {
+                System.out.println("Inserción exitosa");
+            } else {
+                System.out.println("No se pudo insertar el dato");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
+        }
+    }
+    
+    public void insertarDatoTribu(Connection conn, String descripcion, String title) {
+        PreparedStatement ps = null;
+        try {
+            String sql = "INSERT INTO tribu (descripcion) VALUES (?)";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, descripcion);
+            ps.setString(2, title);
+
 
             int filasInsertadas = ps.executeUpdate();
             if (filasInsertadas > 0) {
