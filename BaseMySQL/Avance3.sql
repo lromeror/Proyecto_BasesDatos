@@ -22,6 +22,7 @@ BEGIN
 END;
 | DELIMITER ; 
 
+
 DELIMITER |
 CREATE TRIGGER CreateUnirseApoyar AFTER INSERT ON Apoya
 FOR EACH ROW
@@ -31,6 +32,7 @@ BEGIN
     WHERE id_campana = NEW.id_campana;
 END;
 | DELIMITER ; 
+
 
 DELIMITER |
 CREATE TRIGGER CreateSalirseApoyar AFTER DELETE ON Apoya
