@@ -41,3 +41,34 @@
     width: 400px;
     height: 200px;
 }
+.buttonApoyar {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-padding: 10 20 10 20;
+    -fx-font-size: 14px;
+}
+
+.buttonApoyar:hover {
+    -fx-background-color: #45a049;
+}
+
+.buttonSalir {
+    -fx-background-color: #f44336;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-padding: 10 20 10 20;
+    -fx-font-size: 14px;
+}
+
+.buttonSalir:hover {
+    -fx-background-color: #d32f2f;
+}
+
+.verde{
+    -fx-text-fill: green;
+}

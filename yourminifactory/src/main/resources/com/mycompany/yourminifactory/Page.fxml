@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.net.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
@@ -20,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="671.0" prefWidth="1100.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.yourminifactory.PageController">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="671.0" prefWidth="1100.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.yourminifactory.PageController">
     <stylesheets>
         <URL value="@/styles/page.css" />
     </stylesheets>
@@ -53,11 +46,16 @@
                   <Font size="20.0" />
                </font>
             </Label>
-            <HBox prefHeight="66.0" prefWidth="200.0" />
+            <Label fx:id="link_campaña" onMouseClicked="#showCampanas" onMouseEntered="#hand2" text="CAMPAÑAS" textFill="#908c8c">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <HBox prefHeight="66.0" prefWidth="84.0" />
             <SplitMenuButton fx:id="drowdown" mnemonicParsing="false" text="UPLOAD">
               <items>
                 <MenuItem fx:id="modelo_option" mnemonicParsing="false" onAction="#modelo_option" text="MODELO" />
-                <MenuItem mnemonicParsing="false" text="EXTRA" />
+                <MenuItem fx:id="solicitud" mnemonicParsing="false" onAction="#solicitud" text="SOLICITUD" />
               </items>
             </SplitMenuButton>
             <Label fx:id="link_user" onMouseClicked="#show_usercontent" onMouseEntered="#hand3" text="USER" textFill="#908c8c">
@@ -70,9 +68,9 @@
             </Label>
          </children>
       </HBox>
-      <ScrollPane layoutY="63.0" prefHeight="607.0" prefWidth="1100.0">
+      <ScrollPane hbarPolicy="NEVER" layoutY="63.0" prefHeight="607.0" prefWidth="1100.0" vbarPolicy="NEVER">
         <content>
-            <VBox fx:id="contenido_page" alignment="CENTER" prefHeight="605.0" prefWidth="1082.0" />
+            <VBox fx:id="contenido_page" alignment="CENTER" prefHeight="605.0" prefWidth="1101.0" />
         </content>
       </ScrollPane>
    </children>

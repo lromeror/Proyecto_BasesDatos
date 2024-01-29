@@ -17,7 +17,9 @@ CREATE TABLE tribu(
 
 create table tier(
 	id_tier int not null AUTO_INCREMENT primary key,
+    precioMensaul int not null, 
     nivelApoyo int default 0,
+    descuento int not null default 0,
     recompensa varchar(100)
 );
 
@@ -25,7 +27,8 @@ create table campana(
 	id_campana int not null auto_increment primary key,
     descripcion varchar(100) default null,
     pioneros int not null,
-    dinerorecaudado double not null
+    dinerorecaudado double not null,
+    link_image varchar(300) default "None"
 );
 
 
@@ -48,6 +51,8 @@ create table tribu_user(
 CREATE TABLE Apoya (
     id_usuario int NOT NULL,
     id_campana int NOT NULL,
+    nivel int NOT NULL ,
+    dinero int not null default 0,
     PRIMARY KEY (id_usuario, id_campana),
     FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario),
     FOREIGN KEY (id_campana) REFERENCES campana(id_campana)
@@ -94,7 +99,8 @@ CREATE TABLE anadir (
 CREATE TABLE Asignacion(
 	id_campana int not null,
     id_tier int not null,
-    id_modelo int not null,
+    id_modelo int,
+    cant int not null default 1,
 	PRIMARY KEY (id_campana, id_tier,id_modelo),
 	FOREIGN KEY (id_campana) REFERENCES campana(id_campana),
     FOREIGN KEY (id_tier) REFERENCES tier(id_tier),

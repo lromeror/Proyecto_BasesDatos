@@ -86,6 +86,35 @@ public class Conexion {
         }
         return resultados;
     }
+    public List<String> query2(Connection conn, String sql) {
+        List<String> resultados = new ArrayList<>();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = conn.prepareStatement(sql); // Utilizar la conexión pasada como parámetro
+            rs = ps.executeQuery();
+            
+               while (rs.next()) {
+                   // Asumiendo que cada fila contiene exactamente un String
+                   resultados.add(rs.getString(1)); // Añade directamente el String a la lista
+               }
+           } catch (SQLException e) {
+               e.printStackTrace();
+           } finally {
+               try {
+                   if (rs != null) {
+                       rs.close();
+                   }
+                   if (ps != null) {
+                       ps.close();
+                   }
+                   // No cerrar conn aquí, porque se puede reutilizar
+               } catch (SQLException se) {
+                   se.printStackTrace();
+               }
+           }
+           return resultados;
+    }
 
     public void insertarDato(Connection conn, String nombre, String fecha, String passw, String correo) {
         PreparedStatement ps = null;
@@ -220,7 +249,8 @@ public class Conexion {
         String sql = "DELETE FROM anadir WHERE id_carrito = ? AND id_modelo = ?";
 
         // Try-with-resources to ensure that resources are closed after the program is finished
-        try (Connection conn = DriverManager.getConnection(cadena, usuario, contraseña); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DriverManager.getConnection(cadena, usuario, contraseña); 
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             // Set the values for the placeholders
             pstmt.setInt(1, idCarrito);
@@ -266,5 +296,53 @@ public class Conexion {
             }
         }
     }
+    
+    public boolean deleteRecordApoya(Connection conn, int idUsuario, int idCampana) {
+        String sql = "DELETE FROM Apoya WHERE id_usuario = ? AND id_campana = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, idUsuario);
+            pstmt.setInt(2, idCampana);
+            
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public void insertarDatoApoya(Connection conn, int idUsuario, int idCampana, int nivel) {
+        PreparedStatement ps = null;
+        try {
+            String sql = "INSERT INTO Apoya (id_usuario, id_campana,nivel) VALUES (?, ?, ?)";
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, idUsuario);
+            ps.setInt(2, idCampana);
+             ps.setInt(3, nivel);
+            
+            
+            int filasInsertadas = ps.executeUpdate();
+            if (filasInsertadas > 0) {
+                System.out.println("Inserción exitosa en la tabla Apoya");
+            } else {
+                System.out.println("No se pudo insertar el registro en la tabla Apoya");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al insertar en la tabla Apoya");
+            e.printStackTrace();
+        } finally {
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException se) {
+                    se.printStackTrace();
+                }
+            }
+        }
+    }
+
 
 }

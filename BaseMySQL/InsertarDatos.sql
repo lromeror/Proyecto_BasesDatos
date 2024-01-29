@@ -49,27 +49,12 @@ VALUES
     ('Enchanted Forest Miniatures', 'Greenwood Mystics', 208, 2);
     
 -- Insertar datos en la tabla tier
-INSERT INTO tier (nivelApoyo, recompensa) VALUES
-    (1, 'Agradecimiento en la página web'),
-    (2, 'Mención especial en redes sociales'),
-    (3, 'Acceso exclusivo a contenido'),
-    (4, 'Producto personalizado'),
-    (5, 'Invitación a evento especial'),
-    (6, 'Mención en evento en vivo'),
-    (7, 'Producto exclusivo firmado'),
-    (8, 'Invitación a reunión VIP'),
-    (9, 'Acceso a prototipos exclusivos'),
-    (10, 'Reconocimiento especial en la comunidad'),
-    (11, 'Agradecimiento especial'),
-    (12, 'Acceso exclusivo a eventos'),
-    (13, 'Producto personalizado y firmado'),
-    (14, 'Invitación a viaje exclusivo'),
-    (15, 'Reconocimiento VIP en la comunidad'),
-    (16, 'Agradecimiento en redes sociales'),
-    (17, 'Invitación a evento exclusivo'),
-    (18, 'Acceso a contenido premium'),
-    (19, 'Producto personalizado de edición limitada'),
-    (20, 'Reconocimiento en la comunidad');
+INSERT INTO tier (precioMensaul,nivelApoyo, descuento,recompensa) VALUES
+	(50,1, 5,'NIVEL 1'),
+	(100,2, 10,'NIVEL 2'),
+	(150,3,15, 'NIVEL 3'),
+	(200,4,20, 'NIVEL 4'),
+	(250,5,25, 'NIVEL 5');
 
 -- Insertar datos en la tabla campana
 INSERT INTO campana (descripcion, pioneros, dinerorecaudado) VALUES
@@ -78,21 +63,7 @@ INSERT INTO campana (descripcion, pioneros, dinerorecaudado) VALUES
     ('Campaña 3: Proyecto de Innovación C', 800, 2400.0),
     ('Campaña 4: Arte y Cultura D', 200, 600.0),
     ('Campaña 5: Educación E', 600, 1800.0),
-    ('Campaña 6: Arte Abstracto', 400, 1200.0),
-    ('Campaña 7: Educación STEM', 700, 2100.0),
-    ('Campaña 8: Tecnología Innovadora', 600, 1800.0),
-    ('Campaña 9: Diseño Sostenible', 300, 900.0),
-    ('Campaña 10: Comunidad Creativa', 800, 2400.0),
-    ('Campaña 11: Innovación Tecnológica', 450, 1350.0),
-    ('Campaña 12: Arte y Cultura', 250, 750.0),
-    ('Campaña 13: Educación de Calidad', 600, 1800.0),
-    ('Campaña 14: Diseño Sostenible', 350, 1050.0),
-    ('Campaña 15: Comunidad Creativa', 700, 2100.0),
-    ('Campaña 16: Innovación Tecnológica 2', 550, 1650.0),
-    ('Campaña 17: Arte y Cultura 2', 350, 1050.0),
-    ('Campaña 18: Educación de Calidad 2', 750, 2250.0),
-    ('Campaña 19: Diseño Sostenible 2', 450, 1350.0),
-    ('Campaña 20: Comunidad Creativa 2', 900, 2700.0);
+    ('Campaña 6: Arte Abstracto', 400, 1200.0);
 
 -- Insertar datos en la tabla usuario
 INSERT INTO usuario (nombre, fecha_nacimi, contrasena, correo) VALUES
@@ -118,28 +89,26 @@ INSERT INTO usuario (nombre, fecha_nacimi, contrasena, correo) VALUES
 ('Isabel Pérez', '1993-03-18', 'contraseña20', 'isabel@example.com');
 
 -- Insertar datos en la tabla Apoya
-INSERT INTO Apoya (id_usuario, id_campana) VALUES
-    (1, 1),
-    (2, 2),
-    (3, 3),
-    (4, 4),
-    (5, 5),
-    (6, 6),
-    (7, 7),
-    (8, 8),
-    (9, 9),
-    (10, 10),
-    (11, 11),
-    (12, 12),
-    (13, 13),
-    (14, 14),
-    (15, 15),
-    (16, 16),
-    (17, 17),
-    (18, 18),
-    (19, 19),
-    (20, 20);
-
+INSERT INTO Apoya (id_usuario, id_campana,nivel) VALUES
+    (1, 1,1),
+    (2, 2,1),
+    (3, 3,1),
+    (4, 4,1),
+    (5, 5,1),
+    (6, 6,1),
+    (8, 2,1),
+    (9, 3,1),
+    (10, 1,1),
+    (11, 1,1),
+    (12, 2,1),
+    (13, 3,1),
+    (14, 4,1),
+    (15, 5,1),
+    (16, 6,1),
+    (17, 3,1),
+    (18, 2,1),
+    (19, 3,1);
+    
 -- Insertar datos en la tabla libreria
 INSERT INTO libreria (nombre, id_usuario) VALUES
     ('Mi Librería 1', 1),
@@ -251,26 +220,29 @@ INSERT INTO anadir (id_carrito, id_modelo) VALUES
     
 -- Insertar datos en la tabla Asignación  
 INSERT INTO Asignacion (id_campana, id_tier, id_modelo) VALUES
-(1, 2, 3),
-(2, 3, 1),
-(3, 1, 2),
-(4, 5, 6),
-(5, 6, 4),
-(6, 4, 5),
-(7, 8, 9),
-(8, 9, 7),
-(9, 7, 8),
-(10, 11, 12),
-(11, 12, 10),
-(12, 10, 11),
-(13, 14, 15),
-(14, 15, 13),
-(15, 13, 14),
-(16, 17, 18),
-(17, 18, 16),
-(18, 16, 17),
-(19, 20, 1),
-(20, 1, 19);
-
-
-    
+	(1, 1, 17),
+	(1, 1, 16),
+	(1, 2, 4),
+	(1, 3, 9),
+	(1, 4, 15),
+	(1, 5, 3),
+	(2, 1, 20),
+	(2, 2, 8),
+	(2, 3, 11),
+	(2, 4, 5),
+	(2, 5, 14),
+	(3, 1, 2),
+	(3, 2, 7),
+	(3, 3, 13),
+	(3, 4, 6),
+	(3, 5, 1),
+	(4, 1, 10),
+	(4, 2, 18),
+	(4, 3, 12),
+	(4, 4, 16),
+	(4, 5, 19),
+	(5, 1, 7),
+	(5, 2, 11),
+	(5, 3, 4),
+	(5, 4, 9),
+	(5, 5, 2);
