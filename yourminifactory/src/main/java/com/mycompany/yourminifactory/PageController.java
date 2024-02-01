@@ -64,6 +64,7 @@ import java.time.format.TextStyle;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.FlowPane;
 
@@ -138,9 +139,19 @@ public class PageController implements Initializable {
     }
 
     private VBox createTribeCard(List<String> tribe, int index, int indicador,Connection conn,Conexion conex ) {
-        ImageView imageView = new ImageView(new Image(getImagePath(index)));
-        imageView.setFitWidth(200);
-        imageView.setFitHeight(150);
+        ImageView imageView = null;
+        if (index < 22){
+            imageView = new ImageView(new Image(getImagePath(index)));
+            imageView.setFitWidth(200);
+            imageView.setFitHeight(150);
+        }
+        else{
+            Random random = new Random();
+            int numeroAleatorio = random.nextInt(22) + 1;
+            imageView = new ImageView(new Image(getImagePath(numeroAleatorio)));
+            imageView.setFitWidth(200);
+            imageView.setFitHeight(150);
+         }
 
         Text nameLabel = new Text(tribe.get(0) + " - " + tribe.get(2));
         Text membersLabel = new Text("Members: " + tribe.get(3));
@@ -814,15 +825,13 @@ public class PageController implements Initializable {
             btnsAd.setSpacing(15);
             Text alert = new Text();
             btnSave.addEventHandler(MouseEvent.MOUSE_CLICKED, (Event e) -> {
-                alert.setText(this.btnRegisterSave(descrFie));
-                descrFie.setText("");
-                int nextId = conexion.getNextAutoIncrement(conn, "campana");
-                List<String> listas = getSelectedAssignments(nextId, modeloToCheckBoxesMap);
-                conexion.addAssignmentsToDatabase(listas,nextId);
-                show_usercontent(null);
-//                cantFiel.setText("");
-//                moneyFie.setText("");
-                    
+                this.btnRegisterSave(descrFie);
+                if(!descrFie.getText().isEmpty()){
+                    int nextId = conexion.getNextAutoIncrement(conn, "campana");
+                    List<String> listas = getSelectedAssignments(nextId, modeloToCheckBoxesMap);
+                     conexion.registerCampaignWithAssignments(descrFie.getText(),listas);
+                    show_usercontent(null);       
+                }
             });
             btnCancel.addEventHandler(MouseEvent.MOUSE_CLICKED, (Event e) -> {
                 descrFie.setText("");
@@ -1038,7 +1047,7 @@ public class PageController implements Initializable {
 
     private String btnRegisterSave(TextField descrFie) {
         if (!(descrFie.getText().equals(""))) {
-            this.conexion.insertarDatoCamapana(conn, descrFie.getText());
+//            this.conexion.insertarDatoCamapana(conn, descrFie.getText());
             return "Successful registration";
         }
         return "Please fill out the data fields";
@@ -1160,7 +1169,7 @@ public class PageController implements Initializable {
         header_scrollContainer.setAlignment(Pos.CENTER);
         Label campanaLabel = new Label("Campaña "+ i);
         campanaLabel.setStyle("-fx-font-size: 30 px; -fx-text-fill: black; -fx-font-weight: bold;");
-        if(id_campañasUser.contains(i+"")){
+        if(id_campañasUser.contains(id_campana)){
              Button button = new Button("SALIR");
              button.getStyleClass().add("buttonSalir");
              button.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler(){

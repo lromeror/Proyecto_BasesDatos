@@ -148,7 +148,7 @@ public class SolicitudController implements Initializable {
         buttonUnirse.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler(){
                 @Override
                 public void handle(Event event) {
-
+                    System.out.println(id_user+" "+id_campana+" "+nivel);
                     conexion.insertarDatoApoya(conn,id_user , id_campana,Integer.parseInt(nivel));
                     Stage stageActual = (Stage) ((Node) event.getSource()).getScene().getWindow();
                     stageActual.close();

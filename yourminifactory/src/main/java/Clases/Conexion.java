@@ -11,6 +11,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -342,34 +343,36 @@ public class Conexion {
         }
     }
     
-     public void insertarDatoApoya(Connection conn, int idUsuario, int idCampana, int nivel) {
-        CallableStatement cs = null;
-        try {
-            String sql = "{CALL InsertarDatoApoya(?, ?, ?)}";
-            cs = conn.prepareCall(sql);
-            cs.setInt(1, idUsuario);
-            cs.setInt(2, idCampana);
-            cs.setInt(3, nivel);
-
-            int filasInsertadas = cs.executeUpdate();
+   public void insertarDatoApoya(Connection conn, int idUsuario, int idCampana, int nivel) {
+     PreparedStatement ps = null;
+     try {
+         String sql = "INSERT INTO Apoya (id_usuario, id_campana, nivel) VALUES (?, ?, ?)";
+         ps = conn.prepareStatement(sql);
+         ps.setInt(1, idUsuario);
+         ps.setInt(2, idCampana);
+         ps.setInt(3, nivel);
+         
+            int filasInsertadas = ps.executeUpdate();
             if (filasInsertadas > 0) {
                 System.out.println("Inserción exitosa en la tabla Apoya");
             } else {
                 System.out.println("No se pudo insertar el registro en la tabla Apoya");
             }
         } catch (SQLException e) {
-            System.out.println("Error al insertar en la tabla Apoya");
+            System.out.println("Error al insertar en la tabla Apoya: " + e.getMessage());
             e.printStackTrace();
         } finally {
-            if (cs != null) {
+            if (ps != null) {
                 try {
-                    cs.close();
+                    ps.close();
                 } catch (SQLException se) {
                     se.printStackTrace();
                 }
             }
         }
     }
+
+
      
      public void insertarDatoTribu(Connection conn, String descripcion, String title, int id_cate) {
         PreparedStatement ps = null;
@@ -399,29 +402,82 @@ public class Conexion {
         }
     }
      
-   public void addAssignmentsToDatabase(List<String> assignments, int idCampania) {
-        String sql = "INSERT INTO asignacion (id_campana, id_tier, id_modelo) VALUES (?, ?, ?)";
+    public boolean registerCampaignWithAssignments(String campaignDescription, List<String> assignments) {
+        Connection conn = null;
+        PreparedStatement pstmtCampaign = null;
+        PreparedStatement pstmtAssignment = null;
+        ResultSet generatedKeys = null;
+        boolean isSuccess = false;
 
-        try (Connection conn = this.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try {
+            conn = this.connect();
+            conn.setAutoCommit(false); // Desactivar auto-commit para manejar la transacción manualmente.
 
-            for (String assignment : assignments) {
-                String[] parts = assignment.split(",");
+            // Inserción de la campaña
+            String insertCampaignSQL = "INSERT INTO campana (descripcion) VALUES (?)";
+            pstmtCampaign = conn.prepareStatement(insertCampaignSQL, Statement.RETURN_GENERATED_KEYS);
+            pstmtCampaign.setString(1, campaignDescription);
+            int affectedRowsCampaign = pstmtCampaign.executeUpdate();
 
-                // Asumiendo que el formato es idCampania,idTier,idModelo
-                int idTier = Integer.parseInt(parts[1].trim());
-                int idModelo = Integer.parseInt(parts[2].trim());
+            if (affectedRowsCampaign == 0) {
+                throw new SQLException("Creating campaign failed, no rows affected.");
+            }
 
-                pstmt.setInt(1, idCampania);
-                pstmt.setInt(2, idTier);
-                pstmt.setInt(3, idModelo);
+            generatedKeys = pstmtCampaign.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                int campaignId = generatedKeys.getInt(1);
 
-                pstmt.executeUpdate();
+                // Inserción de las asignaciones
+                String insertAssignmentSQL = "INSERT INTO asignacion (id_campana, id_tier, id_modelo) VALUES (?, ?, ?)";
+                pstmtAssignment = conn.prepareStatement(insertAssignmentSQL);
+
+                for (String assignment : assignments) {
+                    String[] parts = assignment.split(",");
+                    int idTier = Integer.parseInt(parts[1].trim()); // Asegúrate de que la indexación sea correcta.
+                    int idModelo = Integer.parseInt(parts[2].trim()); // Asegúrate de que la indexación sea correcta.
+
+                    pstmtAssignment.setInt(1, campaignId);
+                    pstmtAssignment.setInt(2, idTier);
+                    pstmtAssignment.setInt(3, idModelo);
+                    pstmtAssignment.executeUpdate();
+                }
+
+                conn.commit(); // Confirmar la transacción.
+                isSuccess = true;
+                System.out.println("Campaign and assignments inserted successfully.");
+            } else {
+                throw new SQLException("Creating campaign failed, no ID obtained.");
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            // Intentar revertir la transacción si hay un error
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                    System.out.println("Transaction failed, changes were rolled back.");
+                } catch (SQLException ex) {
+                    System.out.println("Couldn't roll back the transaction.");
+                    ex.printStackTrace();
+                }
+            }
+            e.printStackTrace();
+        } finally {
+            // Cerrar los recursos
+            try {
+                if (generatedKeys != null) generatedKeys.close();
+                if (pstmtCampaign != null) pstmtCampaign.close();
+                if (pstmtAssignment != null) pstmtAssignment.close();
+                if (conn != null) {
+                    conn.setAutoCommit(true); // Restaurar el modo auto-commit
+                    conn.close();
+                }
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
         }
+
+        return isSuccess;
     }
+
    public int getNextAutoIncrement(Connection conn, String tableName) {
     String sql = "SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?";
 
