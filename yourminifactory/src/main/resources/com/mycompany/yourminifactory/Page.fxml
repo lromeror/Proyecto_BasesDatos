@@ -55,7 +55,6 @@
             <SplitMenuButton fx:id="drowdown" mnemonicParsing="false" text="UPLOAD">
               <items>
                 <MenuItem fx:id="modelo_option" mnemonicParsing="false" onAction="#modelo_option" text="MODELO" />
-                <MenuItem fx:id="solicitud" mnemonicParsing="false" onAction="#solicitud" text="SOLICITUD" />
               </items>
             </SplitMenuButton>
             <Label fx:id="link_user" onMouseClicked="#show_usercontent" onMouseEntered="#hand3" text="USER" textFill="#908c8c">

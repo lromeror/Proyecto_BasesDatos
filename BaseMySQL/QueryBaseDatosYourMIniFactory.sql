@@ -51,15 +51,17 @@ create table tribu_user(
 CREATE TABLE Apoya (
     id_usuario int NOT NULL,
     id_campana int NOT NULL,
-    nivel int NOT NULL ,
-    dinero int not null default 0,
+    nivel int NOT NULL,
+    dinero int NOT NULL DEFAULT 0,
+    fecha_inicio date NOT NULL,
+    fecha_limite date NOT NULL,
     PRIMARY KEY (id_usuario, id_campana),
     FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario),
     FOREIGN KEY (id_campana) REFERENCES campana(id_campana)
 );
 
 
-create table libreria(
+Create Table libreria(
 	id_libreria int not null primary key auto_increment,
     nombre varchar(100) not null ,
     id_usuario int not null,
@@ -107,3 +109,9 @@ CREATE TABLE Asignacion(
     FOREIGN KEY (id_modelo) REFERENCES modelo(id_modelo)
 );
 
+
+Alter table modelo
+add visibilidad boolean;
+Update modelo 
+set visibilidad = True
+where id_modelo>= 0;

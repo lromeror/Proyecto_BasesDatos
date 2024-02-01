@@ -61,7 +61,7 @@ public class Conexion {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = conn.prepareStatement(sql); // Utilizar la conexión pasada como parámetro
+            ps = conn.prepareStatement(sql); 
             rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -81,7 +81,6 @@ public class Conexion {
                 if (ps != null) {
                     ps.close();
                 }
-                // No cerrar conn aquí, porque se puede reutilizar
             } catch (SQLException se) {
                 se.printStackTrace();
             }
@@ -93,12 +92,11 @@ public class Conexion {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = conn.prepareStatement(sql); // Utilizar la conexión pasada como parámetro
+            ps = conn.prepareStatement(sql); 
             rs = ps.executeQuery();
             
                while (rs.next()) {
-                   // Asumiendo que cada fila contiene exactamente un String
-                   resultados.add(rs.getString(1)); // Añade directamente el String a la lista
+                   resultados.add(rs.getString(1));
                }
            } catch (SQLException e) {
                e.printStackTrace();
@@ -110,7 +108,6 @@ public class Conexion {
                    if (ps != null) {
                        ps.close();
                    }
-                   // No cerrar conn aquí, porque se puede reutilizar
                } catch (SQLException se) {
                    se.printStackTrace();
                }
@@ -178,24 +175,20 @@ public class Conexion {
     }
 
 
-    public void insertarModelo(Connection conn, String descripcion, String precio, String titulo, String model, String libreria, String visibilidad) {
+    public void insertarModelo(Connection conn, String descripcion, String precio, String titulo, String model, String libreria, Boolean visibilidad) {
         CallableStatement cs = null;
         try {
-            String sql = "{CALL InsertarModelo(?, ?, ?, ?, ?, ?, ?)}";
+            String sql = "{CALL InsertarModelo(?, ?, ?, ?, ?, ?)}";
             cs = conn.prepareCall(sql);
             cs.setString(1, descripcion);
             cs.setString(2, precio);
             cs.setString(3, titulo);
             cs.setString(4, model);
             cs.setInt(5, Integer.parseInt(libreria));
-            cs.setBoolean(6, Boolean.parseBoolean(visibilidad));
+            cs.setBoolean(6, visibilidad);
 
             int filasInsertadas = cs.executeUpdate();
-            if (filasInsertadas > 0) {
-                System.out.println("Inserción exitosa");
-            } else {
-                System.out.println("No se pudo insertar el dato");
-            }
+   
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -261,8 +254,27 @@ public class Conexion {
         return false;
     }
     
-    public void insertarDatoCamapana(Connection conn, String descripcion) {
-        PreparedStatement ps = null;
+    public boolean deleteTribuUser(int id_user, int id_tribu) {
+        String sql = "{CALL EliminarRegistroTribu(?, ?)}";
+
+        try (Connection conn = DriverManager.getConnection(cadena, usuario, contraseña); 
+             CallableStatement cstmt = conn.prepareCall(sql)) {
+
+            cstmt.setInt(1, id_user);
+            cstmt.setInt(2, id_tribu);
+
+            int rowsAffected = cstmt.executeUpdate();
+
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+        public void insertarDatoCamapana(Connection conn, String descripcion, String pionero, String moneyRe) {
+        CallableStatement cs = null;
         try {
             String sql = "INSERT INTO campana (descripcion) VALUES (?)";
             ps = conn.prepareStatement(sql);
@@ -285,6 +297,31 @@ public class Conexion {
                 }
             } catch (SQLException se) {
                 se.printStackTrace();
+            }
+        }
+    }
+    public void insertarTribuUser(Connection conn, int id_user, int id_tribu) {
+        CallableStatement cs = null;
+        try {
+            String sql = "{CALL InsertarTribuUser(?, ?)}";
+            cs = conn.prepareCall(sql);
+            cs.setInt(1, id_user);
+            cs.setInt(2, id_tribu);
+            int filasInsertadas = cs.executeUpdate();
+            if (filasInsertadas > 0) {
+                System.out.println("Inserción exitosa");
+            } else {
+                System.out.println("No se pudo insertar el dato");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (cs != null) {
+                try {
+                    cs.close();
+                } catch (SQLException se) {
+                    se.printStackTrace();
+                }
             }
         }
     }

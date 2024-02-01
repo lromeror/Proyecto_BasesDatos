@@ -1,49 +1,44 @@
 use yourminifactory;
 
-create table administrador(
-	id_admin int not null primary key auto_increment,
-    nombre varchar(100) not null,
-    fecha_nacimi date not null,
-    contrasena varchar(100) not null,
-    correo varchar(100) not null,
-    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
+-- Usuarios
+CREATE USER 'usuario1' IDENTIFIED BY 'contraseña1';
+CREATE USER 'usuario2' IDENTIFIED BY 'contraseña2';
+CREATE USER 'usuario3' IDENTIFIED BY 'contraseña3';
+CREATE USER 'usuario4' IDENTIFIED BY 'contraseña4';
+CREATE USER 'usuario5' IDENTIFIED BY 'contraseña5';
 
-// Trigger 
--- Al momento de crear un nuevo usuario, me cree una libreria que todo usuario tiene por default, y su respectivo carro de compra
-DELIMITER |
-CREATE TRIGGER CreateAfterUser AFTER INSERT ON usuario
-FOR EACH ROW
-BEGIN
-    INSERT INTO libreria (nombre, id_usuario)
-    VALUES ('Mi Librería', NEW.id_usuario);
-    INSERT INTO carro_compra (id_usuario, total)
-    VALUES (NEW.id_usuario,0);
-END;
-| DELIMITER ; 
+-- Permisos 
+-- Usuario 1: Insertar y Eliminar 
+GRANT INSERT, DELETE ON yourminifactory.* TO 'usuario1';
 
+-- Usuario 2: Insertas y Update
+GRANT INSERT,UPDATE ON yourminifactory.* TO 'usuario2';
 
-DELIMITER |
-CREATE TRIGGER CreateUnirseApoyar AFTER INSERT ON Apoya
-FOR EACH ROW
-BEGIN
-    UPDATE campana
-    SET pioneros = pioneros + 1 
-    WHERE id_campana = NEW.id_campana;
-END;
-| DELIMITER ; 
+-- Usuario 3: Todos los permisos
+GRANT ALL PRIVILEGES ON yourminifactory.* TO 'usuario3';
 
+-- Usuario 4: T Todos los permisos y que pueda dar permiso
+GRANT ALL PRIVILEGES ON yourminifactory.* TO 'usuario4' WITH GRANT OPTION;
 
-DELIMITER |
-CREATE TRIGGER CreateSalirseApoyar AFTER DELETE ON Apoya
-FOR EACH ROW
-BEGIN
-    UPDATE campana
-    SET pioneros = pioneros - 1 
-    WHERE id_campana = OLD.id_campana;
-END;
-| DELIMITER ; 
+-- Usuario 5: Select y Update a una tabla en específico. 
+GRANT SELECT, UPDATE ON yourminifactory.usuario  TO 'usuario5';
 
+-- Permiso a Stored Procedure 
+GRANT EXECUTE ON PROCEDURE EliminarRegistroAnadir TO 'usuario1';
+GRANT EXECUTE ON PROCEDURE InsertarDatoApoya TO 'usuario1';
+GRANT EXECUTE ON PROCEDURE InsertarDatoCampana TO 'usuario3';
+GRANT EXECUTE ON PROCEDURE InsertarDatoTribu TO 'usuario3';
+-- Permiso a Vistas 
+GRANT SELECT ON reportecomprausuarios TO 'usuario1';
+GRANT SELECT ON reportedecampaniamodelos TO 'usuario1';
+GRANT SELECT ON reportecomprausuarios TO 'usuario2';
+GRANT SELECT ON reportedecampaniamodelos TO 'usuario2';
+GRANT SELECT ON reportecomprausuarios TO 'usuario3';
+GRANT SELECT ON reporteusuariotribucampania TO 'usuario3';
+GRANT SELECT ON reportecomprausuarios TO 'usuario4';
+GRANT SELECT ON reporteusuariotribucampania TO 'usuario4';
+GRANT SELECT ON reportecomprausuarios TO 'usuario5';
+GRANT SELECT ON reportedecampaniamodelos TO 'usuario5';
 
 
 

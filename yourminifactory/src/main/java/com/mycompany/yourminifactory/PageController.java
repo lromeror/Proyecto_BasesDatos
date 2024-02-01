@@ -15,12 +15,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -62,6 +59,9 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import java.time.LocalDate;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
 /**
  * FXML Controller class
@@ -88,8 +88,6 @@ public class PageController implements Initializable {
     private ImageView logo;
     @FXML
     private VBox contenido_page;
-    @FXML
-    private MenuItem solicitud;
     @FXML
     private Label link_campaña;
     
@@ -135,7 +133,7 @@ public class PageController implements Initializable {
 
     }
 
-    private VBox createTribeCard(List<String> tribe, int index) {
+    private VBox createTribeCard(List<String> tribe, int index, int indicador,Connection conn,Conexion conex ) {
         ImageView imageView = new ImageView(new Image(getImagePath(index)));
         imageView.setFitWidth(200);
         imageView.setFitHeight(150);
@@ -145,7 +143,34 @@ public class PageController implements Initializable {
         nameLabel.setFont(Font.font("Arial", 16));
         membersLabel.setFont(Font.font("Arial", 16));
 
-        VBox card = new VBox(10, imageView, nameLabel, membersLabel);
+        Button salirtribu = null; 
+        if(indicador == 1){
+            salirtribu = new Button("Salirse");
+            salirtribu.getStyleClass().add("buttonSalir");
+            salirtribu.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler(){
+                @Override
+                public void handle(Event t) {
+                    boolean deleteTribuUser = conex.deleteTribuUser(id_user,Integer.parseInt(tribe.get(0)));
+                    if(deleteTribuUser){
+                        mostrarNotificacion("Salida Exitosa",3);
+                    }                   
+                    showTribesContent(null);
+                }          
+            });
+        }
+        else{
+            salirtribu = new Button("Unirse");
+            salirtribu.getStyleClass().add("buttonApoyar");
+            salirtribu.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler(){
+                @Override
+                public void handle(Event t) {
+                    conex.insertarTribuUser(conn,id_user,Integer.parseInt(tribe.get(0)));
+                    mostrarNotificacion("Oficialmente perteneces a esta tribu",3);
+                    showTribesContent(null);
+                }          
+            });
+        }
+        VBox card = new VBox(10, salirtribu,imageView, nameLabel, membersLabel);
 
         card.setPrefSize(225, 231);
         card.setPadding(new Insets(10));
@@ -162,9 +187,13 @@ public class PageController implements Initializable {
         int libId = Integer.parseInt(model.get(6));
         int vis = Integer.parseInt(model.get(7));
         String date = model.get(5);
-
-        Model m = new Model(modId, model.get(1), pr, model.get(3), date, libId, vis);
-
+        Model m = null;
+        if (modId <= 20) {
+            m = new Model(modId, model.get(1), pr, model.get(3), date, libId, vis);
+        } else {
+            m = new Model(modId, model.get(1), pr, model.get(3), date, libId, vis, model.get(4));
+        }
+        
         ImageView imageView = new ImageView(new Image(m.getImage()));
         imageView.setFitWidth(200);
         imageView.setFitHeight(150);
@@ -177,7 +206,7 @@ public class PageController implements Initializable {
         deleteButton.setOnAction(Event -> {
             System.out.println(conexion.deleteRecordAnadir(id_user, modId));
             this.show_carrito_compraContent_AV(Event);
-            System.out.println("re biennnnn");
+            mostrarNotificacion("Removido exitosamente", 1);
         });
         deleteButton.getStyleClass().add("delete-button");
 
@@ -218,8 +247,6 @@ public class PageController implements Initializable {
     }
 
     private VBox createModelCardTienda(List<String> model, int index) {
-        // int idModel, String description, double price, String title, LocalDate publicationDate, int libraryId
-        // [1, Modelo 3D Impresionante, 50, Estatua de Dragón, dragon.stl, 2023-03-01, 1, 1]
         int modId = Integer.parseInt(model.get(0));
         double pr = Double.parseDouble(model.get(2));
         int libId = Integer.parseInt(model.get(6));
@@ -264,7 +291,6 @@ public class PageController implements Initializable {
     private void showTribesContent(MouseEvent event) {
         returnStyleLabel();
         link_tribes.getStyleClass().add("verde");
-        this.contenido_page.getChildren().clear();
         contenido_page.getChildren().clear();
         List<List<String>> resultados = conexion.query(conn, "SELECT * FROM tribu");
         GridPane grid = new GridPane();
@@ -272,21 +298,21 @@ public class PageController implements Initializable {
         grid.setVgap(40);
         grid.setHgap(40);
 
+        List<String> id_tribus = conexion.query2(conn, "SELECT id_tribu FROM tribu_user WHERE id_user = "+id_user+";");
         // Suponiendo que tienes los datos de las tribus en tribeData
         for (int i = 0; i < resultados.size(); i++) {
             List<String> tribe = resultados.get(i);
-            VBox card = createTribeCard(tribe, i + 1);
+            
+            int indicador = 0 ;
+            if(id_tribus.contains(tribe.get(0)) ){
+                indicador = 1;
+            }
+            VBox card = createTribeCard(tribe, i + 1,indicador,conn,conexion);
+            
             card.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler() {
                 @Override
                 public void handle(Event event) {
-                    try {
-                        Parent root = FXMLLoader.load(getClass().getResource("home.fxml"));
-                        Scene scene = new Scene(root);
-                        Stage stage = (Stage) contenido_page.getScene().getWindow();
-                        stage.setScene(scene);
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
+                    
                 }
             });
 
@@ -303,6 +329,7 @@ public class PageController implements Initializable {
     @FXML
     private void showTiendaContent(MouseEvent event) {
         returnStyleLabel();
+        contenido_page.getChildren().clear();
         link_tienda.getStyleClass().add("verde");
         List<List<String>> resultados = conexion.query(conn, "SELECT * FROM yourminifactory.modelo where visibilidad=1;");
 
@@ -311,9 +338,10 @@ public class PageController implements Initializable {
         grid.setVgap(40);
         grid.setHgap(40);
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < resultados.size(); i++) {
             List<String> model = resultados.get(i);
             System.out.println(model);
+            
             VBox card = createModelCardTienda(model, i + 1);
             card.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler() {
                 @Override
@@ -431,31 +459,6 @@ public class PageController implements Initializable {
         contenido_page.setAlignment(Pos.CENTER);
         contenido_page.setSpacing(30);
         
-//        
-//        VBox header = new VBox();
-//        header.setAlignment(Pos.CENTER);
-//        header.setMaxSize(800, 200);
-//        header.getStyleClass().add("vbox_");
-//        header.setSpacing(30);
-//        
-//        Label title = new Label("SOLICITUDES AL ADMINISTRADOR");
-//        title.setStyle("-fx-font-size: 25px; -fx-text-fill: black; -fx-font-weight: bold;");
-//        
-//        
-//        Label text = new Label("Escoge el tipo de solitud: ");
-//        text.setStyle("-fx-font-size: 14px; -fx-text-fill: black;");
-//        ComboBox<String> comboBox = new ComboBox<>();
-//        comboBox.getItems().addAll("Campaña", "Tribu");
-//        comboBox.setValue("Campaña");
-//        header.getChildren().addAll(title,text,comboBox);
-        
-        
-//        String tipo = comboBox.getValue();
-//        if(tipo.equals("Campaña")){
-//            Platform.runLater(()->{
-//                
-//            });
-//        }
         
         VBox vbox = new VBox();
         vbox.setAlignment(Pos.CENTER);
@@ -619,10 +622,12 @@ public class PageController implements Initializable {
             public void handle(Event event) {
                 String name = objectNameField.getText();
                 String visibilidad = visibilityComboBox.getValue();
-                if (visibilidad == "Publico") {
-                    visibilidad = "1";
+                Boolean visi = false;
+                System.out.println(visibilidad);
+                if (visibilidad.equals("Publico") )  {
+                    visi = true;
                 } else {
-                    visibilidad = "0";
+                    visi = false;
                 }
                 String precio_s = precio.getText();
                 String descripcion = descriptionArea.getText();
@@ -634,7 +639,7 @@ public class PageController implements Initializable {
                     }
                 }
                 if (available) {
-                    conexion.insertarModelo(conn, descripcion, precio_s, name, url_model, libreria_v, visibilidad);
+                    conexion.insertarModelo(conn, descripcion, precio_s, name, url_model, libreria_v, visi);
                     url_model = "";
                     // aqui debo ir a home 
                     contenido_page.getChildren().clear();
@@ -991,206 +996,7 @@ public class PageController implements Initializable {
         });
     }
 
-    @FXML
-    private void solicitud(ActionEvent event) {}
-//        contenido_page.getChildren().clear();
-//        contenido_page.setAlignment(Pos.CENTER);
-//        contenido_page.setSpacing(30);
-//
-//        VBox vbox = new VBox();
-//        vbox.setAlignment(Pos.CENTER);
-//        vbox.setMaxSize(800, 200);
-//        vbox.getStyleClass().add("vbox_");
-//        vbox.setSpacing(30);
-//
-//        Label dragDropLabel = new Label("Drag and drop your 3D files here or");
-//        Button selectFilesButton = new Button("Select object files");
-//        selectFilesButton.getStyleClass().add("select-files-button");
-//        VBox dragDropArea = new VBox(dragDropLabel, selectFilesButton);
-//        dragDropArea.setAlignment(Pos.CENTER);
-//        vbox.getChildren().addAll(dragDropArea);
-//        vbox.getStyleClass().add("file-drop-area");
-//
-//        selectFilesButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler() {
-//            @Override
-//            public void handle(Event event) {
-//                FileChooser fileChooser = new FileChooser();
-//                fileChooser.setTitle("CHOOSE 3D MODEL");
-//                fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("3D Files", "*.stl", "*.obj", "*.fbx", "*.3ds", "*.png", "*.jpg", "*.jpeg"));
-//                File selectedFile = fileChooser.showOpenDialog(null);
-//                if (selectedFile != null) {
-//                    String originalFileName = selectedFile.getName();
-//                    Path sourcePath = selectedFile.toPath();
-//                    int n_files = countFilesInDirectory("src/main/resources/Images/Modelos/");
-//                    Path targetPath = Paths.get("src/main/resources/Images/Modelos/" + n_files + originalFileName);
-//                    try {
-//                        Files.createDirectories(targetPath.getParent());
-//                        Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
-//                        vbox.getChildren().clear();
-//                        VBox createUploadedVBox = createUploadedVBox(originalFileName);
-//                        vbox.getChildren().add(createUploadedVBox);
-//                        subido = true;
-//                        url_model = "/Images/Modelos/" + n_files + originalFileName;
-//                    } catch (IOException e) {
-//                        Alert alert = new Alert(Alert.AlertType.INFORMATION, "PROBLEMAS AL CARGAR ARCHIVOS");
-//                        alert.setTitle("CARGAR ARCHIVO");
-//                        alert.setHeaderText("INFORMACIÓN");
-//                        ButtonType okButton = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
-//                        alert.getButtonTypes().setAll(okButton);
-//                        alert.showAndWait();
-//                    }
-//                }
-//            }
-//        });
-//        dragDropArea.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler() {
-//            @Override
-//            public void handle(Event event) {
-//                FileChooser fileChooser = new FileChooser();
-//                fileChooser.setTitle("CHOOSE 3D MODEL");
-//                fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("3D Files", "*.stl", "*.obj", "*.fbx", "*.3ds", "*.png", "*.jpg", "*.jpeg"));
-//                File selectedFile = fileChooser.showOpenDialog(null);
-//                if (selectedFile != null) {
-//                    String originalFileName = selectedFile.getName();
-//                    Path sourcePath = selectedFile.toPath();
-//                    int n_files = countFilesInDirectory("src/main/resources/Images/Modelos/");
-//                    Path targetPath = Paths.get("src/main/resources/Images/Modelos/" + n_files + originalFileName);
-//                    try {
-//                        Files.createDirectories(targetPath.getParent());
-//                        Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
-//                        vbox.getChildren().clear();
-//                        VBox createUploadedVBox = createUploadedVBox(originalFileName);
-//                        vbox.getChildren().add(createUploadedVBox);
-//                        subido = true;
-//                        url_model = "/Images/Modelos/" + n_files + originalFileName;
-//                    } catch (IOException e) {
-//                        Alert alert = new Alert(Alert.AlertType.INFORMATION, "PROBLEMAS AL CARGAR ARCHIVOS");
-//                        alert.setTitle("CARGAR ARCHIVO");
-//                        alert.setHeaderText("INFORMACIÓN");
-//                        ButtonType okButton = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
-//                        alert.getButtonTypes().setAll(okButton);
-//                        alert.showAndWait();
-//                    }
-//                }
-//            }
-//        });
-//        HBox hbox = new HBox();
-//
-//        hbox.setAlignment(Pos.CENTER);
-//        hbox.setPrefWidth(1080);
-//
-//        VBox vb1 = new VBox();
-//        vb1.setAlignment(Pos.CENTER);
-//        vb1.setPrefWidth(400);
-//        vb1.setSpacing(40);
-//
-//        VBox vb_nombre = new VBox();
-//        vb_nombre.setSpacing(10);
-//        vb_nombre.setAlignment(Pos.CENTER);
-//        vb_nombre.setPrefWidth(350);
-//        Label name = new Label("Escribe un nombre para su objecto");
-//        TextField objectNameField = new TextField();
-//        objectNameField.setMaxWidth(250);
-//        objectNameField.setPromptText("NOMBRE");
-//        vb_nombre.getChildren().addAll(name, objectNameField);
-//
-//        HBox hbox_visi_preico = new HBox();
-//        hbox_visi_preico.setAlignment(Pos.CENTER);
-//        hbox_visi_preico.setPrefWidth(350);
-//        hbox_visi_preico.setSpacing(20);
-//
-//        VBox vbox_C = new VBox();
-//        vbox_C.setSpacing(10);
-//        vbox_C.setAlignment(Pos.CENTER);
-//        vbox_C.setMaxWidth(250);
-//        Label l = new Label("Visibilidad");
-//        ComboBox<String> visibilityComboBox = new ComboBox<>();
-//        visibilityComboBox.getItems().addAll("Publico", "Privado");
-//        visibilityComboBox.setValue("Publico");
-//        vbox_C.getChildren().addAll(l, visibilityComboBox);
-//
-//        VBox vbox_C2 = new VBox();
-//        vbox_C2.setSpacing(10);
-//        vbox_C2.setAlignment(Pos.CENTER);
-//        Label l2 = new Label("Precio");
-//        TextField precio = new TextField();
-//        precio.setMaxSize(100, 50);
-//        vbox_C2.getChildren().addAll(l2, precio);
-//
-//        hbox_visi_preico.getChildren().addAll(vbox_C, vbox_C2);
-//
-//        VBox libreria = new VBox();
-//        libreria.setSpacing(10);
-//        libreria.setAlignment(Pos.CENTER);
-//        String sql = "SELECT * FROM libreria WHERE id_usuario = " + id_user;
-//        List<List<String>> l_librerias = conexion.query(conn, sql);
-//        Label ll = new Label("Libreria");
-//        ComboBox<Libreria> LibreriaComboBox = new ComboBox<>();
-//        for (List<String> lista : l_librerias) {
-//            String palabra = lista.get(1);
-//            int id = Integer.parseInt(lista.get(0));
-//            Libreria libre = new Libreria(id, palabra);
-//            LibreriaComboBox.getItems().add(libre);
-//        }
-//        libreria.getChildren().addAll(ll, LibreriaComboBox);
-//        String palabra = l_librerias.get(0).get(1);
-//        int id = Integer.parseInt(l_librerias.get(0).get(0));
-//        Libreria libre2 = new Libreria(id, palabra);
-//        LibreriaComboBox.setValue(libre2);
-//        vb1.getChildren().addAll(vb_nombre, hbox_visi_preico, libreria);
-//
-//        VBox vb2 = new VBox();
-//        vb2.setAlignment(Pos.CENTER);
-//        vb2.setPrefWidth(350);
-//        vb2.setSpacing(20);
-//        Label desc = new Label("Escriba una descripción para su objecto");
-//        TextArea descriptionArea = new TextArea();
-//        descriptionArea.setPromptText("DESCRIPCION");
-//        vb2.getChildren().addAll(desc, descriptionArea);
-//
-//        hbox.getChildren().addAll(vb1, vb2);
-//
-//        Button btn_modelo = new Button("NUEVO MODELO");
-//        btn_modelo.getStyleClass().add("select-files-button");
-//        btn_modelo.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler() {
-//            @Override
-//            public void handle(Event event) {
-//                String name = objectNameField.getText();
-//                String visibilidad = visibilityComboBox.getValue();
-//                if (visibilidad == "Publico") {
-//                    visibilidad = "1";
-//                } else {
-//                    visibilidad = "0";
-//                }
-//                String precio_s = precio.getText();
-//                String descripcion = descriptionArea.getText();
-//                String libreria_v = LibreriaComboBox.getValue().getId_libreria() + "";
-//                Boolean available = false;
-//                if (name != null && visibilidad != null && precio_s != null && descripcion != null && libreria_v != null) {
-//                    if (!name.isEmpty() && !visibilidad.isEmpty() && !precio_s.isEmpty() && !descripcion.isEmpty()) {
-//                        available = true;
-//                    }
-//                }
-//                if (available) {
-//                    conexion.insertarModelo(conn, descripcion, precio_s, name, url_model, libreria_v, visibilidad);
-//                    url_model = "";
-//                    // aqui debo ir a home 
-//                    contenido_page.getChildren().clear();
-//                } else {
-//                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "HAY CAMPOS ERRONEOS O VACIOS");
-//                    alert.setTitle("CAMPOS ERRONES O VACIOS");
-//                    alert.setHeaderText("INFORMACIÓN");
-//                    ButtonType okButton = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
-//                    alert.getButtonTypes().setAll(okButton);
-//                    alert.showAndWait();
-//                }
-//            }
-//        });
-//        // Añadiendo todos los elementos al VBox principal
-//        contenido_page.getChildren().addAll(vbox, hbox, btn_modelo);
-//        if(true){
-//            
-//        }
-//    }
+
 
     @FXML
     private void showCampanas(MouseEvent event) {
@@ -1203,12 +1009,11 @@ public class PageController implements Initializable {
         String query_Campanas = "SELECT * FROM campana;";
         List<List<String>> campanas = this.conexion.query(conn, query_Campanas);
         
-        String query = "SELECT id_campana FROM apoya WHERE id_usuario = 1;";
+        String query = "SELECT id_campana FROM apoya WHERE id_usuario = "+id_user+";";
         List<String> query1 = this.conexion.query2(conn, query);
         System.out.println(query1);
         for(int i = 0 ; i<campanas.size() ; i++){
             List<String> campa = campanas.get(i);
-            System.out.println(campa);
             VBox ContainerCampana = createAllContainerCampana(i+1,campa.get(0),query1,campa.get(1), campa.get(2), campa.get(3),campa.get(4),this.conn,this.conexion);
             ContainerCampana.setSpacing(20);
             ContainerCampana.setPrefWidth(772);
@@ -1225,11 +1030,11 @@ public class PageController implements Initializable {
         ContainerCampana.setMinHeight(300);
         ContainerCampana.setAlignment(Pos.CENTER);
         
+        
         HBox header_scrollContainer = new HBox();
         header_scrollContainer.setAlignment(Pos.CENTER);
         Label campanaLabel = new Label("Campaña "+ i);
         campanaLabel.setStyle("-fx-font-size: 30 px; -fx-text-fill: black; -fx-font-weight: bold;");
-         Button button1 ; 
         if(id_campañasUser.contains(i+"")){
              Button button = new Button("SALIR");
              button.getStyleClass().add("buttonSalir");
@@ -1244,7 +1049,13 @@ public class PageController implements Initializable {
                     });
                 }
             });
-           header_scrollContainer.getChildren().addAll(campanaLabel,button);
+            String queryfecha = "Select fecha_limite from apoya where id_usuario = 2 and id_campana = 2 ;";
+            List<String> query2 = conex.query2(conn, queryfecha);
+           String formatearFecha = formatearFecha(query2.get(0));
+           Label fechalabel = new Label("Beneficios hasta el: "+ formatearFecha);
+           fechalabel.setStyle("-fx-font-size: 20 px; -fx-text-fill: black; -fx-font-weight: bold;");
+           header_scrollContainer.setSpacing(30);
+           header_scrollContainer.getChildren().addAll(campanaLabel,fechalabel,button);
         }
         else{
             Button button= new Button("UNIRSE");
@@ -1267,10 +1078,10 @@ public class PageController implements Initializable {
                     
                 }
             });
+            header_scrollContainer.setSpacing(500);
             header_scrollContainer.getChildren().addAll(campanaLabel,button);
         }
         header_scrollContainer.setPrefWidth(772);
-        header_scrollContainer.setSpacing(500);
        
         HBox scrollContainer = new HBox();
         scrollContainer.setAlignment(Pos.CENTER);
@@ -1357,5 +1168,21 @@ public class PageController implements Initializable {
         link_carrito_compra.getStyleClass().clear();
         link_tienda.getStyleClass().clear();
         link_tribes.getStyleClass().clear();
+    }
+    
+    public static String formatearFecha(String fecha) {
+        LocalDate date = LocalDate.parse(fecha);
+        String diaDeLaSemana = date.getDayOfWeek().getDisplayName(TextStyle.FULL, new Locale("es", "ES"));
+        String mes = date.getMonth().getDisplayName(TextStyle.FULL, new Locale("es", "ES"));
+        int dia = date.getDayOfMonth();
+        int año = date.getYear();
+
+        return  title(diaDeLaSemana) + " " + dia + " de " + mes + " de " + año;
+    }
+    public static String title(String input) {
+        if (input == null || input.isEmpty()) {
+            return input;
+        }
+        return input.substring(0, 1).toUpperCase() + input.substring(1).toLowerCase();
     }
 }
