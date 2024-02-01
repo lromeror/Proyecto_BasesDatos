@@ -273,8 +273,8 @@ public class Conexion {
 
         return false;
     }
-        public void insertarDatoCamapana(Connection conn, String descripcion, String pionero, String moneyRe) {
-        CallableStatement cs = null;
+     public void insertarDatoCamapana(Connection conn, String descripcion) {
+        PreparedStatement ps = null;
         try {
             String sql = "INSERT INTO campana (descripcion) VALUES (?)";
             ps = conn.prepareStatement(sql);
@@ -398,6 +398,48 @@ public class Conexion {
             }
         }
     }
+     
+   public void addAssignmentsToDatabase(List<String> assignments, int idCampania) {
+        String sql = "INSERT INTO asignacion (id_campana, id_tier, id_modelo) VALUES (?, ?, ?)";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            for (String assignment : assignments) {
+                String[] parts = assignment.split(",");
+
+                // Asumiendo que el formato es idCampania,idTier,idModelo
+                int idTier = Integer.parseInt(parts[1].trim());
+                int idModelo = Integer.parseInt(parts[2].trim());
+
+                pstmt.setInt(1, idCampania);
+                pstmt.setInt(2, idTier);
+                pstmt.setInt(3, idModelo);
+
+                pstmt.executeUpdate();
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+   public int getNextAutoIncrement(Connection conn, String tableName) {
+    String sql = "SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?";
+
+    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        pstmt.setString(1, "yourminifactory");  
+        pstmt.setString(2, tableName);
+
+        try (ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt("AUTO_INCREMENT");
+            }
+        }
+    } catch (SQLException e) {
+        System.out.println(e.getMessage());
+    }
+    return -1; // En caso de error o si no se puede obtener el valor
+}
+
 
     
 

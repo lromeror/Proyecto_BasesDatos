@@ -108,10 +108,17 @@ CREATE TABLE Asignacion(
     FOREIGN KEY (id_tier) REFERENCES tier(id_tier),
     FOREIGN KEY (id_modelo) REFERENCES modelo(id_modelo)
 );
-
+create table administrador(
+	id_admin int not null primary key auto_increment,
+    nombre varchar(100) not null,
+    fecha_nacimi date not null,
+    contrasena varchar(100) not null,
+    correo varchar(100) not null,
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
 
 Alter table modelo
 add visibilidad boolean;
-Update modelo 
-set visibilidad = True
-where id_modelo>= 0;
+
+Alter table campana
+Modify pioneros  int not null default 1;

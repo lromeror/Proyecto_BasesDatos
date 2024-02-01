@@ -68,6 +68,7 @@ public class SolicitudController implements Initializable {
         conexion = new Conexion();
         conn = conexion.connect();
         id_campana = PageController.id_Campana;
+        System.out.println(id_campana);
         id_user = PageController.id_user;
         createTiers();
 
@@ -79,8 +80,7 @@ public class SolicitudController implements Initializable {
     }
     private void createTiers(){
         container_nivel.getChildren().clear();
-        String querie = "SELECT *, (SELECT Count(a.cant) FROM asignacion a WHERE a.id_campana = " + id_campana + " AND a.id_tier = t.id_tier) AS total_producto " 
-                +"FROM tier t WHERE t.id_tier IN (SELECT DISTINCT id_tier FROM campana c WHERE c.id_campana = " + id_campana + ") ORDER BY nivelApoyo;";
+        String querie = "SELECT *, (SELECT Count(a.cant) FROM asignacion a WHERE a.id_campana ="+id_campana+" AND a.id_tier = t.id_tier) AS total_producto FROM tier t WHERE t.id_tier IN (SELECT DISTINCT id_tier FROM asignacion c WHERE c.id_campana ="+id_campana+") ORDER BY nivelApoyo;";
         List<List<String>> query = conexion.query(conn, querie);
         for(List<String> tier : query){
             HBox containerprincipal = new HBox();

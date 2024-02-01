@@ -246,3 +246,7 @@ INSERT INTO Asignacion (id_campana, id_tier, id_modelo) VALUES
 	(5, 3, 4),
 	(5, 4, 9),
 	(5, 5, 2);
+
+Update modelo 
+set visibilidad = True
+where id_modelo>= 0;

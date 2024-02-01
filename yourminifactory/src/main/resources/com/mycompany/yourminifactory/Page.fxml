@@ -67,9 +67,9 @@
             </Label>
          </children>
       </HBox>
-      <ScrollPane hbarPolicy="NEVER" layoutY="63.0" prefHeight="607.0" prefWidth="1100.0" vbarPolicy="NEVER">
+      <ScrollPane hbarPolicy="NEVER" layoutY="63.0" prefHeight="609.0" prefWidth="1100.0" vbarPolicy="NEVER">
         <content>
-            <VBox fx:id="contenido_page" alignment="CENTER" prefHeight="605.0" prefWidth="1101.0" />
+            <VBox fx:id="contenido_page" alignment="CENTER" prefHeight="584.0" prefWidth="1099.0" />
         </content>
       </ScrollPane>
    </children>

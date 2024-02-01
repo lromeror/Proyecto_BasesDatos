@@ -61,7 +61,11 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+import javafx.scene.control.CheckBox;
+import javafx.scene.layout.FlowPane;
 
 /**
  * FXML Controller class
@@ -657,6 +661,57 @@ public class PageController implements Initializable {
         contenido_page.getChildren().addAll(vbox, hbox, btn_modelo);
 
     }
+//    public HBox createModelCardWithCheckBoxes(List<String> modelo) {
+//        
+//        VBox modelo_checkbox = createModelCardTienda2(modelo);
+//        
+//        VBox vboxCheckBoxes = new VBox(5);
+//        for (int i = 1; i <= 5; i++) {
+//            CheckBox checkBox = new CheckBox("Nivel " + i);
+//            vboxCheckBoxes.getChildren().add(checkBox);
+//        }
+//        
+//        HBox hbox = new HBox(10); 
+//        hbox.setAlignment(Pos.CENTER);
+//        hbox.getChildren().addAll(modelo_checkbox, vboxCheckBoxes);
+//        
+//        return hbox;
+//    }
+    public HBox createModelCardWithCheckBoxes(List<String> modelo, Map<String, Map<Integer, CheckBox>> modeloToCheckBoxesMap) {
+        String idModelo = modelo.get(0);
+        VBox modelo_checkbox = createModelCardTienda2(modelo);
+        
+        VBox vboxCheckBoxes = new VBox(5);
+        Map<Integer, CheckBox> checkBoxMap = new HashMap<>();
+        for (int i = 1; i <= 5; i++) {
+            CheckBox checkBox = new CheckBox("Nivel " + i);
+            checkBox.setId("checkbox_" + idModelo + "_" + i); // Asignar un ID único a cada CheckBox
+            checkBoxMap.put(i, checkBox);
+            vboxCheckBoxes.getChildren().add(checkBox);
+        }
+        modeloToCheckBoxesMap.put(idModelo, checkBoxMap);
+        
+        HBox hbox = new HBox(10); 
+        hbox.setAlignment(Pos.CENTER);
+        hbox.getChildren().addAll(modelo_checkbox, vboxCheckBoxes);
+        
+        return hbox;
+    }
+    public List<String> getSelectedAssignments(int idCampania, Map<String, Map<Integer, CheckBox>> modeloToCheckBoxesMap) {
+       List<String> asignaciones = new ArrayList<>();
+       for (Map.Entry<String, Map<Integer, CheckBox>> entry : modeloToCheckBoxesMap.entrySet()) {
+           String idModelo = entry.getKey();
+           Map<Integer, CheckBox> checkBoxes = entry.getValue();
+           for (Map.Entry<Integer, CheckBox> checkBoxEntry : checkBoxes.entrySet()) {
+               if (checkBoxEntry.getValue().isSelected()) {
+                   int idTier = checkBoxEntry.getKey();
+                   String asignacion = idCampania+ "," + idTier + ","+ idModelo;
+                   asignaciones.add(asignacion);
+               }
+           }
+       }
+       return asignaciones;
+    }
 
     @FXML
     private void show_usercontent(MouseEvent event) {
@@ -688,7 +743,13 @@ public class PageController implements Initializable {
                 + "-fx-border-radius: 4px; "
                 + "-fx-background-radius: 6px; "
                 + "-fx-padding: 12px;" + "-fx-font-size: 15px;");
+        
         btCreateCompany.addEventHandler(MouseEvent.MOUSE_CLICKED, (Event t) -> {
+            
+            contenido_page.getChildren().clear();
+            this.contenido_page.getChildren().add(stackPane);
+            this.contenido_page.getChildren().addAll(name);
+            this.contenido_page.getChildren().addAll(buts, vConten);
             vConten.getChildren().clear();
             vConten.setAlignment(Pos.TOP_LEFT);
             vConten.setSpacing(10);
@@ -703,14 +764,65 @@ public class PageController implements Initializable {
 //            TextField moneyFie = new TextField();
             Button btnSave = new Button("Save");
             Button btnCancel = new Button("Cancel");
+            
+            VBox contenedorPrincipal = new VBox(10);
+            contenedorPrincipal.setAlignment(Pos.CENTER);
+            Label titulo = new Label("Asignaciones de Tiers");
+            titulo.setFont(Font.font("null", FontWeight.BOLD, 19));
+            
+            Text text = new Text("Asigne los modelos a sus respectivos niveles de tier");
+            
+            
+            ScrollPane scrollTiers = new ScrollPane();
+            scrollTiers.setMaxWidth(800); 
+            scrollTiers.setMinHeight(500);
+            FlowPane contentFlow = new FlowPane();
+            contentFlow.setAlignment(Pos.CENTER);
+            contentFlow.setPrefWrapLength(800); 
+            contentFlow.setMaxWidth(800); 
+            contentFlow.setMinHeight(500);
+            contentFlow.setHgap(20);
+            contentFlow.setVgap(20);
+            
+            HBox nuevo = new HBox(10);
+
+            nuevo.setMaxWidth(800); 
+            nuevo.setMinHeight(50);
+            
+            scrollTiers.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+            scrollTiers.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+            scrollTiers.setContent(contentFlow);
+            
+            
+            String modelos = "SELECT * FROM modelo WHERE visibilidad = 1";
+           
+            List<List<String>> l_modelos = this.conexion.query(conn, modelos);
+            Map<String, Map<Integer, CheckBox>> modeloToCheckBoxesMap = new HashMap<>();
+            for (List<String> modelo : l_modelos){
+                HBox modelo_checkbox = createModelCardWithCheckBoxes(modelo, modeloToCheckBoxesMap);
+                contentFlow.getChildren().add(modelo_checkbox);
+            }
+            
+
+            
+            contenedorPrincipal.getChildren().addAll(titulo,text,scrollTiers,nuevo);
+          
+            
+            contenido_page.getChildren().addAll(contenedorPrincipal);
+            
             HBox btnsAd = new HBox(btnSave, btnCancel);
             btnsAd.setSpacing(15);
             Text alert = new Text();
             btnSave.addEventHandler(MouseEvent.MOUSE_CLICKED, (Event e) -> {
                 alert.setText(this.btnRegisterSave(descrFie));
                 descrFie.setText("");
+                int nextId = conexion.getNextAutoIncrement(conn, "campana");
+                List<String> listas = getSelectedAssignments(nextId, modeloToCheckBoxesMap);
+                conexion.addAssignmentsToDatabase(listas,nextId);
+                show_usercontent(null);
 //                cantFiel.setText("");
 //                moneyFie.setText("");
+                    
             });
             btnCancel.addEventHandler(MouseEvent.MOUSE_CLICKED, (Event e) -> {
                 descrFie.setText("");
@@ -738,6 +850,7 @@ public class PageController implements Initializable {
                     "-fx-border-color: transparent; " + "-fx-border-radius: 5; " + "-fx-background-radius: 5; " + "-fx-font-size: 14px;" + "-fx-padding: 3 20;"));
             vConten.getChildren().addAll(tiReg, descripTi, descrFie, btnsAd, alert);
         });
+        
         Button btCreateTribu = new Button("Create Tribu");
         btCreateTribu.setStyle("-fx-background-color: #F36230; "
                 + "-fx-text-fill: white; "
@@ -747,7 +860,13 @@ public class PageController implements Initializable {
                 + "-fx-border-radius: 4px; "
                 + "-fx-background-radius: 6px; "
                 + "-fx-padding: 12px;" + "-fx-font-size: 15px;");
+        
+      // Crear tribu
         btCreateTribu.addEventHandler(MouseEvent.MOUSE_CLICKED, (Event t) -> {
+            contenido_page.getChildren().clear();
+            this.contenido_page.getChildren().add(stackPane);
+            this.contenido_page.getChildren().addAll(name);
+            this.contenido_page.getChildren().addAll(buts, vConten);
             vConten.getChildren().clear();
             vConten.setAlignment(Pos.TOP_LEFT);
             vConten.setSpacing(10);
@@ -810,6 +929,10 @@ public class PageController implements Initializable {
         Button bt = new Button("Modelos");
         bt.setStyle("-fx-background-color: #66D0A8; " + "-fx-text-fill: white; " + "-fx-font-weight: bold; " + "-fx-border-color: #FFFFFF; " + "-fx-border-width: 3px; " + "-fx-border-radius: 4px; " + "-fx-background-radius: 6px; " + "-fx-padding: 12px;" + "-fx-font-size: 15px;");
         bt.addEventHandler(MouseEvent.MOUSE_CLICKED, (Event t) -> {
+            contenido_page.getChildren().clear();
+            this.contenido_page.getChildren().add(stackPane);
+            this.contenido_page.getChildren().addAll(name);
+            this.contenido_page.getChildren().addAll(buts, vConten);
             vConten.getChildren().clear();
             Text tituloList = new Text("\n" + "Bookstore List" + "\n");
             tituloList.setFont(Font.font("null", FontWeight.BOLD, 19));
@@ -830,6 +953,10 @@ public class PageController implements Initializable {
                 + "join campana camp on ap.id_campana=camp.id_campana\n"
                 + "where us.id_usuario=" + this.id_user + ";");
         bt2.addEventHandler(MouseEvent.MOUSE_CLICKED, (Event t) -> {
+            contenido_page.getChildren().clear();
+            this.contenido_page.getChildren().add(stackPane);
+            this.contenido_page.getChildren().addAll(name);
+            this.contenido_page.getChildren().addAll(buts, vConten);
             vConten.getChildren().clear();
             Text tituloList = new Text("\n" + "Campaign List" + "\n");
             tituloList.setFont(Font.font("null", FontWeight.BOLD, 19));
@@ -995,9 +1122,7 @@ public class PageController implements Initializable {
             contenido_page.getChildren().add(grid);
         });
     }
-
-
-
+    
     @FXML
     private void showCampanas(MouseEvent event) {
         returnStyleLabel();
@@ -1184,5 +1309,34 @@ public class PageController implements Initializable {
             return input;
         }
         return input.substring(0, 1).toUpperCase() + input.substring(1).toLowerCase();
+    }
+    private VBox createModelCardTienda2(List<String> model) {
+        int modId = Integer.parseInt(model.get(0));
+        double pr = Double.parseDouble(model.get(2));
+        int libId = Integer.parseInt(model.get(6));
+        int vis = Integer.parseInt(model.get(7));
+        String date = model.get(5);
+        Model m = null;
+        if (modId <= 20) {
+            m = new Model(modId, model.get(1), pr, model.get(3), date, libId, vis);
+        } else {
+            m = new Model(modId, model.get(1), pr, model.get(3), date, libId, vis, model.get(4));
+        }
+
+        ImageView imageView = new ImageView(new Image(m.getImage()));
+        imageView.setFitWidth(80);
+        imageView.setFitHeight(80);
+
+        Text nameLabel = new Text(m.getTitle());
+        Text priceLabel = new Text("Price Original : " + pr);
+        priceLabel.setFont(Font.font("Arial", 12));
+        nameLabel.setFont(Font.font("Arial", 12));
+        VBox card = new VBox(10, imageView, nameLabel, priceLabel);
+
+        card.setPrefSize(200, 160);
+        card.getStyleClass().add("card");
+
+        return card;
+
     }
 }
